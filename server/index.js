@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/auth");
 const alumniRoutes = require("./routes/alumni");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 // ── Routes ─────────────────────────────
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/alumni", alumniRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 // ── Health check ───────────────────────
 app.get("/api/v1/health", (req, res) => {

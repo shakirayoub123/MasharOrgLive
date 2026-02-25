@@ -42,13 +42,12 @@ export default function AlumniSidebar({ collapsed, mobileOpen, closeMobile }) {
           <Section label="Community" collapsed={collapsed} />
           <Item to="/alumni/directory" icon="🧑‍🤝‍🧑" label="Alumni Directory" collapsed={collapsed} />
           <Item to="/alumni/discussion" icon="🗨️" label="Discussion" collapsed={collapsed} />
-          <Item to="/alumni/mentor" icon="🤝" label="Become a Mentor" collapsed={collapsed} />
-          <Item to="/alumni/story" icon="📖" label="Share Story" collapsed={collapsed} />
+
           <Item to="/alumni/events" icon="🎟️" label="Events" collapsed={collapsed} />
 
           <Section label="Resources" collapsed={collapsed} />
           <Item to="/alumni/resourcessection" icon="🗂️" label="Resource Library" collapsed={collapsed} />
-          <Item to="/alumni/learning" icon="📚" label="Learning Hub" collapsed={collapsed} />
+          {/* <Item to="/alumni/learning" icon="📚" label="Learning Hub" collapsed={collapsed} /> */}
           <Item to="/alumni/calendar" icon="📅" label="Program Calendar" collapsed={collapsed} />
 
         </nav>

@@ -25,6 +25,8 @@ import LatestResources from "../components/alumni/LatestResources.jsx";
 import Messages from "../components/alumni/Messages.jsx";
 import Notifications from "../components/alumni/Notifications.jsx";
 import ResourcesSection from "../pages/alumni/Resourcessection.jsx";
+import SetPassword from "../pages/SetPassword.jsx";
+import AdminAlumniApproval from "../pages/admin/AdminAlumniApproval.jsx";
 
 const browserRoutes = createBrowserRouter([
   // 🌐 Public website (with App layout)
@@ -58,6 +60,18 @@ const browserRoutes = createBrowserRouter([
   {
     path: "/alumni-register",
     element: <AlumniRegister />,
+  },
+
+  // 🔑 Set password page (from email link)
+  {
+    path: "/set-password",
+    element: <SetPassword />,
+  },
+
+  // 🛡️ Admin alumni approval page
+  {
+    path: "/admin/alumni-approval",
+    element: <AdminAlumniApproval />,
   },
 
   // 🎓 Alumni Panel Layout (Protected)

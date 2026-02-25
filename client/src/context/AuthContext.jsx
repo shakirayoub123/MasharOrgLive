@@ -47,6 +47,18 @@ export function AuthProvider({ children }) {
 
   const register = async (data) => {
     const res = await axios.post("/api/v1/auth/register", data);
+    return res.data; // No token returned — registration is pending approval
+  };
+
+  const setPasswordFn = async (tokenValue, password) => {
+    const res = await axios.post("/api/v1/auth/set-password", {
+      token: tokenValue,
+      password,
+    });
+    const { token: newToken, alumni } = res.data;
+    localStorage.setItem("alumni_token", newToken);
+    setToken(newToken);
+    setUser(alumni);
     return res.data;
   };
 
@@ -65,6 +77,7 @@ export function AuthProvider({ children }) {
         isAuthenticated: !!user,
         login,
         register,
+        setPasswordFn,
         logout,
       }}
     >

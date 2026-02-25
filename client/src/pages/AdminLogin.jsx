@@ -19,8 +19,6 @@ export default function AlumniLogin() {
     try {
       await login(email, password);
       navigate("/alumni");
-    localStorage.setItem("token", res.data.token);
-
     } catch (err) {
       setError(
         err.response?.data?.message || "Login failed. Please try again."
