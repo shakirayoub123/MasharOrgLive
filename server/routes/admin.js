@@ -4,6 +4,7 @@ const nodemailer = require("nodemailer");
 const Alumni = require("../models/Alumni");
 const Admin = require("../models/Admin");
 const adminProtect = require("../middleware/adminAuth");
+const { logActivity } = require("../utils/logger");
 
 const router = express.Router();
 
@@ -83,6 +84,14 @@ router.post("/verify-otp", async (req, res) => {
         admin.otp = undefined;
         admin.otpExpires = undefined;
         await admin.save();
+
+        // LOG ACTIVITY
+        await logActivity({
+            type: "admin_login",
+            title: "Admin Session Started",
+            description: `Administrator ${email} logged into the dashboard`,
+            performedBy: admin._id,
+        });
 
         const token = admin.generateAuthToken();
         res.json({ token, admin: { id: admin._id, email: admin.email } });
@@ -205,6 +214,16 @@ router.put("/alumni/:id/approve", adminProtect, async (req, res) => {
 
         const emailResult = await sendSetPasswordEmail(alumni.email, alumni.name, rawToken);
 
+        // LOG ACTIVITY
+        await logActivity({
+            type: "approval",
+            title: "Member Approved",
+            description: `Administrative account approved ${alumni.name}'s profile`,
+            performedBy: req.admin._id,
+            relatedAlumni: alumni._id,
+            metadata: { name: alumni.name, email: alumni.email }
+        });
+
         const response = {
             message: `Alumni "${alumni.name}" approved successfully. Set-password email sent.`,
         };
@@ -269,9 +288,80 @@ router.put("/alumni/:id/reject", adminProtect, async (req, res) => {
         alumni.setPasswordExpires = undefined;
         await alumni.save();
 
+        // LOG ACTIVITY
+        await logActivity({
+            type: "rejection",
+            title: "Member Rejected",
+            description: `Administrative account rejected ${alumni.name}'s registration`,
+            performedBy: req.admin._id,
+            relatedAlumni: alumni._id,
+            metadata: { name: alumni.name, email: alumni.email }
+        });
+
         res.json({
             message: `Alumni "${alumni.name}" has been rejected.`,
         });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
+// GET /api/v1/admin/stats
+router.get("/stats", adminProtect, async (req, res) => {
+    try {
+        const totalAlumni = await Alumni.countDocuments();
+        const approvedAlumni = await Alumni.countDocuments({ status: "approved" });
+        const pendingAlumni = await Alumni.countDocuments({ status: "pending" });
+        const rejectedAlumni = await Alumni.countDocuments({ status: "rejected" });
+
+        res.json({
+            stats: {
+                totalAlumni,
+                approvedAlumni,
+                pendingAlumni,
+                rejectedAlumni
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
+// DELETE /api/v1/admin/alumni/:id
+router.delete("/alumni/:id", adminProtect, async (req, res) => {
+    try {
+        const alumni = await Alumni.findById(req.params.id);
+        if (!alumni) return res.status(404).json({ message: "Alumni not found" });
+
+        const name = alumni.name;
+        await Alumni.findByIdAndDelete(req.params.id);
+
+        // LOG ACTIVITY
+        await logActivity({
+            type: "system",
+            title: "Member Deleted",
+            description: `Administrative account deleted ${name}'s profile`,
+            performedBy: req.admin._id,
+            metadata: { name }
+        });
+
+        res.json({ message: `Alumni "${name}" deleted successfully` });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
+const ActivityLog = require("../models/ActivityLog");
+
+// GET /api/v1/admin/activity
+router.get("/activity", adminProtect, async (req, res) => {
+    try {
+        const logs = await ActivityLog.find()
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .populate("relatedAlumni", "name email");
+
+        res.json({ logs });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }

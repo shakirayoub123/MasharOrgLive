@@ -7,29 +7,119 @@ import {
     LogOut,
     Menu,
     Settings,
-    HelpCircle
+    HelpCircle,
+    MessageSquare,
+    UserPlus,
+    UserCheck,
+    X as CloseIcon,
+    Activity
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
+const socket = io("http://localhost:5000", {
+    withCredentials: true,
+    autoConnect: false
+});
+
+function Popup({ children, onClose }) {
+    return (
+        <>
+            <div className="fixed inset-0 z-40" onClick={onClose} />
+            <div
+                className="absolute right-0 top-full mt-3 z-50 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden"
+                style={{ width: 340, animation: "popIn 0.2s cubic-bezier(.34,1.56,.64,1)" }}
+            >
+                {children}
+            </div>
+            <style>{`
+          @keyframes popIn {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+          }
+        `}</style>
+        </>
+    );
+}
 
 export default function AdminNavbar({ toggleSidebar, openMobile, admin }) {
-    const { adminLogout } = useAuth();
+    const { adminLogout, adminToken } = useAuth();
     const [showProfile, setShowProfile] = useState(false);
+    const [showNotifs, setShowNotifs] = useState(false);
+    const [unreadChat, setUnreadChat] = useState(0);
+    const [activities, setActivities] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (adminToken) {
+            socket.connect();
+            // Join global admin room for notifications
+            socket.emit("join_room", "admin_global");
+
+            fetchInitialState();
+
+            socket.on("receive_message", (message) => {
+                if (message.senderModel === "Alumni") {
+                    setUnreadChat(prev => prev + 1);
+                    if (window.location.pathname !== "/admin/messages") {
+                        toast.success(`Support message from alumni`, {
+                            icon: "💬",
+                            duration: 4000
+                        });
+                    }
+                }
+            });
+
+            return () => {
+                socket.off("receive_message");
+                socket.disconnect();
+            };
+        }
+    }, [adminToken]);
+
+    const fetchInitialState = async () => {
+        try {
+            const [convRes, actRes] = await Promise.all([
+                axios.get("/api/v1/chat/conversations", { headers: { Authorization: `Bearer ${adminToken}` } }),
+                axios.get("/api/v1/admin/activity", { headers: { Authorization: `Bearer ${adminToken}` } })
+            ]);
+
+            const totalUnread = (convRes.data.conversations || []).reduce((sum, c) => sum + (c.unreadCount?.admin || 0), 0);
+            setUnreadChat(totalUnread);
+            setActivities(actRes.data.logs?.slice(0, 8) || []);
+        } catch (err) {
+            console.error("Failed to fetch admin navbar data", err);
+        }
+    };
+
+    const formatTimeAgo = (date) => {
+        const s = Math.floor((new Date() - new Date(date)) / 1000);
+        if (s < 60) return "Just now";
+        if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+        if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+        return new Date(date).toLocaleDateString();
+    };
+
+    const getIcon = (type) => {
+        switch (type) {
+            case 'registration': return <UserPlus className="text-indigo-600" size={16} />;
+            case 'approval': return <UserCheck className="text-emerald-600" size={16} />;
+            case 'rejection': return <CloseIcon className="text-rose-600" size={16} />;
+            default: return <Activity className="text-slate-600" size={16} />;
+        }
+    };
 
     return (
         <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-30 shadow-sm">
             {/* Left side: Search and Toggle */}
             <div className="flex items-center gap-4 flex-1">
-                <button
-                    onClick={openMobile}
-                    className="p-2 hover:bg-slate-100 rounded-lg lg:hidden"
-                >
+                <button onClick={openMobile} className="p-2 hover:bg-slate-100 rounded-lg lg:hidden">
                     <Menu size={20} className="text-slate-600" />
                 </button>
-
-                <button
-                    onClick={toggleSidebar}
-                    className="p-2 hover:bg-slate-100 rounded-lg hidden lg:block"
-                >
+                <button onClick={toggleSidebar} className="p-2 hover:bg-slate-100 rounded-lg hidden lg:block">
                     <Menu size={20} className="text-slate-600" />
                 </button>
 
@@ -38,61 +128,107 @@ export default function AdminNavbar({ toggleSidebar, openMobile, admin }) {
                     <input
                         type="text"
                         placeholder="Search registrations, alumni..."
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium"
                     />
                 </div>
             </div>
 
             {/* Right side: Notifications and Profile */}
-            <div className="flex items-center gap-2">
-                {/* Notifications */}
-                <button className="p-2.5 hover:bg-slate-100 rounded-xl relative text-slate-500 transition-colors">
-                    <Bell size={20} />
-                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+            <div className="flex items-center gap-3">
+                {/* Support Chat Notification */}
+                <button
+                    onClick={() => navigate("/admin/messages")}
+                    className={`p-2.5 rounded-xl relative transition-all duration-300 ${unreadChat > 0 ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                >
+                    <MessageSquare size={20} />
+                    {unreadChat > 0 && (
+                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-indigo-600 text-white text-[10px] font-black rounded-full border-2 border-white flex items-center justify-center animate-bounce">
+                            {unreadChat}
+                        </span>
+                    )}
                 </button>
 
-                {/* Divider */}
-                <div className="w-px h-6 bg-slate-200 mx-2 hidden sm:block"></div>
+                {/* Administrative System Alerts (Bell) */}
+                <div className="relative">
+                    <button
+                        onClick={() => setShowNotifs(!showNotifs)}
+                        className={`p-2.5 rounded-xl relative transition-all duration-300 ${showNotifs ? 'bg-slate-100 text-slate-900' : 'bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600'}`}
+                    >
+                        <Bell size={20} />
+                        {activities.length > 0 && (
+                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                        )}
+                    </button>
+
+                    {showNotifs && (
+                        <Popup onClose={() => setShowNotifs(false)}>
+                            <div className="px-5 py-4 border-b flex items-center justify-between bg-slate-50/50">
+                                <span className="font-black text-slate-800 text-[10px] uppercase tracking-[0.1em]">Administrative Alerts</span>
+                            </div>
+                            <div className="max-h-[380px] overflow-y-auto divide-y divide-slate-50">
+                                {activities.length > 0 ? activities.map((act) => (
+                                    <div key={act._id} className="flex gap-4 px-5 py-4 hover:bg-slate-50 transition-colors cursor-default">
+                                        <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center shrink-0">
+                                            {getIcon(act.type)}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[13px] font-bold text-slate-800 leading-tight truncate">{act.title}</p>
+                                            <p className="text-[11px] text-slate-500 mt-1 line-clamp-2">{act.description}</p>
+                                            <p className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{formatTimeAgo(act.createdAt)}</p>
+                                        </div>
+                                    </div>
+                                )) : (
+                                    <div className="py-12 text-center">
+                                        <Activity size={32} className="mx-auto text-slate-200 mb-3" />
+                                        <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">No Alerts</p>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="p-3 border-t bg-slate-50/50 text-center">
+                                <button
+                                    onClick={() => { setShowNotifs(false); navigate("/admin/dashboard"); }}
+                                    className="text-[10px] text-indigo-600 font-black uppercase tracking-widest hover:underline"
+                                >Dashboard Overview</button>
+                            </div>
+                        </Popup>
+                    )}
+                </div>
+
+                <div className="w-px h-6 bg-slate-200 mx-1 hidden sm:block"></div>
 
                 {/* Profile Dropdown */}
                 <div className="relative">
                     <button
                         onClick={() => setShowProfile(!showProfile)}
-                        className="flex items-center gap-3 p-1.5 hover:bg-slate-50 rounded-xl transition-colors"
+                        className="flex items-center gap-3 p-1.5 hover:bg-slate-50 rounded-[14px] transition-all"
                     >
-                        <div className="w-9 h-9 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold overflow-hidden">
-                            <User size={20} />
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-100">
+                            {admin?.email?.charAt(0).toUpperCase() || "A"}
                         </div>
                         <div className="hidden sm:block text-left">
-                            <p className="text-[13px] font-bold text-slate-800 leading-tight">Admin User</p>
-                            <p className="text-[11px] text-slate-500 font-medium">{admin?.email || "Administrator"}</p>
+                            <p className="text-[13px] font-black text-slate-800 leading-tight">Staff Account</p>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">{admin?.email || "Administrator"}</p>
                         </div>
-                        <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${showProfile ? "rotate-180" : ""}`} />
+                        <ChevronDown size={16} className={`text-slate-300 transition-transform duration-300 ${showProfile ? "rotate-180" : ""}`} />
                     </button>
 
                     {showProfile && (
                         <>
-                            <div
-                                className="fixed inset-0 z-10"
-                                onClick={() => setShowProfile(false)}
-                            />
-                            <div className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50 z-20 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                                <div className="px-4 py-2 border-b border-slate-50 mb-1">
-                                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Account Settings</p>
+                            <div className="fixed inset-0 z-10" onClick={() => setShowProfile(false)} />
+                            <div className="absolute right-0 mt-3 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl z-20 py-2 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
+                                <div className="px-5 py-3 border-b border-slate-50 bg-slate-50/50 mb-1">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">Administrative Control</p>
                                 </div>
-
-                                <DropdownItem icon={<User size={16} />} label="My Profile" />
-                                <DropdownItem icon={<Settings size={16} />} label="System Settings" />
-                                <DropdownItem icon={<HelpCircle size={16} />} label="Help Center" />
-
+                                <DropdownItem icon={<User size={16} />} label="My Profile" onClick={() => { setShowProfile(false); navigate("/admin/profile"); }} />
+                                <DropdownItem icon={<Settings size={16} />} label="Security Settings" />
+                                <DropdownItem icon={<HelpCircle size={16} />} label="System Logs" />
                                 <div className="h-px bg-slate-100 my-2 mx-2"></div>
-
                                 <button
                                     onClick={adminLogout}
-                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                                    className="w-full flex items-center gap-3 px-5 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors group"
                                 >
-                                    <LogOut size={16} />
-                                    <span className="font-semibold">Sign Out</span>
+                                    <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
+                                    <span className="font-bold">End Session</span>
                                 </button>
                             </div>
                         </>
@@ -107,10 +243,10 @@ function DropdownItem({ icon, label, onClick }) {
     return (
         <button
             onClick={onClick}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
+            className="w-full flex items-center gap-3 px-5 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
         >
-            <span className="text-slate-400">{icon}</span>
-            <span className="font-medium">{label}</span>
+            <span className="text-slate-300">{icon}</span>
+            <span className="font-bold">{label}</span>
         </button>
     );
 }

@@ -364,8 +364,8 @@ export default function ResourcesPage() {
                     {TABS.map(tab => (
                         <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                             className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 whitespace-nowrap transition-all ${activeTab === tab.id
-                                    ? "border-indigo-600 text-indigo-700 bg-indigo-50/50"
-                                    : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-200"
+                                ? "border-indigo-600 text-indigo-700 bg-indigo-50/50"
+                                : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-200"
                                 }`}>
                             <span className="text-base">{tab.icon}</span>
                             <span>{tab.label}</span>
@@ -378,7 +378,7 @@ export default function ResourcesPage() {
             </div>
 
             {/* Content */}
-            <div className="px-6 md:px-10 py-8 max-w-7xl mx-auto">
+            <div className="px-6 md:px-10 py-8 mx-auto">
                 {activeTab === "reading-room" && <ReadingRoom />}
                 {activeTab === "library" && <KnowledgeLibrary />}
                 {activeTab === "media" && <MastermindMedia />}

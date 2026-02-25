@@ -1,6 +1,7 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import AlumniSidebar from "./AlumniSidebar";
 import AlumniNavbar from "./AlumniNavbar";
+import ChatWidget from "../chat/ChatWidget";
 import { useState, useEffect } from "react";
 import API from "../../utils/api";
 
@@ -63,8 +64,10 @@ export default function AlumniLayout() {
           openMobile={() => setMobileOpen(true)}
         />
 
-        <main className="flex-1 overflow-y-auto p-7">
+        <main className="flex-1 overflow-y-auto p-7 relative">
           <Outlet context={{ user }} />
+          {/* Chat Widget for Alumni */}
+          <ChatWidget />
         </main>
 
       </div>

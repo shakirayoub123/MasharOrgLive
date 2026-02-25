@@ -71,9 +71,26 @@ export default function AluminiList() {
         );
     };
 
+    const handleDelete = async (id, name) => {
+        if (!window.confirm(`Are you sure you want to delete ${name}? This action cannot be undone.`)) return;
+
+        try {
+            await axios.delete(`/api/v1/admin/alumni/${id}`, {
+                headers: { Authorization: `Bearer ${adminToken}` }
+            });
+            toast.success("Alumni deleted successfully");
+            setAlumni(prev => prev.filter(a => a._id !== id));
+        } catch (error) {
+            toast.error("Failed to delete alumni");
+            console.error(error);
+        }
+    };
+
+    const [openMenu, setOpenMenu] = useState(null);
+
     return (
-        <div className="space-y-8 pb-10">
-            {/* Header Section */}
+        <div className="space-y-8 pb-10" onClick={() => setOpenMenu(null)}>
+            {/* ... header ... */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-800 tracking-tight flex items-center gap-3">
@@ -88,8 +105,7 @@ export default function AluminiList() {
                     Export CSV
                 </button>
             </div>
-
-            {/* Stats Overview */}
+            {/* ... stats ... */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
                     <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mb-1">Total Members</p>
@@ -104,8 +120,7 @@ export default function AluminiList() {
                     <h3 className="text-3xl font-black text-amber-600">{alumni.filter(a => a.status === 'pending').length}</h3>
                 </div>
             </div>
-
-            {/* Filters and Search Bar */}
+            {/* ... search ... */}
             <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center gap-4">
                 <div className="relative flex-1 w-full">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
@@ -115,10 +130,11 @@ export default function AluminiList() {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full pl-12 pr-6 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-sm focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-600/5 focus:border-indigo-600 transition-all font-medium"
+                        onClick={(e) => e.stopPropagation()}
                     />
                 </div>
 
-                <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100 w-full md:w-auto overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100 w-full md:w-auto overflow-x-auto no-scrollbar" onClick={(e) => e.stopPropagation()}>
                     {['all', 'approved', 'pending', 'rejected'].map((s) => (
                         <button
                             key={s}
@@ -134,7 +150,6 @@ export default function AluminiList() {
                 </div>
             </div>
 
-            {/* Members Table */}
             <div className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
@@ -191,10 +206,32 @@ export default function AluminiList() {
                                                 })}
                                             </p>
                                         </td>
-                                        <td className="px-8 py-6 text-right">
-                                            <button className="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-indigo-600 transition-all">
+                                        <td className="px-8 py-6 text-right relative">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setOpenMenu(openMenu === a._id ? null : a._id);
+                                                }}
+                                                className="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-indigo-600 transition-all"
+                                            >
                                                 <MoreVertical size={18} />
                                             </button>
+
+                                            {openMenu === a._id && (
+                                                <div className="absolute right-8 top-16 w-44 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in duration-200 origin-top-right">
+                                                    <button className="w-full px-4 py-2.5 text-left text-xs font-bold text-slate-600 hover:bg-slate-50 flex items-center gap-2">
+                                                        <User size={14} />
+                                                        View Details
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(a._id, a.name)}
+                                                        className="w-full px-4 py-2.5 text-left text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2"
+                                                    >
+                                                        <XCircle size={14} />
+                                                        Delete Record
+                                                    </button>
+                                                </div>
+                                            )}
                                         </td>
                                     </tr>
                                 ))
