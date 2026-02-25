@@ -32,6 +32,8 @@ import AdminInbox from "../pages/admin/AdminInbox.jsx";
 import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
 import AdminLayout from "../components/layout/AdminLayout.jsx";
 import AlumniLogin from "../pages/AluminiLogin.jsx";
+import AdminProfile from "../pages/admin/AdminProfile.jsx";
+import AdminSpotlight from "../pages/admin/AdminSpotlight.jsx";
 
 const browserRoutes = createBrowserRouter([
   // 🌐 Public website (with App layout)
@@ -102,6 +104,14 @@ const browserRoutes = createBrowserRouter([
       {
         path: "messages",
         element: <AdminInbox />,
+      },
+      {
+        path: "profile",
+        element: <AdminProfile />,
+      },
+      {
+        path: "spotlight",
+        element: <AdminSpotlight />,
       },
     ],
   },

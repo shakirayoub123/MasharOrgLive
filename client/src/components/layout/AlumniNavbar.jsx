@@ -211,7 +211,7 @@ export default function AlumniNavbar({ toggleSidebar, openMobile, user }) {
 
         {/* Support Chat Button */}
         <div className="relative">
-          <button
+          {/* <button
             onClick={() => {
               navigate("/alumni/messages");
               setUnreadMsgs(0);
@@ -224,7 +224,7 @@ export default function AlumniNavbar({ toggleSidebar, openMobile, user }) {
                 {unreadMsgs}
               </span>
             )}
-          </button>
+          </button> */}
         </div>
 
         <div className="w-px h-6 bg-slate-200 mx-1" />

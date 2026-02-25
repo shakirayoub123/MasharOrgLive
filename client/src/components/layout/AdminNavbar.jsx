@@ -219,7 +219,7 @@ export default function AdminNavbar({ toggleSidebar, openMobile, admin }) {
                                 <div className="px-5 py-3 border-b border-slate-50 bg-slate-50/50 mb-1">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">Administrative Control</p>
                                 </div>
-                                <DropdownItem icon={<User size={16} />} label="My Profile" />
+                                <DropdownItem icon={<User size={16} />} label="My Profile" onClick={() => { setShowProfile(false); navigate("/admin/profile"); }} />
                                 <DropdownItem icon={<Settings size={16} />} label="Security Settings" />
                                 <DropdownItem icon={<HelpCircle size={16} />} label="System Logs" />
                                 <div className="h-px bg-slate-100 my-2 mx-2"></div>

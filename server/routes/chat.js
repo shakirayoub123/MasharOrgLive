@@ -1,7 +1,7 @@
 const adminProtect = require("../middleware/adminAuth");
 const { logActivity } = require("../utils/logger");
 const Alumni = require("../models/Alumni");
-
+const express = require("express");
 const router = express.Router();
 
 // GET /api/v1/chat/history/:alumniId

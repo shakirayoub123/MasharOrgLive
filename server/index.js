@@ -10,6 +10,8 @@ const { Server } = require("socket.io");
 const authRoutes = require("./routes/auth");
 const alumniRoutes = require("./routes/alumni");
 const adminRoutes = require("./routes/admin");
+const spotlightRoutes = require("./routes/spotlights");
+const adminSpotlightRoutes = require("./routes/adminSpotlights");
 
 const app = express();
 const server = http.createServer(app);
@@ -24,6 +26,12 @@ app.use(express.json());
 // ── Routes ─────────────────────────────
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/alumni", alumniRoutes);
+
+// ✅ Specific /admin/* routes BEFORE the generic /admin
+app.use("/api/v1/spotlights", spotlightRoutes);
+app.use("/api/v1/admin/spotlights", adminSpotlightRoutes);
+
+// ✅ Generic admin route comes AFTER
 app.use("/api/v1/admin", adminRoutes);
 
 // ── Health check ───────────────────────

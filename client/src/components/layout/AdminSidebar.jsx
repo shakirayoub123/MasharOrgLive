@@ -85,9 +85,9 @@ export default function AdminSidebar({ collapsed, mobileOpen, closeMobile }) {
                     />
 
                     <Item
-                        to="/admin/content"
+                        to="/admin/spotlight"
                         icon={<FileText size={20} />}
-                        label="Content"
+                        label="Spotlight"
                         collapsed={collapsed}
                     />
 
