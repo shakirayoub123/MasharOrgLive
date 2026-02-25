@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const Alumni = require("../models/Alumni");
 
+const { logActivity } = require("../utils/logger");
+
 const router = express.Router();
 
 // Generate JWT
@@ -29,7 +31,16 @@ router.post("/register", async (req, res) => {
         }
 
         // Create new alumni with status pending (no password)
-        await Alumni.create({ name, email, phone, batch, status: "pending" });
+        const alumni = await Alumni.create({ name, email, phone, batch, status: "pending" });
+
+        // LOG ACTIVITY
+        await logActivity({
+            type: "registration",
+            title: "New Registration",
+            description: `${name} submitted a registration for Batch ${batch || 'Not Specified'}`,
+            relatedAlumni: alumni._id,
+            metadata: { name, email, batch }
+        });
 
         res.status(201).json({
             message: "Registration submitted successfully! You will receive an email once your account is approved.",

@@ -78,6 +78,13 @@ export default function AdminSidebar({ collapsed, mobileOpen, closeMobile }) {
                     />
 
                     <Item
+                        to="/admin/messages"
+                        icon={<MessageSquare size={20} />}
+                        label="Messages"
+                        collapsed={collapsed}
+                    />
+
+                    <Item
                         to="/admin/content"
                         icon={<FileText size={20} />}
                         label="Content"

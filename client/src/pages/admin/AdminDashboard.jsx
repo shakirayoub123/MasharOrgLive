@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 import {
     Users,
     UserCheck,
@@ -8,10 +10,51 @@ import {
     ArrowUpRight,
     ArrowDownRight,
     Calendar,
-    Activity
+    Activity,
+    X,
+    MessageSquare
 } from "lucide-react";
 
 export default function AdminDashboard() {
+    const [stats, setStats] = useState({
+        totalAlumni: 0,
+        approvedAlumni: 0,
+        pendingAlumni: 0,
+        rejectedAlumni: 0
+    });
+    const [activities, setActivities] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const { adminToken } = useAuth();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [statsRes, activityRes] = await Promise.all([
+                    axios.get("/api/v1/admin/stats", { headers: { Authorization: `Bearer ${adminToken}` } }),
+                    axios.get("/api/v1/admin/activity", { headers: { Authorization: `Bearer ${adminToken}` } })
+                ]);
+                setStats(statsRes.data.stats);
+                setActivities(activityRes.data.logs || []);
+            } catch (err) {
+                console.error("Failed to fetch dashboard data", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (adminToken) fetchData();
+    }, [adminToken]);
+
+    const formatTimeAgo = (date) => {
+        const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+        if (seconds < 60) return "Just now";
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        return new Date(date).toLocaleDateString();
+    };
+
     return (
         <div className="space-y-8 pb-12">
             {/* ── Header Section ── */}
@@ -35,7 +78,7 @@ export default function AdminDashboard() {
                 <StatCard
                     icon={<Users className="text-indigo-600" />}
                     label="Total Alumni"
-                    value="1,284"
+                    value={loading ? "..." : stats.totalAlumni.toLocaleString()}
                     trend="+12%"
                     trendType="up"
                     color="indigo"
@@ -43,24 +86,22 @@ export default function AdminDashboard() {
                 <StatCard
                     icon={<UserCheck className="text-emerald-600" />}
                     label="Approved Members"
-                    value="952"
+                    value={loading ? "..." : stats.approvedAlumni.toLocaleString()}
                     trend="+5.2%"
                     trendType="up"
                     color="emerald"
                 />
                 <StatCard
                     icon={<UserPlus className="text-amber-600" />}
-                    label="Pending Sync"
-                    value="48"
-                    trend="-2.4%"
+                    label="Pending Review"
+                    value={loading ? "..." : stats.pendingAlumni.toLocaleString()}
                     trendType="down"
                     color="amber"
                 />
                 <StatCard
                     icon={<Activity className="text-rose-600" />}
-                    label="Active This Week"
-                    value="312"
-                    trend="+18%"
+                    label="Rejected"
+                    value={loading ? "..." : stats.rejectedAlumni.toLocaleString()}
                     trendType="up"
                     color="rose"
                 />
@@ -75,34 +116,47 @@ export default function AdminDashboard() {
                         <button className="text-indigo-600 text-xs font-bold hover:underline">View All History</button>
                     </div>
                     <div className="p-8 flex-1 space-y-6">
-                        <ActivityItem
-                            icon={<UserPlus size={18} />}
-                            title="New Registration"
-                            desc="Shakir Ayoub submitted a registration for Batch 2024"
-                            time="2 mins ago"
-                            color="indigo"
-                        />
-                        <ActivityItem
-                            icon={<CheckCircle size={18} />}
-                            title="Member Approved"
-                            desc="Administrative account approved Ali Khan's profile"
-                            time="45 mins ago"
-                            color="emerald"
-                        />
-                        <ActivityItem
-                            icon={<Clock size={18} />}
-                            title="OTP Request"
-                            desc="System generated verification code for admin@mashar.com"
-                            time="1 hour ago"
-                            color="slate"
-                        />
-                        <ActivityItem
-                            icon={<Calendar size={18} />}
-                            title="Event Updated"
-                            desc="Annual Alumni Meetup 2026 details were modified"
-                            time="3 hours ago"
-                            color="amber"
-                        />
+                        {loading ? (
+                            <div className="space-y-6 animate-pulse">
+                                {[1, 2, 3, 4].map(i => (
+                                    <div key={i} className="flex gap-4">
+                                        <div className="w-10 h-10 bg-slate-100 rounded-xl"></div>
+                                        <div className="flex-1 space-y-2 py-1">
+                                            <div className="h-3 bg-slate-100 rounded w-1/4"></div>
+                                            <div className="h-3 bg-slate-100 rounded w-3/4"></div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : activities.length > 0 ? (
+                            activities.map((act) => (
+                                <ActivityItem
+                                    key={act._id}
+                                    icon={
+                                        act.type === 'registration' ? <UserPlus size={18} /> :
+                                            act.type === 'approval' ? <UserCheck size={18} /> :
+                                                act.type === 'rejection' ? <X size={18} /> :
+                                                    act.type === 'support_message' ? <MessageSquare size={18} /> :
+                                                        <Activity size={18} />
+                                    }
+                                    title={act.title}
+                                    desc={act.description}
+                                    time={formatTimeAgo(act.createdAt)}
+                                    color={
+                                        act.type === 'registration' ? 'indigo' :
+                                            act.type === 'approval' ? 'emerald' :
+                                                act.type === 'rejection' ? 'rose' :
+                                                    act.type === 'support_message' ? 'amber' :
+                                                        'slate'
+                                    }
+                                />
+                            ))
+                        ) : (
+                            <div className="h-full flex flex-col items-center justify-center text-slate-400 py-12">
+                                <Activity size={48} className="opacity-10 mb-4" />
+                                <p className="text-sm font-bold">No activity logged yet</p>
+                            </div>
+                        )}
                     </div>
                 </div>
 

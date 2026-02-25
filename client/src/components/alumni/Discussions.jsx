@@ -7,24 +7,24 @@ import API from "../../utils/api";
 ═══════════════════════════════════════════ */
 const M = {
   // backgrounds
-  pageBg:     "#ece9e0",   // main content parchment
-  cardBg:     "#ffffff",   // post cards
-  sidebarBg:  "#1c1a0f",   // dark olive sidebar
+  pageBg: "#ece9e0",   // main content parchment
+  cardBg: "#ffffff",   // post cards
+  sidebarBg: "#1c1a0f",   // dark olive sidebar
 
   // text
-  textDark:   "#1c1a0f",   // headings
-  textMid:    "#5c5240",   // body text
-  textLight:  "#9a8c78",   // timestamps, hints
-  textMuted:  "#c4b89c",   // placeholder
+  textDark: "#1c1a0f",   // headings
+  textMid: "#5c5240",   // body text
+  textLight: "#9a8c78",   // timestamps, hints
+  textMuted: "#c4b89c",   // placeholder
 
   // brand accent
-  gold:       "#d4a843",   // Mashar gold (button text, active)
-  goldLight:  "#f0c84a",   // brighter gold for dark bg
-  goldBg:     "#fdf6e3",   // very light gold tint
+  gold: "#d4a843",   // Mashar gold (button text, active)
+  goldLight: "#f0c84a",   // brighter gold for dark bg
+  goldBg: "#fdf6e3",   // very light gold tint
 
   // borders
-  border:     "#e2d9c8",
-  borderHover:"#c8b898",
+  border: "#e2d9c8",
+  borderHover: "#c8b898",
 
   // interaction
   likeActive: "#d4a843",
@@ -32,35 +32,35 @@ const M = {
 
   // category dots
   cats: {
-    "Announcements":       { bg: "#fff8e6", text: "#92670a", border: "#f0d07a", dot: "#d4a843" },
-    "Alumni Discussion":   { bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe", dot: "#3b82f6" },
-    "Events":              { bg: "#ecfdf5", text: "#065f46", border: "#a7f3d0", dot: "#10b981" },
-    "Learning":            { bg: "#eff9ff", text: "#0369a1", border: "#bae6fd", dot: "#0ea5e9" },
-    "General":             { bg: "#f5f4f0", text: "#57534e", border: "#d6d3d1", dot: "#a8a29e" },
+    "Announcements": { bg: "#fff8e6", text: "#92670a", border: "#f0d07a", dot: "#d4a843" },
+    "Alumni Discussion": { bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe", dot: "#3b82f6" },
+    "Events": { bg: "#ecfdf5", text: "#065f46", border: "#a7f3d0", dot: "#10b981" },
+    "Learning": { bg: "#eff9ff", text: "#0369a1", border: "#bae6fd", dot: "#0ea5e9" },
+    "General": { bg: "#f5f4f0", text: "#57534e", border: "#d6d3d1", dot: "#a8a29e" },
   },
 
   // avatar gradients — one per first-letter band
   avGrad: [
-    ["#d4a843","#a07828"],
-    ["#e07b5a","#b54c2a"],
-    ["#6a8fd8","#3d5fa8"],
-    ["#5ab88a","#2d8057"],
-    ["#b07ed4","#7040a8"],
-    ["#d4956a","#a85e30"],
-    ["#e0856a","#b05030"],
-    ["#8ab8d4","#4a80a8"],
+    ["#d4a843", "#a07828"],
+    ["#e07b5a", "#b54c2a"],
+    ["#6a8fd8", "#3d5fa8"],
+    ["#5ab88a", "#2d8057"],
+    ["#b07ed4", "#7040a8"],
+    ["#d4956a", "#a85e30"],
+    ["#e0856a", "#b05030"],
+    ["#8ab8d4", "#4a80a8"],
   ],
 };
 
 const CATEGORIES = ["Alumni Discussion", "Announcements", "Events", "Learning", "General"];
 
 /* ── helpers ── */
-const avGrad  = (n = "?") => M.avGrad[(n.charCodeAt(0) || 65) % M.avGrad.length];
-const inits   = (n = "?") => n.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+const avGrad = (n = "?") => M.avGrad[(n.charCodeAt(0) || 65) % M.avGrad.length];
+const inits = (n = "?") => n.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
 const timeAgo = (d) => {
   const s = Math.floor((Date.now() - new Date(d)) / 1000);
-  if (s < 60)    return "Just now";
-  if (s < 3600)  return `${Math.floor(s / 60)}m ago`;
+  if (s < 60) return "Just now";
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
   if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
   return `${Math.floor(s / 86400)}d ago`;
 };
@@ -158,10 +158,10 @@ function CommentItem({ comment, canDelete, onDelete }) {
    COMMENT SECTION
 ════════════════════════════════════════════════ */
 function CommentSection({ postId, user, initialComments = [] }) {
-  const [comments, setComments]  = useState(initialComments);
-  const [text, setText]           = useState("");
-  const [sending, setSending]     = useState(false);
-  const [expanded, setExpanded]   = useState(false);
+  const [comments, setComments] = useState(initialComments);
+  const [text, setText] = useState("");
+  const [sending, setSending] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const submit = async () => {
     if (!text.trim() || sending) return;
@@ -205,7 +205,7 @@ function CommentSection({ postId, user, initialComments = [] }) {
             <CommentItem
               key={c._id || i}
               comment={c}
-              canDelete={user?._id === c.author?.id}
+              canDelete={user?.id === c.author?.id}
               onDelete={() => deleteComment(c._id)}
             />
           ))}
@@ -222,7 +222,7 @@ function CommentSection({ postId, user, initialComments = [] }) {
           transition: "border-color .15s",
         }}
           onFocusCapture={e => e.currentTarget.style.borderColor = M.gold}
-          onBlurCapture={e  => e.currentTarget.style.borderColor = M.border}
+          onBlurCapture={e => e.currentTarget.style.borderColor = M.border}
         >
           <input
             value={text}
@@ -258,10 +258,10 @@ function CommentSection({ postId, user, initialComments = [] }) {
 ════════════════════════════════════════════════ */
 function PostCard({ post, user, onLike, onDelete }) {
   const [showComments, setShowComments] = useState(false);
-  const [liked, setLiked]               = useState(false);
-  const [likes, setLikes]               = useState(post.likes || 0);
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState(post.likes || 0);
   const [a, b] = avGrad(post.author?.name);
-  const isOwner = user?._id === post.author?.id;
+  const isOwner = user?.id === post.author?.id;
 
   const handleLike = () => {
     if (liked) return;
@@ -361,9 +361,9 @@ function PostCard({ post, user, onLike, onDelete }) {
    CREATE POST MODAL
 ════════════════════════════════════════════════ */
 function CreatePostModal({ onClose, onPublish, user }) {
-  const [title,      setTitle]      = useState("");
-  const [body,       setBody]       = useState("");
-  const [category,   setCategory]   = useState("Alumni Discussion");
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [category, setCategory] = useState("Alumni Discussion");
   const [publishing, setPublishing] = useState(false);
 
   const canPost = title.trim() || body.trim();
@@ -446,7 +446,7 @@ function CreatePostModal({ onClose, onPublish, user }) {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {CATEGORIES.map(c => {
                 const active = category === c;
-                const meta   = M.cats[c] || M.cats["General"];
+                const meta = M.cats[c] || M.cats["General"];
                 return (
                   <button key={c} onClick={() => setCategory(c)} style={{
                     border: `1.5px solid ${active ? M.textDark : M.border}`,
@@ -489,9 +489,9 @@ function CreatePostModal({ onClose, onPublish, user }) {
             }}>
               {publishing
                 ? <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ width: 13, height: 13, border: "2px solid rgba(255,255,255,.3)", borderTopColor: M.goldLight, borderRadius: "50%", display: "inline-block", animation: "masharSpin .7s linear infinite" }} />
-                    Publishing…
-                  </span>
+                  <span style={{ width: 13, height: 13, border: "2px solid rgba(255,255,255,.3)", borderTopColor: M.goldLight, borderRadius: "50%", display: "inline-block", animation: "masharSpin .7s linear infinite" }} />
+                  Publishing…
+                </span>
                 : "✓ Publish Post"
               }
             </button>
@@ -506,11 +506,11 @@ function CreatePostModal({ onClose, onPublish, user }) {
    MAIN PAGE
 ════════════════════════════════════════════════ */
 export default function Discussion() {
-  const [posts,        setPosts]       = useState([]);
-  const [user,         setUser]        = useState(null);
-  const [showModal,    setShowModal]   = useState(false);
-  const [activeFilter, setFilter]      = useState("All");
-  const [loading,      setLoading]     = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [user, setUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [activeFilter, setFilter] = useState("All");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => { API.get("/alumni/me").then(r => setUser(r.data.alumni)); }, []);
   useEffect(() => {
@@ -532,7 +532,7 @@ export default function Discussion() {
     setPosts(p => p.filter(x => x._id !== id));
   };
 
-  const FILTERS  = ["All", ...CATEGORIES];
+  const FILTERS = ["All", ...CATEGORIES];
   const filtered = activeFilter === "All" ? posts : posts.filter(p => p.category === activeFilter);
 
   /* ── loading ── */
@@ -629,7 +629,7 @@ export default function Discussion() {
         <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }}>
           {FILTERS.map(f => {
             const active = activeFilter === f;
-            const meta   = M.cats[f];
+            const meta = M.cats[f];
             return (
               <button key={f} onClick={() => setFilter(f)} style={{
                 border: `1.5px solid ${active ? M.textDark : M.border}`,
@@ -645,12 +645,12 @@ export default function Discussion() {
               >
                 {meta && <span style={{ marginRight: 4 }}>{/* icons are in meta.cats but General has no dedicated icon; handled via badge */}</span>}
                 {{
-                  "All":               "🏘 All",
+                  "All": "🏘 All",
                   "Alumni Discussion": "🎓 Alumni",
-                  "Announcements":     "📢 Announcements",
-                  "Events":            "📅 Events",
-                  "Learning":          "📚 Learning",
-                  "General":           "💬 General",
+                  "Announcements": "📢 Announcements",
+                  "Events": "📅 Events",
+                  "Learning": "📚 Learning",
+                  "General": "💬 General",
                 }[f] || f}
               </button>
             );

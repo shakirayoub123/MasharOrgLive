@@ -28,6 +28,7 @@ import ResourcesSection from "../pages/alumni/Resourcessection.jsx";
 import SetPassword from "../pages/SetPassword.jsx";
 import AdminAlumniApproval from "../pages/admin/AdminAlumniApproval.jsx";
 import AluminiList from "../pages/admin/AluminiList.jsx";
+import AdminInbox from "../pages/admin/AdminInbox.jsx";
 import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
 import AdminLayout from "../components/layout/AdminLayout.jsx";
 import AlumniLogin from "../pages/AluminiLogin.jsx";
@@ -97,6 +98,10 @@ const browserRoutes = createBrowserRouter([
       {
         path: "alumni-list",
         element: <AluminiList />,
+      },
+      {
+        path: "messages",
+        element: <AdminInbox />,
       },
     ],
   },
