@@ -2,6 +2,8 @@ const express = require("express");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const Alumni = require("../models/Alumni");
+const Admin = require("../models/Admin");
+const adminProtect = require("../middleware/adminAuth");
 
 const router = express.Router();
 
@@ -21,9 +23,81 @@ const createTransporter = () => {
             }
         });
     }
-    console.log("⚠️ SMTP not configured. Falling back to console logging for links.");
+    console.log("⚠️ SMTP not configured. Falling back to console logging for codes/links.");
     return null;
 };
+
+// ── Admin Auth Routes ─────────────────────
+
+// POST /api/v1/admin/request-otp
+router.post("/request-otp", async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ message: "Email is required" });
+
+        let admin = await Admin.findOne({ email });
+        if (!admin) {
+            // For first-time setup or if explicitly allowed, create admin
+            // In a production app, you might want to seed this instead
+            admin = new Admin({ email });
+        }
+
+        // Generate 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        admin.otp = otp;
+        admin.otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+        await admin.save();
+
+        const transporter = createTransporter();
+        if (transporter) {
+            await transporter.sendMail({
+                from: `"Mashar Admin" <${process.env.SMTP_USER}>`,
+                to: email,
+                subject: "Your Admin Login OTP",
+                html: `<h1>Admin Login</h1><p>Your OTP for Mashar Admin Dashboard is: <strong>${otp}</strong></p><p>This code expires in 10 minutes.</p>`
+            });
+            res.json({ message: "OTP sent to your email" });
+        } else {
+            console.log(`\n${"═".repeat(60)}`);
+            console.log(`🔑 ADMIN LOGIN OTP: ${otp}`);
+            console.log(`   Admin: ${email}`);
+            console.log(`${"═".repeat(60)}\n`);
+            res.json({ message: "SMTP not configured. OTP printed to console.", otp }); // Sending OTP in response ONLY for dev convenience if requested, usually strictly console.
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Error requesting OTP", error: error.message });
+    }
+});
+
+// POST /api/v1/admin/verify-otp
+router.post("/verify-otp", async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+        const admin = await Admin.findOne({ email, otp, otpExpires: { $gt: Date.now() } });
+
+        if (!admin) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
+
+        // Clear OTP after successful verification
+        admin.otp = undefined;
+        admin.otpExpires = undefined;
+        await admin.save();
+
+        const token = admin.generateAuthToken();
+        res.json({ token, admin: { id: admin._id, email: admin.email } });
+    } catch (error) {
+        res.status(500).json({ message: "Error verifying OTP", error: error.message });
+    }
+});
+
+// GET /api/v1/admin/me
+router.get("/me", adminProtect, async (req, res) => {
+    res.json({ admin: { id: req.admin._id, email: req.admin.email } });
+});
+
+
+// ── Alumni Management (Protected) ─────────
 
 // ── Generate token and save to alumni ────
 const generateAndSaveToken = async (alumni) => {
@@ -73,7 +147,6 @@ const sendSetPasswordEmail = async (email, name, token) => {
             return { sent: true };
         } catch (error) {
             console.error(`❌ FAILED to send email to ${email}:`, error.message);
-            console.log(`⚠️ Falling back to console logging the link due to error.`);
             console.log(`\n${"═".repeat(60)}`);
             console.log(`📧 SET PASSWORD LINK (Email failed)`);
             console.log(`   Alumni: ${name} (${email})`);
@@ -82,7 +155,6 @@ const sendSetPasswordEmail = async (email, name, token) => {
             return { sent: false, link: resetLink, error: error.message };
         }
     } else {
-        // Fallback: log the link to console AND return it in response
         console.log(`\n${"═".repeat(60)}`);
         console.log(`📧 SET PASSWORD LINK (SMTP not configured)`);
         console.log(`   Alumni: ${name} (${email})`);
@@ -92,11 +164,8 @@ const sendSetPasswordEmail = async (email, name, token) => {
     }
 };
 
-// ────────────────────────────────────────
 // GET /api/v1/admin/alumni/pending
-// List all pending alumni registrations
-// ────────────────────────────────────────
-router.get("/alumni/pending", async (req, res) => {
+router.get("/alumni/pending", adminProtect, async (req, res) => {
     try {
         const pendingAlumni = await Alumni.find({ status: "pending" })
             .select("-password -setPasswordToken -setPasswordExpires")
@@ -108,11 +177,8 @@ router.get("/alumni/pending", async (req, res) => {
     }
 });
 
-// ────────────────────────────────────────
 // GET /api/v1/admin/alumni/all
-// List all alumni registrations with their status
-// ────────────────────────────────────────
-router.get("/alumni/all", async (req, res) => {
+router.get("/alumni/all", adminProtect, async (req, res) => {
     try {
         const allAlumni = await Alumni.find()
             .select("-password -setPasswordToken -setPasswordExpires")
@@ -124,11 +190,8 @@ router.get("/alumni/all", async (req, res) => {
     }
 });
 
-// ────────────────────────────────────────
 // PUT /api/v1/admin/alumni/:id/approve
-// Approve an alumni and send set-password email
-// ────────────────────────────────────────
-router.put("/alumni/:id/approve", async (req, res) => {
+router.put("/alumni/:id/approve", adminProtect, async (req, res) => {
     try {
         const alumni = await Alumni.findById(req.params.id);
 
@@ -136,21 +199,16 @@ router.put("/alumni/:id/approve", async (req, res) => {
             return res.status(404).json({ message: "Alumni not found" });
         }
 
-        // Generate a set-password token
         const rawToken = await generateAndSaveToken(alumni);
-
-        // Set status to approved
         alumni.status = "approved";
         await alumni.save();
 
-        // Send email with raw token
         const emailResult = await sendSetPasswordEmail(alumni.email, alumni.name, rawToken);
 
         const response = {
             message: `Alumni "${alumni.name}" approved successfully. Set-password email sent.`,
         };
 
-        // If SMTP not configured, include the link in the response so admin can share it
         if (!emailResult.sent) {
             response.setPasswordLink = emailResult.link;
             response.message = `Alumni "${alumni.name}" approved. SMTP not configured — use the link below to set password.`;
@@ -162,11 +220,8 @@ router.put("/alumni/:id/approve", async (req, res) => {
     }
 });
 
-// ────────────────────────────────────────
 // PUT /api/v1/admin/alumni/:id/resend
-// Resend set-password link for an approved alumni
-// ────────────────────────────────────────
-router.put("/alumni/:id/resend", async (req, res) => {
+router.put("/alumni/:id/resend", adminProtect, async (req, res) => {
     try {
         const alumni = await Alumni.findById(req.params.id);
 
@@ -182,10 +237,7 @@ router.put("/alumni/:id/resend", async (req, res) => {
             return res.status(400).json({ message: "Alumni has already set their password." });
         }
 
-        // Generate a fresh token
         const rawToken = await generateAndSaveToken(alumni);
-
-        // Send email
         const emailResult = await sendSetPasswordEmail(alumni.email, alumni.name, rawToken);
 
         const response = {
@@ -203,11 +255,8 @@ router.put("/alumni/:id/resend", async (req, res) => {
     }
 });
 
-// ────────────────────────────────────────
 // PUT /api/v1/admin/alumni/:id/reject
-// Reject an alumni registration
-// ────────────────────────────────────────
-router.put("/alumni/:id/reject", async (req, res) => {
+router.put("/alumni/:id/reject", adminProtect, async (req, res) => {
     try {
         const alumni = await Alumni.findById(req.params.id);
 

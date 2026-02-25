@@ -12,7 +12,7 @@ import Articles from "../components/Articles.jsx";
 import Videos from "../components/videos.jsx";
 import Books from "../components/Books.jsx";
 import Events from "../components/Events.jsx";
-import AlumniLogin from "../pages/AluminiLogin.jsx";
+import AdminLogin from "../pages/admin/AdminLogin.jsx";
 import AlumniRegister from "../pages/AlumniRegister.jsx";
 import AlumniLayout from "../components/layout/AlumniLayout.jsx";
 import AlumniDashboard from "../components/alumni/AlumniDashboard.jsx";
@@ -27,6 +27,10 @@ import Notifications from "../components/alumni/Notifications.jsx";
 import ResourcesSection from "../pages/alumni/Resourcessection.jsx";
 import SetPassword from "../pages/SetPassword.jsx";
 import AdminAlumniApproval from "../pages/admin/AdminAlumniApproval.jsx";
+import AluminiList from "../pages/admin/AluminiList.jsx";
+import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
+import AdminLayout from "../components/layout/AdminLayout.jsx";
+import AlumniLogin from "../pages/AluminiLogin.jsx";
 
 const browserRoutes = createBrowserRouter([
   // 🌐 Public website (with App layout)
@@ -50,10 +54,16 @@ const browserRoutes = createBrowserRouter([
     ],
   },
 
-  // 🔐 Login page (no layout)
+  // 🔐 Alumni Login page (no layout)
   {
     path: "/alumni-login",
     element: <AlumniLogin />,
+  },
+
+  // 🔐 Admin Login page (no layout)
+  {
+    path: "/admin-login",
+    element: <AdminLogin />,
   },
 
   // 📝 Register page (no layout)
@@ -68,10 +78,27 @@ const browserRoutes = createBrowserRouter([
     element: <SetPassword />,
   },
 
-  // 🛡️ Admin alumni approval page
+  // 🛡️ Admin Dashboard (Protected)
+  // 🛡️ Admin Panel (Protected)
   {
-    path: "/admin/alumni-approval",
-    element: <AdminAlumniApproval />,
+    path: "/admin",
+    element: (
+      <ProtectedRoute role="admin">
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <AdminDashboard /> },
+      { path: "dashboard", element: <AdminDashboard /> },
+      {
+        path: "alumni-approval",
+        element: <AdminAlumniApproval />,
+      },
+      {
+        path: "alumni-list",
+        element: <AluminiList />,
+      },
+    ],
   },
 
   // 🎓 Alumni Panel Layout (Protected)
