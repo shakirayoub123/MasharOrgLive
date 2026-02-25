@@ -12,7 +12,7 @@ import Articles from "../components/Articles.jsx";
 import Videos from "../components/videos.jsx";
 import Books from "../components/Books.jsx";
 import Events from "../components/Events.jsx";
-import AdminLogin from "../pages/AdminLogin.jsx";
+import AlumniLogin from "../pages/AluminiLogin.jsx";
 import AlumniRegister from "../pages/AlumniRegister.jsx";
 import AlumniLayout from "../components/layout/AlumniLayout.jsx";
 import AlumniDashboard from "../components/alumni/AlumniDashboard.jsx";
@@ -53,7 +53,7 @@ const browserRoutes = createBrowserRouter([
   // 🔐 Login page (no layout)
   {
     path: "/alumni-login",
-    element: <AdminLogin />,
+    element: <AlumniLogin />,
   },
 
   // 📝 Register page (no layout)
