@@ -3,6 +3,7 @@ import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import {Toaster} from "react-hot-toast";
 
 export default function AdminLayout() {
     const [collapsed, setCollapsed] = useState(false);
@@ -23,6 +24,8 @@ export default function AdminLayout() {
 
     return (
         <div className="flex h-screen bg-[#F8FAFC] overflow-hidden">
+            <Toaster />
+
             {/* Sidebar */}
             <AdminSidebar
                 collapsed={collapsed}
