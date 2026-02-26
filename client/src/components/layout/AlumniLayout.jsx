@@ -4,6 +4,7 @@ import AlumniNavbar from "./AlumniNavbar";
 import ChatWidget from "../chat/ChatWidget";
 import { useState, useEffect } from "react";
 import API from "../../utils/api";
+import { Toaster } from "react-hot-toast"; // 👈 add this
 
 export default function AlumniLayout() {
 
@@ -49,6 +50,7 @@ export default function AlumniLayout() {
 
   return (
     <div className="flex h-screen bg-[#F9F4EC]">
+      <Toaster position="top-right" />
 
       <AlumniSidebar
         collapsed={collapsed}

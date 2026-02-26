@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import toast from "react-hot-toast";
+import toast, {Toaster} from "react-hot-toast";
 
 const AdminLogin = () => {
     const [email, setEmail] = useState("");
@@ -35,7 +35,7 @@ const AdminLogin = () => {
         try {
             await adminVerifyOtp(email, otp);
             toast.success("Logged in successfully!");
-            navigate("/admin");
+            setTimeout(() => navigate("/admin"), 1000);
         } catch (error) {
             toast.error(error.response?.data?.message || "Invalid or expired OTP");
         } finally {
@@ -45,6 +45,7 @@ const AdminLogin = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden font-poppins px-4">
+            <Toaster />
             {/* Background Decorations */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
                 <div className="absolute -top-24 -left-24 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
