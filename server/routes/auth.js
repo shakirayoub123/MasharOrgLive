@@ -34,13 +34,17 @@ router.post("/register", async (req, res) => {
         const alumni = await Alumni.create({ name, email, phone, batch, status: "pending" });
 
         // LOG ACTIVITY
-        await logActivity({
-            type: "registration",
-            title: "New Registration",
-            description: `${name} submitted a registration for Batch ${batch || 'Not Specified'}`,
-            relatedAlumni: alumni._id,
-            metadata: { name, email, batch }
-        });
+        try {
+            await logActivity({
+                type: "registration",
+                title: "New Registration",
+                description: `${name} submitted a registration for Batch ${batch || 'Not Specified'}`,
+                relatedAlumni: alumni._id,
+                metadata: { name, email, batch }
+            });
+        } catch (logError) {
+            console.error("Log activity failed:", logError.message);
+        }
 
         res.status(201).json({
             message: "Registration submitted successfully! You will receive an email once your account is approved.",

@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { io } from "socket.io-client";
+import socket from "../../utils/socket";
 import axios from "axios";
 import toast from "react-hot-toast";
-
-const socket = io("http://localhost:5000", {
-  withCredentials: true,
-  autoConnect: false
-});
 
 function Popup({ children, onClose }) {
   return (
@@ -70,10 +65,8 @@ export default function AlumniNavbar({ toggleSidebar, openMobile, user }) {
 
   const fetchUnreadCount = async () => {
     try {
-      const convRes = await axios.get("/api/v1/chat/conversations");
-      const conversations = convRes.data.conversations || [];
-      const myConv = conversations.find(c => c.alumniId?._id === (user.id || user._id));
-      setUnreadMsgs(myConv?.unreadCount?.alumni || 0);
+      const res = await axios.get(`/api/v1/chat/history/${user.id || user._id}`);
+      setUnreadMsgs(res.data.unreadCount || 0);
     } catch (err) {
       console.error("Failed to fetch unread count", err);
     }
@@ -211,12 +204,13 @@ export default function AlumniNavbar({ toggleSidebar, openMobile, user }) {
 
         {/* Support Chat Button */}
         <div className="relative">
-          {/* <button
+          <button
             onClick={() => {
-              navigate("/alumni/messages");
               setUnreadMsgs(0);
+              axios.put(`/api/v1/chat/read/${user.id || user._id}`, { role: "Alumni" }).catch(() => { });
             }}
-            className={`w-10 h-10 rounded-xl flex items-center justify-center relative transition ${window.location.pathname === "/alumni/messages" ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200" : "bg-slate-100 hover:bg-slate-200 text-slate-600"}`}
+            className="w-10 h-10 rounded-xl flex items-center justify-center relative transition bg-slate-100 hover:bg-slate-200 text-slate-600"
+            title="Support Chat"
           >
             <span className="text-xl">💬</span>
             {unreadMsgs > 0 && (
@@ -224,7 +218,7 @@ export default function AlumniNavbar({ toggleSidebar, openMobile, user }) {
                 {unreadMsgs}
               </span>
             )}
-          </button> */}
+          </button>
         </div>
 
         <div className="w-px h-6 bg-slate-200 mx-1" />

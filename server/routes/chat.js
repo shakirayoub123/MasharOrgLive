@@ -1,6 +1,8 @@
 const adminProtect = require("../middleware/adminAuth");
 const { logActivity } = require("../utils/logger");
 const Alumni = require("../models/Alumni");
+const Conversation = require("../models/Conversation");
+const Message = require("../models/Message");
 const express = require("express");
 const router = express.Router();
 

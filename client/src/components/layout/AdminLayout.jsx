@@ -27,6 +27,7 @@ export default function AdminLayout() {
             <Toaster />
 
             {/* Sidebar */}
+            <Toaster />
             <AdminSidebar
                 collapsed={collapsed}
                 mobileOpen={mobileOpen}

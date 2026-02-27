@@ -8,7 +8,8 @@ import {
     Menu,
     X,
     FileText,
-    MessageSquare
+    MessageSquare,
+    Newspaper
 } from "lucide-react";
 
 export default function AdminSidebar({ collapsed, mobileOpen, closeMobile }) {
@@ -88,6 +89,15 @@ export default function AdminSidebar({ collapsed, mobileOpen, closeMobile }) {
                         to="/admin/spotlight"
                         icon={<FileText size={20} />}
                         label="Spotlight"
+                        collapsed={collapsed}
+                    />
+
+                    <Section label="Resources" collapsed={collapsed} />
+
+                    <Item
+                        to="/admin/articles"
+                        icon={<Newspaper size={20} />}
+                        label="Articles"
                         collapsed={collapsed}
                     />
 

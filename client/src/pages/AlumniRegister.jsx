@@ -24,7 +24,7 @@ export default function AlumniRegister() {
     setIsLoading(true);
 
     try {
-      await axios.post("http://localhost:5000/api/v1/auth/register", formData);
+      await axios.post("http://localhost:5001/api/v1/auth/register", formData);
       setSubmitted(true);
     } catch (err) {
       setError(

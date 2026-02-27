@@ -19,7 +19,7 @@ import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 
-const socket = io("http://localhost:5000", {
+const socket = io("http://localhost:5001", {
     withCredentials: true,
     autoConnect: false
 });

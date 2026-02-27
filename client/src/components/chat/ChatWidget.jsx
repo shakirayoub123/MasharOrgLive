@@ -1,13 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MessageCircle, Send, X, Minus, Maximize2 } from "lucide-react";
-import { io } from "socket.io-client";
+import socket from "../../utils/socket";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
-
-const socket = io("http://localhost:5000", {
-    withCredentials: true,
-    autoConnect: false
-});
 
 export default function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
@@ -21,28 +16,30 @@ export default function ChatWidget() {
 
     useEffect(() => {
         if (user) {
-            socket.connect();
+            // Connect once — AlumniNavbar already joins the personal room;
+            // just add the receive_message listener here.
+            if (!socket.connected) socket.connect();
 
-            // Fetch initial state once
             fetchHistory();
 
-            socket.on("receive_message", (message) => {
+            const onMessage = (message) => {
                 setMessages((prev) => [...prev, message]);
-
                 // Increment unread count if chat is closed or minimized
                 if (!isOpen || isMinimized) {
                     if (message.senderModel === "Admin") {
                         setUnreadCount(prev => prev + 1);
                     }
                 }
-            });
+            };
+
+            socket.on("receive_message", onMessage);
 
             return () => {
-                socket.off("receive_message");
-                socket.disconnect();
+                socket.off("receive_message", onMessage);
+                // Do NOT disconnect — AlumniNavbar owns the lifecycle
             };
         }
-    }, [user, isOpen, isMinimized]); // Added isOpen and isMinimized to dependencies for the unread count logic
+    }, [user]); // Only re-run when user changes, not on every open/close
 
     // Handle marking as read when opening
     useEffect(() => {

@@ -20,7 +20,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-const socket = io("http://localhost:5000", {
+const socket = io("http://localhost:5001", {
     withCredentials: true,
     autoConnect: false
 });

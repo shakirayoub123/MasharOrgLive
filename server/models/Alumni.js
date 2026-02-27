@@ -18,27 +18,30 @@ const alumniSchema = new mongoose.Schema(
         password: {
             type: String,
             minlength: [6, "Password must be at least 6 characters"],
-            // Not required — alumni register without a password
         },
-        phone: {
-            type: String,
-            trim: true,
-        },
-        batch: {
-            type: String,
-            trim: true,
-        },
+        phone: { type: String, trim: true },
+        batch: { type: String, trim: true },
+
+        // ── Profile fields ──────────────────────
+        bio: { type: String, maxlength: 300, default: "" },
+        city: { type: String, trim: true, default: "" },
+        country: { type: String, trim: true, default: "" },
+        linkedin: { type: String, trim: true, default: "" },
+        website: { type: String, trim: true, default: "" },
+        coachingSpecialty: { type: String, default: "Executive Coaching" },
+        certificationLevel: { type: String, default: "" },
+        graduationYear: { type: String, default: "" },
+        languages: { type: [String], default: [] },
+        availableForMentoring: { type: Boolean, default: false },
+        openToCollaboration: { type: Boolean, default: false },
+
         status: {
             type: String,
             enum: ["pending", "approved", "rejected"],
             default: "pending",
         },
-        setPasswordToken: {
-            type: String,
-        },
-        setPasswordExpires: {
-            type: Date,
-        },
+        setPasswordToken: { type: String },
+        setPasswordExpires: { type: Date },
     },
     { timestamps: true }
 );

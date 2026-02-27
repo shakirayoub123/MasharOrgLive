@@ -105,6 +105,10 @@ export function AuthProvider({ children }) {
     setAdmin(null);
   };
 
+  const updateUser = (updatedFields) => {
+    setUser(prev => ({ ...prev, ...updatedFields }));
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -119,6 +123,7 @@ export function AuthProvider({ children }) {
         register,
         setPasswordFn,
         logout,
+        updateUser,
         adminSendOtp,
         adminVerifyOtp,
         adminLogout,

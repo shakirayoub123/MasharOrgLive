@@ -35,7 +35,7 @@ export default function SetPassword() {
         setIsLoading(true);
 
         try {
-            const res = await axios.post("http://localhost:5000/api/v1/auth/set-password", {
+            const res = await axios.post("http://localhost:5001/api/v1/auth/set-password", {
                 token,
                 password,
             });
