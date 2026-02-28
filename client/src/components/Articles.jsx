@@ -2,11 +2,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import ArrowButton from "../components/Arrowbutton";
 import EmailDownloadModal from "../Models/EmailDownloadModal.jsx";
 
-import SelfCoaching from "../assets/Self‑Coaching for Complex Leadership Challenges.pdf";
+import SelfCoaching from "../assets/Self‑Coaching for Complex Leadership Challenges_compressed.pdf";
 import Communicating from "../assets/Communicating Effectively Through Disagreement1.pdf";
-import HowGreat from "../assets/How Great Leaders Communicate With Impact.pdf";
-import MakingTheShift from "../assets/Making the Shift to Executive Leadership.pdf";
-import UnderStanding from "../assets/Understanding Defensive Behaviors at Work.pdf";
+import HowGreat from "../assets/How Great Leaders Communicate With Impact_compressed.pdf";
+import MakingTheShift from "../assets/Making the Shift to Executive Leadership_compressed.pdf";
+import UnderStanding from "../assets/Understanding Defensive Behaviors at Work_compressed.pdf"
 
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -160,6 +160,8 @@ const Articles = () => {
                                     src={article.image}
                                     alt={article.title}
                                     className="w-full h-full object-cover"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             </div>
 
@@ -172,20 +174,20 @@ const Articles = () => {
                                     {article.description}
                                 </p>
 
-                                <div
-                                    className="mt-auto"
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    <ArrowButton
-                                        text=""
-                                        textSize="12px sm:16px"
-                                        className="!px-10 h-[50px]"
-                                        onClick={() => {
-                                            setSelectedPdf(article.pdf);
-                                            setSelectedName(`${article.slug}.pdf`);
-                                            setIsModalOpen(true);
-                                        }}
-                                    />
+                                <div className="mt-auto flex items-center justify-between">
+                                    <div onClick={(e) => e.stopPropagation()}>
+                                        <ArrowButton
+                                            text=""
+                                            textSize="12px sm:16px"
+                                            className="!px-10 h-[50px]"
+                                            onClick={() => {
+                                                setSelectedPdf(article.pdf);
+                                                setSelectedName(`${article.slug}.pdf`);
+                                                setIsModalOpen(true);
+                                            }}
+                                        />
+                                    </div>
+                                    {/* like button removed for public articles */}
                                 </div>
                             </div>
                         </div>

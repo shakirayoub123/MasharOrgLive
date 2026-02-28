@@ -1,307 +1,345 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import {
-    CheckCircle,
-    XCircle,
-    RotateCcw,
-    Clipboard,
-    Search,
-    Users,
-    Clock,
-    ExternalLink,
-    Filter,
-    UserCheck,
-    UserPlus
+    CheckCircle, XCircle, Clock, Search,
+    GraduationCap, MapPin, BookOpen,
+    RotateCcw, ChevronDown, Award,
+    Mail, Calendar, AlertCircle, Loader2, CheckCircle2
 } from "lucide-react";
 import toast from "react-hot-toast";
 
-export default function AdminAlumniApproval() {
-    const [alumni, setAlumni] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [actionLoading, setActionLoading] = useState({});
-    const [setPasswordLink, setSetPasswordLink] = useState("");
-    const [filter, setFilter] = useState("pending"); // "pending" | "all"
-    const [searchTerm, setSearchTerm] = useState("");
-    const { adminToken } = useAuth();
-    const navigate = useNavigate();
+/* ─── Config ─────────────────────────────────────────── */
+const STATUS_CONFIG = {
+    approved: { badge: "bg-emerald-50 text-emerald-700 border border-emerald-200", dot: "bg-emerald-500", icon: CheckCircle2 },
+    pending:  { badge: "bg-amber-50  text-amber-700  border border-amber-200",  dot: "bg-amber-400",  icon: Clock    },
+    rejected: { badge: "bg-rose-50   text-rose-700   border border-rose-200",   dot: "bg-rose-500",   icon: XCircle  },
+};
+const COMPLETION_CONFIG = {
+    graduate:    { style: "bg-indigo-50 text-indigo-700 border border-indigo-200", icon: GraduationCap },
+    passed:      { style: "bg-sky-50    text-sky-700    border border-sky-200",    icon: Award         },
+    in_progress: { style: "bg-violet-50 text-violet-700 border border-violet-200", icon: Clock         },
+    accredited:  { style: "bg-teal-50   text-teal-700   border border-teal-200",   icon: Award         },
+};
+const AVATAR_COLORS = ["bg-indigo-500","bg-emerald-500","bg-violet-500","bg-sky-500","bg-rose-500","bg-amber-500","bg-teal-500"];
+const getAvatarColor = (id) => AVATAR_COLORS[parseInt(id?.slice(-2) || "0", 16) % AVATAR_COLORS.length];
+const getInitials    = (name) => name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?";
 
-    const fetchAlumni = async () => {
+/* ─── Badges ──────────────────────────────────────────── */
+function StatusBadge({ status }) {
+    const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.pending;
+    return (
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${cfg.badge}`}>
+            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${cfg.dot}`} />
+            {status}
+        </span>
+    );
+}
+function CompletionBadge({ status }) {
+    const cfg = COMPLETION_CONFIG[status] || { style: "bg-slate-50 text-slate-500 border border-slate-200", icon: BookOpen };
+    const Icon = cfg.icon;
+    return (
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${cfg.style}`}>
+            <Icon size={9} />{status}
+        </span>
+    );
+}
+
+/* ─── Main ────────────────────────────────────────────── */
+export default function AdminAlumniApproval() {
+    const [alumni, setAlumni]           = useState([]);
+    const [allAlumni, setAllAlumni]     = useState([]); // unfiltered — for stat card counts
+    const [loading, setLoading]         = useState(true);
+    const [actionLoading, setActionLoading] = useState({});
+    const [filter, setFilter]           = useState("pending");
+    const [searchTerm, setSearchTerm]   = useState("");
+    const [expandedRow, setExpandedRow] = useState(null);
+    const { adminToken } = useAuth();
+
+    // ── Fetch ALL (unfiltered) once — drives stat card counts ──
+    const fetchCounts = useCallback(async () => {
+        try {
+            const res = await axios.get("/api/admin/alumni/list", {
+                headers: { Authorization: `Bearer ${adminToken}` },
+            });
+            setAllAlumni(res.data.data || []);
+        } catch { /* silent */ }
+    }, [adminToken]);
+
+    useEffect(() => { fetchCounts(); }, [fetchCounts]);
+
+    // ── Fetch filtered list — uses account_status param ───
+    // GET /api/admin/alumni/list?search=&account_status=pending
+    const fetchAlumni = useCallback(async () => {
         try {
             setLoading(true);
-            const endpoint =
-                filter === "pending"
-                    ? "/api/v1/admin/alumni/pending"
-                    : "/api/v1/admin/alumni/all";
-            const res = await axios.get(endpoint, {
-                headers: { Authorization: `Bearer ${adminToken}` }
+            const params = new URLSearchParams();
+            if (searchTerm) params.append("search", searchTerm);
+            if (filter !== "all") params.append("account_status", filter); // ✅ fixed param name
+            const res = await axios.get(`/api/admin/alumni/list?${params.toString()}`, {
+                headers: { Authorization: `Bearer ${adminToken}` },
             });
-            setAlumni(res.data.alumni);
-        } catch (err) {
+            setAlumni(res.data.data || []);
+        } catch {
             toast.error("Failed to load alumni data.");
         } finally {
             setLoading(false);
         }
-    };
+    }, [filter, searchTerm, adminToken]);
 
     useEffect(() => {
-        if (adminToken) {
-            fetchAlumni();
-        }
-    }, [filter, adminToken]);
+        const t = setTimeout(fetchAlumni, 350);
+        return () => clearTimeout(t);
+    }, [fetchAlumni]);
 
-    const handleApprove = async (id, name) => {
-        setActionLoading((prev) => ({ ...prev, [id]: "approve" }));
-        setSetPasswordLink("");
+    const handleAction = async (id, action) => {
+        setActionLoading(p => ({ ...p, [id]: action }));
         try {
-            const res = await axios.put(`/api/v1/admin/alumni/${id}/approve`, {}, {
-                headers: { Authorization: `Bearer ${adminToken}` }
-            });
-            toast.success(res.data.message || "Alumni approved!");
-            if (res.data.setPasswordLink) {
-                setSetPasswordLink(res.data.setPasswordLink);
-            }
-            fetchAlumni();
+            await axios.put(
+                `/api/admin/alumni/${id}/${action}`,
+                {},
+                { headers: { Authorization: `Bearer ${adminToken}` } }
+            );
+            toast.success(action === "approve" ? "Alumni approved!" : "Alumni rejected.");
+            const newStatus = action === "approve" ? "approved" : "rejected";
+            // update both lists so counts stay accurate
+            setAlumni(prev    => prev.map(a => a._id === id ? { ...a, account_status: newStatus } : a));
+            setAllAlumni(prev => prev.map(a => a._id === id ? { ...a, account_status: newStatus } : a));
         } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to approve.");
+            toast.error(err.response?.data?.message || `Failed to ${action}.`);
         } finally {
-            setActionLoading((prev) => ({ ...prev, [id]: null }));
+            setActionLoading(p => ({ ...p, [id]: null }));
         }
     };
 
-    const handleResend = async (id, name) => {
-        setActionLoading((prev) => ({ ...prev, [id]: "resend" }));
-        setSetPasswordLink("");
-        try {
-            const res = await axios.put(`/api/v1/admin/alumni/${id}/resend`, {}, {
-                headers: { Authorization: `Bearer ${adminToken}` }
-            });
-            toast.success("Set-password link resent!");
-            if (res.data.setPasswordLink) {
-                setSetPasswordLink(res.data.setPasswordLink);
-            }
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to resend link.");
-        } finally {
-            setActionLoading((prev) => ({ ...prev, [id]: null }));
-        }
-    };
-
-    const handleReject = async (id, name) => {
-        setActionLoading((prev) => ({ ...prev, [id]: "reject" }));
-        try {
-            await axios.put(`/api/v1/admin/alumni/${id}/reject`, {}, {
-                headers: { Authorization: `Bearer ${adminToken}` }
-            });
-            toast.success(`"${name}" has been rejected.`);
-            fetchAlumni();
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to reject.");
-        } finally {
-            setActionLoading((prev) => ({ ...prev, [id]: null }));
-        }
-    };
-
-    const filteredAlumni = alumni.filter(a =>
-        a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        a.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const statusBadge = (status) => {
-        const styles = {
-            pending: "bg-amber-50 text-amber-700 border-amber-200",
-            approved: "bg-emerald-50 text-emerald-700 border-emerald-200",
-            rejected: "bg-rose-50 text-rose-700 border-rose-200",
-        };
-        return (
-            <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border ${styles[status] || "bg-slate-50 text-slate-700 border-slate-200"}`}>
-                {status}
-            </span>
-        );
+    // Counts always from unfiltered allAlumni — never drops when filtered
+    const counts = {
+        all:      allAlumni.length,
+        pending:  allAlumni.filter(a => a.account_status === "pending").length,
+        approved: allAlumni.filter(a => a.account_status === "approved").length,
+        rejected: allAlumni.filter(a => a.account_status === "rejected").length,
     };
 
     return (
-        <div className="space-y-6">
-            {/* Page Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                        <UserCheck size={28} className="text-indigo-600" />
-                        Alumni Registrations
-                    </h1>
-                    <p className="text-slate-500 text-sm font-medium mt-1">Review and approve new alumni joining the network.</p>
-                </div>
+        <div className="space-y-7 pb-12">
 
-                <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
-                    <button
-                        onClick={() => setFilter("pending")}
-                        className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${filter === "pending"
-                            ? "bg-slate-900 text-white shadow-md shadow-slate-900/10"
-                            : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
-                            }`}
-                    >
-                        Pending Actions
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Alumni Approvals</h1>
+                    <p className="text-slate-500 font-medium mt-1">Review and manage alumni registration requests.</p>
+                </div>
+                <button onClick={() => { fetchAlumni(); fetchCounts(); }}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition shadow-sm">
+                    <RotateCcw size={14} /> Refresh
+                </button>
+            </div>
+
+            {/* Stat Cards — always reflect full unfiltered totals, clickable as filter */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                    { key: "all",      label: "Total",    color: "text-slate-800",   bg: "bg-white border-slate-200",        dot: "bg-slate-400"   },
+                    { key: "pending",  label: "Pending",  color: "text-amber-700",   bg: "bg-amber-50 border-amber-200",     dot: "bg-amber-500"   },
+                    { key: "approved", label: "Approved", color: "text-emerald-700", bg: "bg-emerald-50 border-emerald-200", dot: "bg-emerald-500" },
+                    { key: "rejected", label: "Rejected", color: "text-rose-700",    bg: "bg-rose-50 border-rose-200",       dot: "bg-rose-500"    },
+                ].map(({ key, label, color, bg, dot }) => (
+                    <button key={key} onClick={() => setFilter(key)}
+                            className={`${bg} p-5 rounded-3xl border shadow-sm text-left transition-all hover:shadow-md ${filter === key ? "ring-2 ring-indigo-400 ring-offset-2" : ""}`}>
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className={`w-2 h-2 rounded-full shrink-0 ${dot}`} />
+                            <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">{label}</p>
+                        </div>
+                        <p className={`text-3xl font-black ${color}`}>{counts[key]}</p>
                     </button>
-                    <button
-                        onClick={() => setFilter("all")}
-                        className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${filter === "all"
-                            ? "bg-slate-900 text-white shadow-md shadow-slate-900/10"
-                            : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
-                            }`}
-                    >
-                        All History
-                    </button>
+                ))}
+            </div>
+
+            {/* Search & Filter Tabs */}
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-sm px-5 py-4 flex flex-col md:flex-row items-center gap-3">
+                <div className="relative flex-1 w-full">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300" size={15} />
+                    <input type="text" placeholder="Search by name or email…"
+                           value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
+                           className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 focus:bg-white transition-all" />
+                </div>
+                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-2xl border border-slate-200 w-full md:w-auto">
+                    {["all", "pending", "approved", "rejected"].map(s => (
+                        <button key={s} onClick={() => setFilter(s)}
+                                className={`px-4 py-2 rounded-xl text-[11px] font-bold capitalize transition-all whitespace-nowrap ${
+                                    filter === s ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20" : "text-slate-400 hover:text-slate-700"
+                                }`}>
+                            {s}
+                            {s !== "all" && (
+                                <span className={`ml-1.5 px-1.5 py-0.5 rounded-md text-[9px] font-black ${filter === s ? "bg-white/20 text-white" : "bg-slate-200 text-slate-500"}`}>
+                                    {counts[s]}
+                                </span>
+                            )}
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            {/* Set Password Link Portal (Conditional) */}
-            {setPasswordLink && (
-                <div className="bg-gradient-to-r from-indigo-600 to-blue-600 p-5 rounded-2xl shadow-xl shadow-indigo-600/20 text-white animate-in zoom-in-95 duration-300">
-                    <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-2 font-bold text-lg">
-                            <ExternalLink size={20} />
-                            Action Successful
+            {/* Table */}
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden">
+                {loading ? (
+                    <div className="py-24 flex flex-col items-center justify-center gap-3">
+                        <Loader2 size={30} className="text-indigo-500 animate-spin" />
+                        <p className="text-slate-400 font-bold text-sm">Loading alumni data…</p>
+                    </div>
+                ) : alumni.length === 0 ? (
+                    <div className="py-24 flex flex-col items-center justify-center gap-3">
+                        <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center">
+                            <AlertCircle size={22} className="text-slate-300" />
                         </div>
-                        <button onClick={() => setSetPasswordLink("")} className="hover:bg-white/20 p-1 rounded-lg transition-colors">
-                            <XCircle size={20} />
-                        </button>
+                        <p className="text-slate-500 font-bold text-sm">No alumni found</p>
+                        <p className="text-slate-300 text-xs">Try changing your filter or search term</p>
                     </div>
-                    <p className="text-indigo-100 text-sm mb-4 leading-relaxed font-medium">The approval went through! Copy this link and share it with the alumni so they can set their password.</p>
-                    <div className="flex items-center gap-2 bg-white/10 p-2 rounded-xl border border-white/20 backdrop-blur-md">
-                        <code className="flex-1 text-xs font-mono font-medium truncate px-2">{setPasswordLink}</code>
-                        <button
-                            onClick={() => {
-                                navigator.clipboard.writeText(setPasswordLink);
-                                toast.success("Copied to clipboard!");
-                            }}
-                            className="bg-white text-indigo-600 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-50 transition-colors shadow-lg"
-                        >
-                            Copy Link
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* Main Content Card */}
-            <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden">
-                {/* Table Toolbar */}
-                <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="relative max-w-sm w-full">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                        <input
-                            type="text"
-                            placeholder="Search by name or email..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium"
-                        />
-                    </div>
-                    <div className="flex items-center gap-3 text-slate-500 text-sm font-semibold">
-                        <Filter size={16} />
-                        Viewing {filteredAlumni.length} results
-                    </div>
-                </div>
-
-                <div className="overflow-x-auto min-h-[400px]">
-                    {loading ? (
-                        <div className="py-24 flex flex-col items-center justify-center">
-                            <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-                            <p className="font-bold text-slate-400">Fetching alumni data...</p>
-                        </div>
-                    ) : filteredAlumni.length === 0 ? (
-                        <div className="py-24 text-center">
-                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Search size={24} className="text-slate-300" />
-                            </div>
-                            <h3 className="text-slate-800 font-bold text-lg">No Results Found</h3>
-                            <p className="text-slate-500 text-sm mt-1 max-w-xs mx-auto">Try adjusting your filters or search terms to find what you're looking for.</p>
-                        </div>
-                    ) : (
+                ) : (
+                    <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead className="bg-slate-50/50">
-                                <tr>
-                                    <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Alumni</th>
-                                    <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Phone / Batch</th>
-                                    <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Status</th>
-                                    <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Date Joined</th>
-                                    <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest text-center">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {filteredAlumni.map((a) => (
-                                    <tr key={a._id} className="hover:bg-slate-50/50 transition-colors">
-                                        <td className="px-6 py-5">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-                                                    <Users size={20} />
-                                                </div>
-                                                <div>
-                                                    <p className="text-[14px] font-bold text-slate-800 leading-tight">{a.name}</p>
-                                                    <p className="text-[12px] text-slate-500 font-medium mt-0.5">{a.email}</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-5">
-                                            <p className="text-[13px] font-bold text-slate-700">{a.phone || "—"}</p>
-                                            <p className="text-[11px] text-indigo-500 font-bold mt-0.5 tracking-wider">{a.batch ? `CLASS OF ${a.batch}` : "BATCH NOT SET"}</p>
-                                        </td>
-                                        <td className="px-6 py-5">
-                                            {statusBadge(a.status)}
-                                        </td>
-                                        <td className="px-6 py-5">
-                                            <div className="flex items-center gap-1.5 text-slate-500 font-medium">
-                                                <Clock size={14} />
-                                                <span className="text-[12px]">
-                                                    {new Date(a.createdAt).toLocaleDateString("en-US", {
-                                                        year: "numeric",
-                                                        month: "short",
-                                                        day: "numeric",
-                                                    })}
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-5">
-                                            <div className="flex items-center justify-center gap-2">
-                                                {a.status === "pending" ? (
-                                                    <>
-                                                        <button
-                                                            onClick={() => handleApprove(a._id, a.name)}
-                                                            disabled={!!actionLoading[a._id]}
-                                                            className="h-9 px-4 bg-emerald-600 text-white rounded-lg text-[13px] font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50 flex items-center gap-2"
-                                                        >
-                                                            <CheckCircle size={16} />
-                                                            {actionLoading[a._id] === "approve" ? "..." : "Approve"}
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleReject(a._id, a.name)}
-                                                            disabled={!!actionLoading[a._id]}
-                                                            className="h-9 px-4 bg-white border border-rose-200 text-rose-600 rounded-lg text-[13px] font-bold hover:bg-rose-50 transition-all disabled:opacity-50 flex items-center gap-2"
-                                                        >
-                                                            <XCircle size={16} />
-                                                            {actionLoading[a._id] === "reject" ? "..." : "Reject"}
-                                                        </button>
-                                                    </>
-                                                ) : a.status === "approved" ? (
-                                                    <button
-                                                        onClick={() => handleResend(a._id, a.name)}
-                                                        disabled={!!actionLoading[a._id]}
-                                                        className="h-9 px-4 bg-slate-900 text-white rounded-lg text-[13px] font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/10 disabled:opacity-50 flex items-center gap-2"
-                                                    >
-                                                        <RotateCcw size={16} />
-                                                        {actionLoading[a._id] === "resend" ? "..." : "Resend"}
-                                                    </button>
-                                                ) : (
-                                                    <span className="text-[11px] font-extrabold text-slate-300 uppercase tracking-widest italic">Archived</span>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
+                            <thead>
+                            <tr className="border-b border-slate-100 bg-slate-50/60">
+                                {["Member", "Course & Year", "Location", "Registered", "Status", "Actions"].map((h, i) => (
+                                    <th key={h} className={`px-6 py-4 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest whitespace-nowrap ${i === 5 ? "text-center" : ""}`}>{h}</th>
                                 ))}
+                            </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-50">
+                            {alumni.map(a => {
+                                const isExpanded = expandedRow === a._id;
+                                const isActing   = !!actionLoading[a._id];
+                                return (
+                                    <React.Fragment key={a._id}>
+                                        <tr className={`transition-colors hover:bg-slate-50/60 cursor-pointer ${isExpanded ? "bg-indigo-50/30" : ""}`}
+                                            onClick={() => setExpandedRow(isExpanded ? null : a._id)}>
+
+                                            {/* Member */}
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-white text-xs font-black shrink-0 ${getAvatarColor(a._id)}`}>
+                                                        {getInitials(a.full_name)}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-bold text-slate-800 leading-tight">{a.full_name || "—"}</p>
+                                                        <p className="text-[11px] text-slate-400 font-medium flex items-center gap-1 mt-0.5"><Mail size={10} /> {a.email}</p>
+                                                    </div>
+                                                    <ChevronDown size={14} className={`text-slate-300 ml-1 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} />
+                                                </div>
+                                            </td>
+
+                                            {/* Course */}
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-1.5 mb-1.5">
+                                                    <BookOpen size={12} className="text-slate-300 shrink-0" />
+                                                    <span className="text-sm font-bold text-slate-700">{a.course || "—"}</span>
+                                                </div>
+                                                <div className="flex items-center gap-1.5">
+                                                    <CompletionBadge status={a.completion_status} />
+                                                    <span className="text-[11px] text-slate-400 font-medium">{a.completion_year}</span>
+                                                </div>
+                                            </td>
+
+                                            {/* Location */}
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-1 text-[12px] text-slate-500 font-medium">
+                                                    <MapPin size={11} className="text-slate-300 shrink-0" />
+                                                    {[a.city, a.country].filter(Boolean).join(", ") || <span className="text-slate-300">Not provided</span>}
+                                                </div>
+                                            </td>
+
+                                            {/* Date */}
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-1 text-[11px] text-slate-400 font-medium">
+                                                    <Calendar size={11} className="shrink-0" />
+                                                    {new Date(a.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                                                </div>
+                                            </td>
+
+                                            {/* Status */}
+                                            <td className="px-6 py-4"><StatusBadge status={a.account_status} /></td>
+
+                                            {/* Actions */}
+                                            <td className="px-6 py-4" onClick={e => e.stopPropagation()}>
+                                                <div className="flex items-center justify-center gap-2">
+                                                    {a.account_status === "pending" && (
+                                                        <>
+                                                            <button onClick={() => handleAction(a._id, "approve")} disabled={isActing}
+                                                                    className="h-8 px-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[11px] font-bold transition-all disabled:opacity-50 flex items-center gap-1.5 shadow-sm shadow-emerald-200">
+                                                                {actionLoading[a._id] === "approve" ? <Loader2 size={12} className="animate-spin" /> : <CheckCircle size={12} />}
+                                                                Approve
+                                                            </button>
+                                                            <button onClick={() => handleAction(a._id, "reject")} disabled={isActing}
+                                                                    className="h-8 px-3.5 bg-white hover:bg-rose-50 border border-rose-200 text-rose-600 rounded-xl text-[11px] font-bold transition-all disabled:opacity-50 flex items-center gap-1.5">
+                                                                {actionLoading[a._id] === "reject" ? <Loader2 size={12} className="animate-spin" /> : <XCircle size={12} />}
+                                                                Reject
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                    {a.account_status === "approved" && (
+                                                        <span className="inline-flex items-center gap-1.5 text-emerald-600 text-[11px] font-bold">
+                                                                <CheckCircle size={13} /> Approved
+                                                            </span>
+                                                    )}
+                                                    {a.account_status === "rejected" && (
+                                                        <span className="inline-flex items-center gap-1.5 text-rose-500 text-[11px] font-bold">
+                                                                <XCircle size={13} /> Rejected
+                                                            </span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        {/* Expanded Detail Row */}
+                                        {isExpanded && (
+                                            <tr className="bg-indigo-50/20">
+                                                <td colSpan={6} className="px-6 pb-5 pt-2">
+                                                    <div className="ml-13 grid grid-cols-2 md:grid-cols-4 gap-2.5 pt-3 border-t border-indigo-100/60">
+                                                        {[
+                                                            { label: "Full Name",    value: a.full_name },
+                                                            { label: "Email",        value: a.email },
+                                                            { label: "Course",       value: a.course },
+                                                            { label: "Completion",   value: a.completion_status ? `${a.completion_status} · ${a.completion_year}` : "—" },
+                                                            { label: "City",         value: a.city },
+                                                            { label: "Country",      value: a.country },
+                                                            { label: "Registered",   value: new Date(a.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) },
+                                                            { label: "Last Updated", value: new Date(a.updatedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) },
+                                                        ].map(({ label, value }) => (
+                                                            <div key={label} className="bg-white rounded-xl px-3.5 py-3 border border-slate-100 shadow-sm">
+                                                                <p className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400 mb-1">{label}</p>
+                                                                <p className="text-[12px] font-bold text-slate-700 truncate">{value || "—"}</p>
+                                                            </div>
+                                                        ))}
+                                                        {a.bio && (
+                                                            <div className="col-span-2 md:col-span-4 bg-white rounded-xl px-3.5 py-3 border border-slate-100 shadow-sm">
+                                                                <p className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400 mb-1">Bio</p>
+                                                                <p className="text-[12px] text-slate-600 leading-relaxed">{a.bio}</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </React.Fragment>
+                                );
+                            })}
                             </tbody>
                         </table>
-                    )}
-                </div>
+                    </div>
+                )}
+
+                {/* Footer */}
+                {!loading && alumni.length > 0 && (
+                    <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
+                        <p className="text-xs font-bold text-slate-400">
+                            Showing <span className="text-slate-600">{alumni.length}</span> result{alumni.length !== 1 ? "s" : ""}
+                            {filter !== "all" && <span className="ml-1.5 text-indigo-500 font-bold capitalize">· {filter} only</span>}
+                        </p>
+                        <p className="text-[10px] text-slate-400 font-semibold flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-slate-300 inline-block" />
+                            Click any row to expand details
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     );

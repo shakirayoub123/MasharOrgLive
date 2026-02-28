@@ -206,6 +206,7 @@ const WatchVideo = () => {
                                     text="Continue the Conversation"
                                     onClick={openCalendly}
                                 />
+                                {/* like button removed for public videos */}
                             </div>
                         </div>
                     ))}

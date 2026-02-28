@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your <%= appName %> Verification Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', Arial, sans-serif; background-color: #F0F2F5; color: #1A1A2E; padding: 40px 16px; }
+        .email-wrapper { max-width: 600px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #E1E5ED; border-radius: 10px; }
+        .top-accent { height: 5px; background: linear-gradient(90deg, #F5A623 0%, #F7B733 100%); border-radius: 10px 10px 0 0; }
+        .email-header { background-color: #1A237E; padding: 32px 40px 28px; text-align: center; }
+        .brand-logo { font-size: 13px; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: #F5A623; margin-bottom: 14px; }
+        .header-title { font-size: 24px; font-weight: 700; color: #FFFFFF; line-height: 1.3; margin-bottom: 8px; }
+        .header-subtitle { font-size: 14px; color: #B0B8E8; }
+        .email-body { background-color: #FFFFFF; padding: 40px 40px 36px; }
+        .greeting { font-size: 16px; color: #333; margin-bottom: 16px; }
+        .greeting strong { color: #1A237E; font-weight: 600; }
+        .body-text { font-size: 15px; line-height: 1.75; color: #555; margin-bottom: 24px; }
+        .otp-section { text-align: center; margin: 32px 0 0; }
+        .otp-label { font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 16px; }
+        .otp-card { display: inline-block; background-color: #1A237E; border-radius: 14px; padding: 28px 48px; position: relative; }
+        .otp-code { font-size: 42px; font-weight: 700; letter-spacing: 12px; color: #FFFFFF; line-height: 1; padding-right: -12px; }
+        .otp-accent { width: 40px; height: 3px; background: linear-gradient(90deg, #F5A623, #F7B733); border-radius: 2px; margin: 14px auto 0; }
+        .timer-badge { display: inline-flex; align-items: center; gap: 7px; background-color: #FFF8EC; border: 1.5px solid #F5D08A; border-radius: 20px; padding: 7px 16px; margin-top: 18px; }
+        .timer-dot { width: 7px; height: 7px; background-color: #F5A623; border-radius: 50%; }
+        .timer-text { font-size: 13px; font-weight: 500; color: #B57B00; }
+        .email-footer { background-color: #1A237E; border-radius: 0 0 10px 10px; padding: 24px 40px; text-align: center; }
+        .footer-note { font-size: 11px; color: #B0B8E8; line-height: 1.7; }
+        .footer-note a { color: #F5A623; text-decoration: none; }
+        @media (max-width: 480px) {
+            .email-header, .email-body { padding: 28px 24px; }
+            .header-title { font-size: 20px; }
+            .otp-code { font-size: 32px; letter-spacing: 8px; }
+            .otp-card { padding: 22px 32px; }
+            .email-footer { padding: 20px 24px; }
+        }
+    </style>
+</head>
+<body>
+<div class="email-wrapper">
+    <div class="top-accent"></div>
+    <div class="email-header">
+        <div class="brand-logo"><%= appName %> · Alumni Network</div>
+        <h1 class="header-title">Your Verification Code</h1>
+        <p class="header-subtitle">Use the code below to complete your verification</p>
+    </div>
+    <div class="email-body">
+        <p class="greeting">Dear <strong><%= full_name.split(' ')[0] %></strong>,</p>
+        <p class="body-text">
+            To complete your verification for <strong style="color:#1A237E;"><%= appName %></strong>, please use the One-Time Password below. This code is private — do not share it with anyone.
+        </p>
+        <div class="otp-section">
+            <div class="otp-label">One-Time Password</div>
+            <div class="otp-card">
+                <div class="otp-code"><%= otp %></div>
+                <div class="otp-accent"></div>
+            </div>
+            <br>
+            <div class="timer-badge">
+                <div class="timer-dot"></div>
+                <span class="timer-text">Valid for <strong><%= expiry_minutes %> minutes</strong> only</span>
+            </div>
+        </div>
+    </div>
+    <div class="email-footer">
+        <p class="footer-note">
+            © <%= new Date().getFullYear() %> <%= appName %>. All rights reserved.<br>
+            <a href="https://mashar.org/">mashar.org</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

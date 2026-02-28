@@ -1,50 +1,33 @@
 import React, { useState, useRef } from "react";
 import { X } from "lucide-react";
-import emailjs from "@emailjs/browser";
+import axios from "axios";
 
 const NewsletterPopup = ({ isOpen, onClose }) => {
     const [submitted, setSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
     const formRef = useRef();
-    const BASE_URL = window.location.origin;
-
-    const LOGO_URL = `${BASE_URL}/assets/EmailJsLogo.png`;
-    const PDF_URL = `${BASE_URL}/assets/MasharToolkit.pdf`;
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         // 👇 Get the form data
         const form = formRef.current;
         const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
 
-        // 👇 Extract only first name
-        const fullName = formData.get("user_name") || "";
-        const firstName = fullName.trim().split(" ")[0];
-
-        // 👇 Replace value before sending
-        formData.set("user_name", firstName);
-        formData.set("logo_url", LOGO_URL);
-        formData.set("download_link", PDF_URL);
-
-        emailjs
-            .send(
-                "service_hyxsirl",
-                "template_bd6ztla",
-                Object.fromEntries(formData),
-                "kll2mhkiB7hT3kXKH"
-            )
-            .then(
-                () => {
-                    setSubmitted(true);
-                    form.reset();
-                },
-                (error) => {
-                    console.error("EmailJS error:", error);
-                    alert("Something went wrong. Please try again.");
-                }
-            );
+        try {
+            await axios.post("/api/subscribers/subscribe", data);
+            setSubmitted(true);
+            form.reset();
+        } catch (error) {
+            console.error("Subscription error:", error);
+            alert(error?.response?.data?.message || "Something went wrong. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -173,9 +156,17 @@ const NewsletterPopup = ({ isOpen, onClose }) => {
 
                             <button
                                 type="submit"
-                                className="mt-4 rounded-xl bg-[#0F1C80] py-3 sm:py-4 text-base sm:text-lg font-medium text-white transition hover:bg-[#0c1766]"
+                                disabled={loading}
+                                className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#0F1C80] py-3 sm:py-4 text-base sm:text-lg font-medium text-white transition hover:bg-[#0c1766] disabled:opacity-60"
                             >
-                                Download the Toolkit
+                                {loading ? (
+                                    <>
+                                        <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        Subscribing...
+                                    </>
+                                ) : (
+                                    "Download the Toolkit"
+                                )}
                             </button>
                         </form>
 

@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: mashar-mern-app
+    env: node
+    plan: free
+    buildCommand: npm run install-all && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.0.0
+      - key: APP_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: APP_NAME
+        value: Mashar
+      - key: CORS_ALLOWED
+        value: "*" # Or your production domain
+      - key: VITE_API_URL
+        value: /api
+      - key: VITE_SOCKET_URL
+        value: /
+      # Email settings (to be configured in Render dashboard)
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false

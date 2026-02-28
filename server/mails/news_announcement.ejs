@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mashar Announcement</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #F4F6FB; color: #1F2937; padding: 24px; }
+        .container { max-width: 600px; margin: 0 auto; background: #FFFFFF; border-radius: 14px; overflow: hidden; border: 1px solid #E5E7EB; }
+        .header { background: #1F3A8A; color: #FFFFFF; padding: 28px 32px; text-align: center; }
+        .header h1 { font-size: 22px; margin-bottom: 8px; }
+        .header p { font-size: 14px; color: #D1D5DB; }
+        .content { padding: 30px 32px; }
+        .greeting { font-size: 16px; margin-bottom: 16px; }
+        .message { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 22px; }
+        .cta { text-align: center; margin: 28px 0; }
+        .cta a { display: inline-block; background: #1F3A8A; color: #FFFFFF; text-decoration: none; padding: 14px 26px; border-radius: 8px; font-weight: 600; }
+        .note { font-size: 13px; color: #6B7280; line-height: 1.6; }
+        .footer { background: #F9FAFB; padding: 20px 32px; font-size: 13px; color: #6B7280; }
+        .footer a { color: #1F3A8A; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mashar Update</h1>
+            <p>We have news for you from the Mashar community.</p>
+        </div>
+        <div class="content">
+            <p class="greeting">Hi <strong><%= name %></strong>,</p>
+            <p class="message">Here’s the latest update from Mashar, shared just for you.</p>
+            <p class="message"><strong><%= message %></strong></p>
+            <div class="cta">
+                <a href="<%= actionLink %>">View the update</a>
+            </div>
+            <p class="note">If you weren’t expecting this message, you can safely ignore it.</p>
+        </div>
+        <div class="footer">
+            <p>Thanks for staying connected with Mashar.</p>
+            <p><a href="https://mashar.org">mashar.org</a></p>
+        </div>
+    </div>
+</body>
+</html>

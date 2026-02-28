@@ -1,31 +1,47 @@
-const mongoose = require("mongoose");
-
-const MessageSchema = new mongoose.Schema(
+const mongoose = require("mongoose")
+const messageSchema = new mongoose.Schema(
     {
-        conversationId: {
+        conversation_id : {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Conversation",
             required: true,
+            index: true
         },
-        senderId: {
+
+        sender_model: {
+            type: String,
+            enum: ["Alumni", "Admin"],
+            required: true
+        },
+
+        sender_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
+            refPath: "senderModel"
         },
-        senderModel: {
+
+        message : {
             type: String,
             required: true,
-            enum: ["Alumni", "Admin"],
+            trim: true
         },
-        text: {
+
+        messageType: {
             type: String,
-            required: true,
+            enum: ["text", "image", "file"],
+            default: "text"
         },
-        isRead: {
+
+        read: {
             type: Boolean,
-            default: false,
-        },
+            default: false
+        }
+
     },
     { timestamps: true }
 );
 
-module.exports = mongoose.model("Message", MessageSchema);
+// For fast history loading
+messageSchema.index({ conversation: 1, createdAt: -1 });
+
+module.exports = mongoose.model("Message", messageSchema);

@@ -9,6 +9,11 @@ const adminSchema = new mongoose.Schema({
         trim: true,
         lowercase: true
     },
+    full_name :{
+        type: String,
+        required: true,
+        trim: true,
+    },
     otp: {
         type: String
     },
@@ -19,12 +24,11 @@ const adminSchema = new mongoose.Schema({
 
 // Method to generate JWT
 adminSchema.methods.generateAuthToken = function () {
-    const token = jwt.sign(
-        { id: this._id, role: "admin" },
+    return jwt.sign(
+        {id: this._id, role: "admin"},
         process.env.JWT_SECRET || "your_jwt_secret",
-        { expiresIn: "24h" }
+        {expiresIn: "24h"}
     );
-    return token;
 };
 
 module.exports = mongoose.model("Admin", adminSchema);

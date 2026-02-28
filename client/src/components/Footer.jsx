@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { FaInstagram, FaFacebookF, FaLinkedin, FaPhoneAlt } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { MdEmail, MdLocationOn } from "react-icons/md";
-import logoFooter from "../assets/NavbarLogo.svg";
+import logoFooter from "../assets/masharWhiteFinal.svg";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -54,7 +54,7 @@ const Footer = () => {
                                         >
                                             <Icon className="text-black text-[16px]" />
                                         </a>
-                                        ))}
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -98,11 +98,11 @@ const Footer = () => {
                                 <li key={i} className="flex items-start gap-3">
                                     {/* Icon pill — filled circle like screenshot */}
                                     <span className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 mt-[1px]">
-                    <Icon size={iconSize} className="text-black" />
-                  </span>
+                                        <Icon size={iconSize} className="text-black" />
+                                    </span>
                                     <span className="text-[13px] sm:text-[14px] opacity-70 leading-[30px]">
-                    {text}
-                  </span>
+                                        {text}
+                                    </span>
                                 </li>
                             ))}
                         </ul>
@@ -186,9 +186,9 @@ const Footer = () => {
             {/* BOTTOM BAR */}
             <div className="border-t border-white/20">
                 <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 py-5 sm:py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="text-[13px] opacity-60">
-            © 2026 Mashar. All Rights Reserved.
-          </span>
+                    <span className="text-[13px] opacity-60">
+                        © 2026 Mashar. All Rights Reserved.
+                    </span>
                     <div className="flex items-center gap-5 text-[13px] opacity-60">
                         <a href="#" className="hover:text-secondary hover:opacity-100 transition duration-300">
                             Privacy Policy

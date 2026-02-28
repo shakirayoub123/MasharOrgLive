@@ -1,74 +1,213 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+// ─── LIGHT THEME TOKENS ────────────────────────────────────────────────────────
+const NAVY = "#0F1C80";
+const ORANGE = "#F38900";
+const NAVY_50 = "#EEF0FF";
+const NAVY_100 = "#DDE0FF";
+const ORANGE_50 = "#FFF4E0";
+const TH = "#0D1240";
+const TB = "#4B5563";
+
 export default function HeroSection() {
+  const navigate = useNavigate();
   return (
-    <section className="relative overflow-hidden rounded-2xl px-6 sm:px-8 lg:px-10 py-8 lg:py-10 bg-gradient-to-r from-[#1C1C1E] via-[#2C2C2E] to-[#2A6B7C] text-white flex flex-col lg:flex-row items-center">
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap');
 
-      {/* glow circles */}
-      <div className="absolute -top-20 -right-20 w-60 h-60 bg-yellow-500/10 rounded-full blur-3xl" />
-      <div className="absolute -bottom-24 left-1/3 w-60 h-60 bg-teal-400/10 rounded-full blur-3xl" />
+        .hero-section { font-family: 'DM Sans', sans-serif; }
 
-      {/* LEFT CONTENT */}
-      <div className="relative z-10 max-w-xl text-center lg:text-left">
+        /* ── buttons ── */
+        .hero-btn-primary  { transition: box-shadow .2s, transform .15s; }
+        .hero-btn-primary:hover  { box-shadow: 0 8px 24px rgba(15,28,128,.28); transform: translateY(-1px); }
+        .hero-btn-secondary { transition: all .2s; }
+        .hero-btn-secondary:hover { background: ${NAVY_50} !important; border-color: ${NAVY} !important; color: ${NAVY} !important; }
 
-        <p className="text-[10px] tracking-[3px] uppercase text-[#C9A84C] mb-2">
-          ✦ Mashar Alumni Network
-        </p>
+        /* ── layout ── */
+        .hero-inner  { display: flex; align-items: center; gap: 24px; }
+        .hero-btns   { display: flex; flex-wrap: wrap; gap: 10px; }
+        .hero-stats  { display: flex; flex-direction: column; gap: 0; margin-left: auto; flex-shrink: 0; }
+        .hero-divider { display: block; }
 
-        <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
-          Connect with Your <br className="hidden sm:block" />
-          <span className="text-[#C9A84C] italic">
-            Coaching Network
-          </span>
-        </h1>
+        /* ── tablet / mobile ── */
+        @media (max-width: 1023px) {
+          .hero-inner  { flex-direction: column; align-items: flex-start; }
+          .hero-stats  {
+            flex-direction: row !important;
+            margin-top: 22px !important;
+            margin-left: 0 !important;
+            flex-wrap: wrap;
+            gap: 8px !important;
+            width: 100%;
+          }
+          .hero-stat {
+            flex: 1 1 auto;
+            min-width: 80px;
+            text-align: left !important;
+            padding: 10px 14px !important;
+          }
+          .hero-divider { display: none !important; }
+        }
 
-        <p className="mt-3 text-xs sm:text-sm text-white/70 leading-relaxed">
-          Stay connected. Keep growing. Contribute to the profession.
-        </p>
+        /* ── small mobile: buttons stay side by side ── */
+        @media (max-width: 480px) {
+          .hero-btns   { flex-wrap: nowrap; gap: 8px; }
+          .hero-btn-primary,
+          .hero-btn-secondary {
+            flex: 1 1 0;
+            justify-content: center;
+            padding: 10px 14px !important;
+            font-size: 12px !important;
+          }
+        }
 
-        {/* buttons */}
-        <div className="flex flex-wrap justify-center lg:justify-start gap-3 mt-5">
-          <button className="px-5 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-gradient-to-r from-[#C9A84C] to-yellow-700 text-black">
-            Explore Community
-          </button>
+        /* ── very small (< 340px): allow stacking ── */
+        @media (max-width: 340px) {
+          .hero-btns { flex-wrap: wrap; }
+          .hero-btn-primary,
+          .hero-btn-secondary { flex: 1 1 100%; }
+        }
+      `}</style>
 
-          <button className="px-5 py-2 rounded-lg border border-white/30 text-xs sm:text-sm hover:border-[#C9A84C] hover:text-[#C9A84C] transition">
-            View Events →
-          </button>
+      <section
+        className="hero-section"
+        style={{
+          background: `linear-gradient(135deg, ${NAVY_50} 0%, #E5E8FF 55%, ${ORANGE_50} 100%)`,
+          borderRadius: 18,
+          border: `1px solid ${NAVY_100}`,
+          padding: "28px 32px",
+          position: "relative",
+          overflow: "hidden",
+          boxShadow: "0 2px 14px rgba(15,28,128,.07)",
+        }}
+      >
+        {/* ── decorative rings ── */}
+        <div style={{ position: "absolute", right: -30, top: -30, width: 200, height: 200, borderRadius: "50%", border: `2px solid rgba(15,28,128,.07)`, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", right: 60, bottom: -40, width: 130, height: 130, borderRadius: "50%", background: "rgba(243,137,0,.07)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", left: -15, bottom: -20, width: 90, height: 90, borderRadius: "50%", border: `1px solid rgba(15,28,128,.06)`, pointerEvents: "none" }} />
+
+        {/* ── left accent bar ── */}
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: `linear-gradient(to bottom,${NAVY},${ORANGE})`, borderRadius: "0 4px 4px 0" }} />
+
+        <div className="hero-inner" style={{ position: "relative", zIndex: 1, paddingLeft: 8 }}>
+
+          {/* ── LEFT CONTENT ── */}
+          <div style={{ flex: 1, minWidth: 0, maxWidth: 560 }}>
+
+            {/* eyebrow badge */}
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              background: "rgba(15,28,128,.08)", border: "1px solid rgba(15,28,128,.14)",
+              borderRadius: 20, padding: "3px 12px", marginBottom: 14,
+            }}>
+              <div style={{ width: 5, height: 5, borderRadius: "50%", background: NAVY, flexShrink: 0 }} />
+              <span style={{ fontSize: 9.5, fontWeight: 800, color: NAVY, letterSpacing: "1.2px", textTransform: "uppercase" }}>
+                Mashar Alumni Network
+              </span>
+            </div>
+
+            <h1 style={{
+              fontFamily: "'Sora', sans-serif",
+              fontSize: "clamp(22px, 4vw, 34px)",
+              fontWeight: 900, color: TH,
+              lineHeight: 1.2, margin: "0 0 10px", letterSpacing: "-0.5px",
+              whiteSpace: "nowrap",
+            }}>
+              Connect with Your Coaching Network
+            </h1>
+
+            <p style={{ fontSize: 14, color: TB, lineHeight: 1.7, margin: "0 0 22px", maxWidth: 420, whiteSpace: "nowrap" }}>
+              Stay connected. Keep growing. Contribute to the profession.
+            </p>
+
+            {/* ── buttons ── */}
+            <div className="hero-btns">
+              <button
+                className="hero-btn-primary"
+                onClick={() => navigate('/alumni/engage')}
+                style={{
+                  padding: "10px 22px", borderRadius: 12, border: "none",
+                  background: NAVY, color: "#fff",
+                  fontSize: 13, fontWeight: 700, cursor: "pointer",
+                  boxShadow: `0 4px 16px rgba(15,28,128,.22)`,
+                  display: "flex", alignItems: "center", gap: 7,
+                  position: "relative", overflow: "hidden",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <span style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 4, background: ORANGE, borderRadius: "0 12px 12px 0" }} />
+                Explore Community
+              </button>
+
+              <button
+                className="hero-btn-secondary"
+                onClick={() => navigate('/alumni/events')}
+                style={{
+                  padding: "10px 22px", borderRadius: 12,
+                  border: `1.5px solid ${NAVY_100}`,
+                  background: "rgba(255,255,255,.7)",
+                  color: TH, fontSize: 13, fontWeight: 700, cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+              >
+                View Events →
+              </button>
+            </div>
+          </div>
+
+          {/* ── RIGHT STATS ── */}
+          <div className="hero-stats">
+            {[
+              { num: "1,240+", label: "Members" },
+              { num: "18", label: "Countries" },
+              { num: "96%", label: "Certified" },
+            ].map(({ num, label }, i) => (
+              <React.Fragment key={label}>
+                <Stat num={num} label={label} />
+                {i < 2 && <Divider />}
+              </React.Fragment>
+            ))}
+          </div>
+
         </div>
-      </div>
-
-      {/* RIGHT STATS */}
-      <div className="relative z-10 flex flex-row lg:flex-col gap-8 lg:gap-5 mt-7 lg:mt-0 lg:ml-auto text-center lg:text-right">
-
-        <Stat num="1,240+" label="Members" />
-        <Divider />
-        <Stat num="18" label="Countries" />
-        <Divider />
-        <Stat num="96%" label="Certified" />
-
-      </div>
-
-    </section>
+      </section>
+    </>
   );
 }
 
-
-/* ---------- helpers ---------- */
-
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
 function Stat({ num, label }) {
   return (
-    <div>
-      <p className="font-serif text-xl sm:text-2xl font-bold text-[#C9A84C]">
-        {num}
-      </p>
-      <p className="text-[9px] sm:text-[10px] tracking-[2px] uppercase text-white/50">
-        {label}
-      </p>
+    <div
+      className="hero-stat"
+      style={{
+        padding: "14px 20px", textAlign: "center",
+        background: "rgba(255,255,255,.65)", borderRadius: 14,
+        border: `1px solid ${NAVY_100}`, backdropFilter: "blur(8px)",
+        minWidth: 90,
+      }}
+    >
+      <p style={{
+        fontFamily: "'Sora', sans-serif",
+        fontSize: 22, fontWeight: 900, color: NAVY,
+        margin: "0 0 3px", lineHeight: 1,
+      }}>{num}</p>
+      <p style={{
+        fontSize: 10, fontWeight: 700, letterSpacing: "1.5px",
+        textTransform: "uppercase", color: "#9CA3AF", margin: 0,
+      }}>{label}</p>
     </div>
   );
 }
 
 function Divider() {
   return (
-    <div className="hidden lg:block w-px h-8 bg-white/20 ml-auto" />
+    <div
+      className="hero-divider"
+      style={{ width: 1, height: 10, background: `${NAVY_100}`, margin: "4px auto" }}
+    />
   );
 }

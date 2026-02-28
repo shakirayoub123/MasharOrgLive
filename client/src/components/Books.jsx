@@ -169,6 +169,8 @@ const Books = () => {
                                         src={book.image}
                                         alt={book.title}
                                         className="w-full h-full object-cover rounded-lg shadow-md"
+                                        loading="lazy"
+                                        decoding="async"
                                     />
                                 </div>
                             </div>

@@ -1,24 +1,38 @@
 const mongoose = require("mongoose");
 
-const ConversationSchema = new mongoose.Schema(
+const conversationSchema = new mongoose.Schema(
     {
-        alumniId: {
+        alumni_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Alumni",
-            required: true,
-            unique: true, // Each alumni has one dedicated support thread with admins
+            required: true
         },
+
+        admin_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Admin",
+            required: true
+        },
+
         lastMessage: {
-            text: String,
-            sender: { type: String, enum: ["Alumni", "Admin"] },
-            createdAt: Date,
+            type: String,
+            default: ""
         },
+
+        lastMessageAt: {
+            type: Date
+        },
+
         unreadCount: {
-            alumni: { type: Number, default: 0 }, // Unread by alumni (sent by admin)
-            admin: { type: Number, default: 0 },  // Unread by admin (sent by alumni)
-        },
+            type: Number,
+            default: 0
+        }
+
     },
     { timestamps: true }
 );
 
-module.exports = mongoose.model("Conversation", ConversationSchema);
+// ✅ Correct unique conversation pair
+conversationSchema.index({ alumni_id: 1, admin_id: 1 }, { unique: true });
+
+module.exports = mongoose.model("Conversation", conversationSchema);

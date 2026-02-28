@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Mashar Alumni Application Has Been Received</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: #F0F2F5;
+            color: #1A1A2E;
+            padding: 40px 16px;
+        }
+
+        .email-wrapper { max-width: 600px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #E1E5ED; border-radius: 10px; }
+
+        /* Orange top accent bar */
+        .top-accent {
+            height: 5px;
+            background: linear-gradient(90deg, #F5A623 0%, #F7B733 100%);
+            border-radius: 10px 10px 0 0;
+        }
+
+        /* Navy header */
+        .email-header {
+            background-color: #1A237E;
+            padding: 36px 40px 32px;
+            text-align: center;
+        }
+
+        .brand-logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #F5A623;
+            margin-bottom: 18px;
+        }
+
+        .header-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.3;
+            margin-bottom: 10px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            font-weight: 400;
+            color: #B0B8E8;
+            line-height: 1.5;
+        }
+
+        /* White body */
+        .email-body {
+            background-color: #FFFFFF;
+            padding: 40px 40px 36px;
+        }
+
+        /* Success notice — matches website green notice box */
+        .success-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background-color: #F0FBF4;
+            border: 1.5px solid #A8E6BF;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 32px;
+        }
+
+        .notice-icon {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            background-color: #2ECC71;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
+        }
+
+        .notice-icon svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .notice-text {
+            font-size: 14px;
+            color: #1A6B3A;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* Greeting */
+        .greeting {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .greeting strong {
+            color: #1A237E;
+            font-weight: 600;
+        }
+
+        .body-text {
+            font-size: 15px;
+            line-height: 1.75;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* Steps card */
+        .steps-card {
+            background-color: #F7F8FC;
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin: 28px 0;
+            border: 1px solid #E8EBFF;
+        }
+
+        .steps-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1A237E;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 18px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid #E8EBFF;
+        }
+
+        .step-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .step-item:first-child {
+            padding-top: 0;
+        }
+
+        .step-num {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            background-color: #1A237E;
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
+        }
+
+        .step-text {
+            font-size: 14px;
+            color: #444;
+            line-height: 1.65;
+        }
+
+        .step-text strong {
+            color: #1A237E;
+        }
+
+        /* CTA Button — matches website's navy button */
+        .cta-wrap {
+            text-align: center;
+            margin: 32px 0 28px;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background-color: #1A237E;
+            color: #FFFFFF;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 15px 48px;
+            border-radius: 50px;
+            letter-spacing: 0.02em;
+        }
+
+        /* Closing */
+        .closing-text {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.75;
+            margin-bottom: 28px;
+        }
+
+        /* Signature */
+        .signature {
+            padding-top: 24px;
+            border-top: 1px solid #EAECF5;
+        }
+
+        .sig-warm {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 6px;
+        }
+
+        .sig-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1A237E;
+        }
+
+        .sig-role {
+            font-size: 12px;
+            color: #AAA;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        .sig-link {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 13px;
+            color: #F5A623;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        .email-footer {
+            background-color: #1A237E;
+            border-radius: 0 0 10px 10px;
+            padding: 24px 40px;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #8B97D8;
+            font-size: 12px;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-note {
+            font-size: 11px;
+            color: #B0B8E8;
+            line-height: 1.7;
+        }
+
+        .footer-note a {
+            color: #F5A623;
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+
+            .email-header,
+            .email-body {
+                padding: 28px 24px;
+            }
+
+            .header-title {
+                font-size: 20px;
+            }
+
+            .email-footer {
+                padding: 20px 24px;
+            }
+
+            .steps-card {
+                padding: 18px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-wrapper">
+
+        <!-- Orange accent top bar -->
+        <div class="top-accent"></div>
+
+        <!-- Navy Header -->
+        <div class="email-header">
+            <div class="brand-logo">Mashar Alumni Network</div>
+            <h1 class="header-title">Your Application Has Been Received</h1>
+            <p class="header-subtitle">We've successfully received your alumni application here's what to expect next.
+            </p>
+        </div>
+
+        <!-- Body -->
+        <div class="email-body">
+
+            <p class="greeting">Dear <strong><%= full_name.split(' ')[0] %></strong>,</p>
+
+            <p class="body-text">
+                Thank you for applying to join the <strong style="color:#1A237E;">Mashar Alumni Network</strong>. We have successfully received your application.
+            </p>
+
+            <p class="body-text">
+                Our team will review your eligibility, and you can expect a decision within <strong>5–7 business days</strong>. Once approved, you will receive a confirmation email with your dashboard access and next steps.
+            </p>
+
+            <div class="cta-wrap">
+                <a href="https://mashar.org/" class="cta-btn" style="color: #FFFFFF;">Visit Mashar.org</a>
+            </div>
+
+            <div class="signature">
+                <p class="sig-warm">Warm regards,</p>
+                <div class="sig-name">Mashar Alumni Team</div>
+                <div class="sig-role">Alumni Relations &amp; Community</div>
+                <a href="https://mashar.org/" class="sig-link">mashar.org</a>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <div class="footer-links">
+                <a href="https://mashar.org/">Website</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Unsubscribe</a>
+            </div>
+            <p class="footer-note">
+                You're receiving this because you applied to the Mashar Alumni Network.<br>
+                © 2025 Mashar. All rights reserved. · <a href="https://mashar.org/">mashar.org</a>
+            </p>
+        </div>
+
+    </div>
+</body>
+
+</html>

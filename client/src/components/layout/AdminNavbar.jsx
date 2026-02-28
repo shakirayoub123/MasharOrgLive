@@ -14,16 +14,10 @@ import {
     X as CloseIcon,
     Activity
 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { io } from "socket.io-client";
+import { useState, useEffect, useRef } from "react";
+import socket from "../../utils/socket";
 import axios from "axios";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
-const socket = io("http://localhost:5001", {
-    withCredentials: true,
-    autoConnect: false
-});
 
 function Popup({ children, onClose }) {
     return (
@@ -44,52 +38,60 @@ function Popup({ children, onClose }) {
         </>
     );
 }
+let navbarListenerAttached = false;
 
 export default function AdminNavbar({ toggleSidebar, openMobile, admin }) {
     const { adminLogout, adminToken } = useAuth();
     const [showProfile, setShowProfile] = useState(false);
     const [showNotifs, setShowNotifs] = useState(false);
+    const [showChatNotifs, setShowChatNotifs] = useState(false);
     const [unreadChat, setUnreadChat] = useState(0);
+    const [chatNotifs, setChatNotifs] = useState([]);
     const [activities, setActivities] = useState([]);
     const navigate = useNavigate();
+    const listenerAttached = useRef(false);
+
 
     useEffect(() => {
-        if (adminToken) {
-            socket.connect();
-            // Join global admin room for notifications
-            socket.emit("join_room", "admin_global");
+        if (!adminToken) return;
 
-            fetchInitialState();
+        if (!socket.connected) socket.connect();
+        socket.emit("join_admin");
+        fetchInitialState();
 
-            socket.on("receive_message", (message) => {
+        if (!navbarListenerAttached) {
+            navbarListenerAttached = true;
+
+            const handleMessage = (message) => {
                 if (message.senderModel === "Alumni") {
                     setUnreadChat(prev => prev + 1);
-                    if (window.location.pathname !== "/admin/messages") {
-                        toast.success(`Support message from alumni`, {
-                            icon: "💬",
-                            duration: 4000
-                        });
-                    }
+                    setChatNotifs(prev => [{
+                        text: message.text,
+                        conversationId: message.conversationId,
+                        alumniName: message.alumniName || "Alumni",
+                        sentAt: message.sentAt || new Date().toISOString(),
+                    }, ...prev].slice(0, 10));
                 }
-            });
-
-            return () => {
-                socket.off("receive_message");
-                socket.disconnect();
             };
+
+            socket.on("receiveMessage", handleMessage);
         }
+
+        return () => {
+            navbarListenerAttached = false;
+            socket.off("receiveMessage");
+        };
     }, [adminToken]);
 
     const fetchInitialState = async () => {
         try {
-            const [convRes, actRes] = await Promise.all([
-                axios.get("/api/v1/chat/conversations", { headers: { Authorization: `Bearer ${adminToken}` } }),
-                axios.get("/api/v1/admin/activity", { headers: { Authorization: `Bearer ${adminToken}` } })
-            ]);
-
-            const totalUnread = (convRes.data.conversations || []).reduce((sum, c) => sum + (c.unreadCount?.admin || 0), 0);
+            const convRes = await axios.get("/api/admin/conversations", {
+                headers: { Authorization: `Bearer ${adminToken}` }
+            });
+            const conversations = convRes.data.data?.conversations || convRes.data.conversations || [];
+            const totalUnread = conversations.reduce((sum, c) => sum + (c.unreadCount?.admin || 0), 0);
             setUnreadChat(totalUnread);
-            setActivities(actRes.data.logs?.slice(0, 8) || []);
+            setActivities([]);
         } catch (err) {
             console.error("Failed to fetch admin navbar data", err);
         }
@@ -114,7 +116,7 @@ export default function AdminNavbar({ toggleSidebar, openMobile, admin }) {
 
     return (
         <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-30 shadow-sm">
-            {/* Left side: Search and Toggle */}
+            {/* Left side */}
             <div className="flex items-center gap-4 flex-1">
                 <button onClick={openMobile} className="p-2 hover:bg-slate-100 rounded-lg lg:hidden">
                     <Menu size={20} className="text-slate-600" />
@@ -122,7 +124,6 @@ export default function AdminNavbar({ toggleSidebar, openMobile, admin }) {
                 <button onClick={toggleSidebar} className="p-2 hover:bg-slate-100 rounded-lg hidden lg:block">
                     <Menu size={20} className="text-slate-600" />
                 </button>
-
                 <div className="relative max-w-md w-full hidden md:block">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
@@ -133,25 +134,68 @@ export default function AdminNavbar({ toggleSidebar, openMobile, admin }) {
                 </div>
             </div>
 
-            {/* Right side: Notifications and Profile */}
+            {/* Right side */}
             <div className="flex items-center gap-3">
-                {/* Support Chat Notification */}
-                <button
-                    onClick={() => navigate("/admin/messages")}
-                    className={`p-2.5 rounded-xl relative transition-all duration-300 ${unreadChat > 0 ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
-                >
-                    <MessageSquare size={20} />
-                    {unreadChat > 0 && (
-                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-indigo-600 text-white text-[10px] font-black rounded-full border-2 border-white flex items-center justify-center animate-bounce">
-                            {unreadChat}
-                        </span>
-                    )}
-                </button>
 
-                {/* Administrative System Alerts (Bell) */}
+                {/* Chat Notifications */}
                 <div className="relative">
                     <button
-                        onClick={() => setShowNotifs(!showNotifs)}
+                        onClick={() => { setShowChatNotifs(!showChatNotifs); setUnreadChat(0); setShowNotifs(false); }}
+                        className={`p-2.5 rounded-xl relative transition-all duration-300 ${unreadChat > 0 ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                    >
+                        <MessageSquare size={20} />
+                        {unreadChat > 0 && (
+                            <span className="absolute -top-1 -right-1 w-5 h-5 bg-indigo-600 text-white text-[10px] font-black rounded-full border-2 border-white flex items-center justify-center animate-bounce">
+                                {unreadChat > 9 ? "9+" : unreadChat}
+                            </span>
+                        )}
+                    </button>
+
+                    {showChatNotifs && (
+                        <Popup onClose={() => setShowChatNotifs(false)}>
+                            <div className="px-5 py-4 border-b flex items-center justify-between bg-slate-50/50">
+                                <span className="font-black text-slate-800 text-[10px] uppercase tracking-[0.1em]">New Messages</span>
+                                {chatNotifs.length > 0 && (
+                                    <button onClick={() => setChatNotifs([])} className="text-[10px] text-slate-400 hover:text-slate-600 font-bold">
+                                        Clear all
+                                    </button>
+                                )}
+                            </div>
+                            <div className="max-h-[380px] overflow-y-auto divide-y divide-slate-50">
+                                {chatNotifs.length > 0 ? chatNotifs.map((notif, i) => (
+                                    <button key={i}
+                                        onClick={() => { setShowChatNotifs(false); navigate("/admin/messages"); }}
+                                        className="w-full flex gap-4 px-5 py-4 hover:bg-slate-50 transition-colors text-left">
+                                        <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0 font-black text-indigo-600 text-sm">
+                                            {notif.alumniName?.charAt(0).toUpperCase() || "A"}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[13px] font-bold text-slate-800 leading-tight truncate">{notif.alumniName}</p>
+                                            <p className="text-[11px] text-slate-500 mt-1 truncate">{notif.text}</p>
+                                            <p className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{formatTimeAgo(notif.sentAt)}</p>
+                                        </div>
+                                    </button>
+                                )) : (
+                                    <div className="py-12 text-center">
+                                        <MessageSquare size={32} className="mx-auto text-slate-200 mb-3" />
+                                        <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">No New Messages</p>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="p-3 border-t bg-slate-50/50 text-center">
+                                <button
+                                    onClick={() => { setShowChatNotifs(false); navigate("/admin/messages"); }}
+                                    className="text-[10px] text-indigo-600 font-black uppercase tracking-widest hover:underline"
+                                >View All Messages</button>
+                            </div>
+                        </Popup>
+                    )}
+                </div>
+
+                {/* Bell Notifications */}
+                <div className="relative">
+                    <button
+                        onClick={() => { setShowNotifs(!showNotifs); setShowChatNotifs(false); }}
                         className={`p-2.5 rounded-xl relative transition-all duration-300 ${showNotifs ? 'bg-slate-100 text-slate-900' : 'bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600'}`}
                     >
                         <Bell size={20} />
@@ -215,7 +259,7 @@ export default function AdminNavbar({ toggleSidebar, openMobile, admin }) {
                     {showProfile && (
                         <>
                             <div className="fixed inset-0 z-10" onClick={() => setShowProfile(false)} />
-                            <div className="absolute right-0 mt-3 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl z-20 py-2 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
+                            <div className="absolute right-0 mt-3 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl z-20 py-2 overflow-hidden">
                                 <div className="px-5 py-3 border-b border-slate-50 bg-slate-50/50 mb-1">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">Administrative Control</p>
                                 </div>

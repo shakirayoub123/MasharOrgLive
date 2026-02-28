@@ -3,11 +3,12 @@ const bcrypt = require("bcryptjs");
 
 const alumniSchema = new mongoose.Schema(
     {
-        name: {
+        full_name: {
             type: String,
             required: [true, "Name is required"],
             trim: true,
         },
+
         email: {
             type: String,
             required: [true, "Email is required"],
@@ -15,36 +16,94 @@ const alumniSchema = new mongoose.Schema(
             lowercase: true,
             trim: true,
         },
+
         password: {
             type: String,
             minlength: [6, "Password must be at least 6 characters"],
         },
+
         phone: { type: String, trim: true },
-        batch: { type: String, trim: true },
+        course: { type: String, trim: true },
+        completion_status: { type: String, trim: true },
+        completion_year: { type: String, trim: true },
 
-        // ── Profile fields ──────────────────────
-        bio: { type: String, maxlength: 300, default: "" },
-        city: { type: String, trim: true, default: "" },
-        country: { type: String, trim: true, default: "" },
-        linkedin: { type: String, trim: true, default: "" },
-        website: { type: String, trim: true, default: "" },
-        coachingSpecialty: { type: String, default: "Executive Coaching" },
-        certificationLevel: { type: String, default: "" },
-        graduationYear: { type: String, default: "" },
-        languages: { type: [String], default: [] },
-        availableForMentoring: { type: Boolean, default: false },
-        openToCollaboration: { type: Boolean, default: false },
-
-        status: {
+        account_status: {
             type: String,
             enum: ["pending", "approved", "rejected"],
             default: "pending",
         },
-        setPasswordToken: { type: String },
-        setPasswordExpires: { type: Date },
+
+        remember_token: { type: String, maxlength: 49, default: "" },
+
+        bio: { type: String, maxlength: 300, default: "" },
+        city: { type: String, trim: true, default: "" },
+        country: { type: String, trim: true, default: "" },
+        
+        languages: { type: [String], default: [] },
+
+        // 🟢 Chat Presence Fields
+        isOnline: {
+            type: Boolean,
+            default: false,
+            index: true
+        },
+
+        lastSeen: {
+            type: Date,
+            default: null
+        },
+
+        avatar: {
+            type: String,
+            default: "",
+        },
+
+        // ✅ BADGE TRACKING WITH FULL HISTORY
+        badges: [
+            {
+                badgeId: {
+                    type: String,
+                    required: true,
+                },
+                status: {
+                    type: String,
+                    enum: ["pending", "approved", "rejected"],
+                    default: "pending",
+                },
+                // Request timestamps
+                requestedAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                // Approval/Rejection timestamps
+                approvedAt: {
+                    type: Date,
+                    default: null,
+                },
+                approvedBy: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Admin',
+                    default: null,
+                },
+                rejectedAt: {
+                    type: Date,
+                    default: null,
+                },
+                rejectedBy: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Admin',
+                    default: null,
+                },
+            },
+        ],
     },
     { timestamps: true }
 );
+
+// ✅ Add indexes for faster badge queries
+alumniSchema.index({ 'badges.status': 1 });
+alumniSchema.index({ 'badges.approvedAt': 1 });
+alumniSchema.index({ 'badges.rejectedAt': 1 });
 
 // Hash password before saving
 alumniSchema.pre("save", async function () {

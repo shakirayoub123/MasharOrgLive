@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration Confirmation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', Arial, sans-serif; background-color: #F0F2F5; color: #1A1A2E; padding: 40px 16px; }
+        .email-wrapper { max-width: 600px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #E1E5ED; border-radius: 10px; }
+        .top-accent { height: 5px; background: linear-gradient(90deg, #F5A623 0%, #F7B733 100%); border-radius: 10px 10px 0 0; }
+        .email-header { background-color: #1A237E; padding: 32px 40px 28px; text-align: center; }
+        .brand-logo { font-size: 13px; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: #F5A623; margin-bottom: 14px; }
+        .header-title { font-size: 24px; font-weight: 700; color: #FFFFFF; line-height: 1.3; margin-bottom: 8px; }
+        .header-subtitle { font-size: 14px; color: #B0B8E8; }
+        .email-body { background-color: #FFFFFF; padding: 40px 40px 36px; }
+        .greeting { font-size: 16px; color: #333; margin-bottom: 16px; }
+        .greeting strong { color: #1A237E; font-weight: 600; }
+        .body-text { font-size: 15px; line-height: 1.75; color: #555; margin-bottom: 24px; }
+        .event-details { background-color: #F7F8FC; border-radius: 12px; border: 1px solid #E8EBFF; overflow: hidden; margin-bottom: 32px; }
+        .event-table { width: 100%; border-collapse: collapse; }
+        .event-table td { padding: 14px 20px; border-bottom: 1px solid #E8EBFF; font-size: 14px; }
+        .event-table tr:last-child td { border-bottom: none; }
+        .label-col { font-weight: 600; color: #1A237E; width: 120px; background-color: #F0F4FF; }
+        .val-col { color: #444; font-weight: 500; }
+        .cta-wrap { text-align: center; margin: 32px 0 28px; }
+        .cta-btn { display: inline-block; background-color: #1A237E; color: #FFFFFF; text-decoration: none; font-size: 15px; font-weight: 600; padding: 15px 40px; border-radius: 50px; letter-spacing: 0.02em; }
+        .signature { padding-top: 24px; border-top: 1px solid #EAECF5; margin-top: 24px; }
+        .sig-warm { font-size: 14px; color: #888; margin-bottom: 6px; }
+        .sig-name { font-size: 17px; font-weight: 700; color: #1A237E; }
+        .email-footer { background-color: #1A237E; border-radius: 0 0 10px 10px; padding: 24px 40px; text-align: center; }
+        .footer-note { font-size: 11px; color: #B0B8E8; line-height: 1.7; }
+        .footer-note a { color: #F5A623; text-decoration: none; }
+        @media (max-width: 480px) {
+            .email-header, .email-body { padding: 28px 24px; }
+            .header-title { font-size: 20px; }
+            .email-footer { padding: 20px 24px; }
+            .label-col { width: 90px; }
+        }
+    </style>
+</head>
+<body>
+<div class="email-wrapper">
+    <div class="top-accent"></div>
+    <div class="email-header">
+        <div class="brand-logo">Mashar Alumni System</div>
+        <h1 class="header-title">You're Registered!</h1>
+        <p class="header-subtitle">Your event registration is confirmed</p>
+    </div>
+    <div class="email-body">
+        <p class="greeting">Dear <strong><%= full_name.split(' ')[0] %></strong>,</p>
+        <div class="event-details">
+            <table class="event-table">
+                <tr>
+                    <td class="label-col">Event</td>
+                    <td class="val-col"><%= eventName %></td>
+                </tr>
+                <tr>
+                    <td class="label-col">Date</td>
+                    <td class="val-col"><%= eventDate %></td>
+                </tr>
+                <tr>
+                    <td class="label-col">Time</td>
+                    <td class="val-col"><%= eventTime %></td>
+                </tr>
+                <tr>
+                    <td class="label-col">Location</td>
+                    <td class="val-col"><%= location %></td>
+                </tr>
+                <tr>
+                    <td class="label-col">Platform</td>
+                    <td class="val-col"><%= platform %></td>
+                </tr>
+                <tr>
+                    <td class="label-col">Host</td>
+                    <td class="val-col"><%= host %></td>
+                </tr>
+            </table>
+        </div>
+        <div class="cta-wrap">
+            <a href="<%= meetingLink %>" class="cta-btn" style="color: #FFFFFF;">Join <%= platform %> Meeting</a>
+        </div>
+        <div class="signature">
+            <p class="sig-warm">Best regards,</p>
+            <div class="sig-name">Mashar Team</div>
+        </div>
+    </div>
+    <div class="email-footer">
+        <p class="footer-note">
+            © <%= new Date().getFullYear() %> Mashar Alumni System. All rights reserved.<br>
+            <a href="https://mashar.org/">mashar.org</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

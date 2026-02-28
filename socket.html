@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket Test</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+
+<input id="msg" placeholder="Type message" />
+<button onclick="send()">Send</button>
+
+<script>
+  const socket = io("https://www.mashar.org/");
+
+  const conversationId = "69a80c3de414d63822a95a0a";
+
+  socket.on("connect", () => {
+    console.log("Connected");
+    socket.emit("joinConversation", conversationId);
+  });
+
+  function send() {
+    const text = document.getElementById("msg").value;
+
+    socket.emit("sendMessage", {
+      conversationId,
+      senderId: "69a3f3740080188ce05f22c6",
+      senderType: "admin",
+      text
+    });
+  }
+
+  socket.on("receiveMessage", (data) => {
+    console.log("Received:", data);
+  });
+</script>
+
+</body>
+</html>
