@@ -11,8 +11,8 @@ import socket from "../../utils/socket";
 const GLOBAL_NOTIF_EVENT = "f9Tz3Kw8mXqP2nVbRjL5sYcDhA4eGuN";
 
 export default function AlumniLayout() {
-  const [collapsed,     setCollapsed]     = useState(false);
-  const [mobileOpen,    setMobileOpen]    = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);  // starts empty, populated by socket only
 
   const { user, loading } = useAuth();
@@ -103,19 +103,30 @@ export default function AlumniLayout() {
             <Outlet context={{ user, notifications, onMarkAllRead: markAllRead, onMarkOneRead: markOneRead, onClearAll: clearAll }} />
             {/* <ChatWidget /> */}
           </div>
-          
+
           {/* ── ALUMNI PANEL FOOTER ── */}
-          <footer className="mt-12 pt-6 border-t border-gray-200/60 flex flex-col md:flex-row items-center justify-between text-[13px] text-gray-500 font-poppins">
-            <div>
-              &copy; {new Date().getFullYear()} Mashar Alumni Network. All rights reserved.
-            </div>
-            <div className="flex items-center gap-6 mt-4 md:mt-0">
-              <a href="#" className="hover:text-[#0F1C80] transition">Privacy Policy</a>
-              <a href="#" className="hover:text-[#0F1C80] transition">Terms of Service</a>
-              <a href="#" className="hover:text-[#0F1C80] transition">Support</a>
-            </div>
-          </footer>
         </main>
+        
+        <footer className="shrink-0 px-7 py-3.5 border-t border-gray-200/80 bg-[#F9F4EC] flex flex-col md:flex-row items-center justify-between text-[12.5px] font-medium text-slate-500 z-10 relative" style={{ fontFamily: "'DM Sans', sans-serif", boxShadow: "0 -4px 10px rgba(0,0,0,0.02)" }}>
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 rounded-md bg-[#0F1C80] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                <svg className="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21.42 10.922a2 2 0 0 0-.019-3.838L12.83 4.3a2 2 0 0 0-1.66 0L2.6 7.08a2 2 0 0 0 0 3.832l8.57 2.77a2 2 0 0 0 1.66 0z"/>
+                  <path d="M22 10v6"/>
+                  <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>
+                </svg>
+              </div>
+              <p>
+                &copy; {new Date().getFullYear()} Mashar Alumni Network. All rights reserved.
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-6 mt-3 md:mt-0">
+              <a href="#" className="hover:text-[#0F1C80] transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-[#0F1C80] transition-colors">Terms of Service</a>
+              <a href="#" className="hover:text-[#0F1C80] transition-colors">Support</a>
+            </div>
+        </footer>
       </div>
     </div>
   );
