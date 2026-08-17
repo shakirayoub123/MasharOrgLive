@@ -216,7 +216,9 @@ export default function AlumniNavbar({ toggleSidebar, openMobile }) {
             className="hidden lg:flex w-9 h-9 bg-slate-100 rounded-lg items-center justify-center text-slate-600 font-bold hover:bg-slate-200 transition">
             ⇆
           </button>
-          <h2 className="font-serif text-lg font-semibold text-slate-800">Welcome back 👋</h2>
+          <h2 style={{ fontFamily: "'Sora', sans-serif", color: "#0F1C80" }} className="text-[17px] font-bold tracking-wide hidden sm:block">
+            Welcome back, {displayUser?.full_name?.split(" ")[0] || "Alumni"} 👋
+          </h2>
         </div>
 
         <div className="flex items-center gap-2">

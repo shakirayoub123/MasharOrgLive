@@ -66,10 +66,10 @@ export default function AlumniLogin() {
         return (
             <div className="min-h-screen flex flex-col bg-gray-100">
                 <Navbar />
-                <div className="flex-1 flex items-center justify-center px-4 py-10">
+                <div className="flex-1 flex items-center justify-center px-4 py-6">
                     <div className="w-full max-w-[620px] bg-white rounded-2xl shadow-xl overflow-hidden">
                         <div className="h-1.5 bg-[#F39300]" />
-                        <div className="bg-[#0F1C80] px-10 py-8">
+                        <div className="bg-[#0F1C80] px-10 py-6">
                             <h1 className="text-white font-spartan font-semibold text-[30px] tracking-wide text-center">
                                 Reset Password
                             </h1>
@@ -78,7 +78,7 @@ export default function AlumniLogin() {
                             </p>
                         </div>
 
-                        <form onSubmit={handleForgotPassword} className="px-10 py-10 space-y-6">
+                        <form onSubmit={handleForgotPassword} className="px-10 py-6 space-y-5">
                             {forgotMessage && (
                                 <div className="bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded-xl font-poppins text-[15px]">
                                     {forgotMessage}
@@ -137,11 +137,11 @@ export default function AlumniLogin() {
             <Navbar />
             <Toaster
                 position="top-center"
-            />            <div className="flex-1 flex items-center justify-center px-4 py-10">
+            />            <div className="flex-1 flex items-center justify-center px-4 py-6">
                 <div className="w-full max-w-[620px] bg-white rounded-2xl shadow-xl overflow-hidden">
                     <div className="h-1.5 bg-[#F39300]" />
-                    <div className="bg-[#0F1C80] px-10 py-8">
-                        <h1 className="text-white font-spartan font-semibold text-[30px] tracking-wide text-center">
+                    <div className="bg-[#0F1C80] px-10 py-6">
+                        <h1 className="text-white font-spartan font-semibold text-[28px] tracking-wide text-center">
                             Alumni Login
                         </h1>
                         <p className="text-blue-200 font-poppins text-[14px] text-center mt-1">
@@ -149,7 +149,7 @@ export default function AlumniLogin() {
                         </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="px-10 py-10 space-y-6">
+                    <form onSubmit={handleSubmit} className="px-10 py-6 space-y-5">
 
                         <div>
                             <label className={labelClass}>
