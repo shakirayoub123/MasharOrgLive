@@ -27,8 +27,12 @@ const TABS = [
 export default function ResourceLibrary() {
   const [searchParams] = useSearchParams();
 
+  const rawTab = searchParams.get("tab");
+  const tabMap = { articles: "library", events: "library", books: "reading", videos: "media" };
+  const initialTab = tabMap[rawTab] || rawTab || "reading";
+
   const [search, setSearch] = useState("");
-  const [sec, setSec] = useState(searchParams.get("tab") || "reading");
+  const [sec, setSec] = useState(initialTab);
 
   const handleTabChange = (key) => {
     setSec(key);
