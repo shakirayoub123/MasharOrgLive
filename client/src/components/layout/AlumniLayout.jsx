@@ -98,9 +98,23 @@ export default function AlumniLayout() {
           onClearAll={clearAll}
         />
 
-        <main className="flex-1 overflow-y-auto p-7 relative">
-          <Outlet context={{ user, notifications, onMarkAllRead: markAllRead, onMarkOneRead: markOneRead, onClearAll: clearAll }} />
-          {/* <ChatWidget /> */}
+        <main className="flex-1 overflow-y-auto p-7 relative flex flex-col">
+          <div className="flex-1">
+            <Outlet context={{ user, notifications, onMarkAllRead: markAllRead, onMarkOneRead: markOneRead, onClearAll: clearAll }} />
+            {/* <ChatWidget /> */}
+          </div>
+          
+          {/* ── ALUMNI PANEL FOOTER ── */}
+          <footer className="mt-12 pt-6 border-t border-gray-200/60 flex flex-col md:flex-row items-center justify-between text-[13px] text-gray-500 font-poppins">
+            <div>
+              &copy; {new Date().getFullYear()} Mashar Alumni Network. All rights reserved.
+            </div>
+            <div className="flex items-center gap-6 mt-4 md:mt-0">
+              <a href="#" className="hover:text-[#0F1C80] transition">Privacy Policy</a>
+              <a href="#" className="hover:text-[#0F1C80] transition">Terms of Service</a>
+              <a href="#" className="hover:text-[#0F1C80] transition">Support</a>
+            </div>
+          </footer>
         </main>
       </div>
     </div>

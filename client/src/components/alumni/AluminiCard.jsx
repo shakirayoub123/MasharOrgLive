@@ -94,19 +94,18 @@ export default function AlumniCard({ user, onClose }) {
 
       {/* ── Overlay ── */}
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center px-4"
+        className="fixed inset-0 z-50 overflow-y-auto flex"
         style={{ backgroundColor: "rgba(15,23,42,0.65)", backdropFilter: "blur(8px)" }}
       >
-        <div className="absolute inset-0" onClick={onClose} />
+        <div className="fixed inset-0" onClick={onClose} />
 
-        <div className="relative z-10 flex flex-col items-center gap-3 acard-pop">
+        <div className="relative z-10 m-auto flex flex-col items-center gap-3 acard-pop py-6 px-4 w-full">
 
           {/* ══════════════ CARD ══════════════ */}
           <div
             ref={cardRef}
-            className="overflow-hidden bg-white"
+            className="overflow-hidden bg-white w-full max-w-[330px]"
             style={{
-              width: 330,
               borderRadius: 16,
               fontFamily: "'Segoe UI', Tahoma, sans-serif",
               boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
@@ -118,26 +117,26 @@ export default function AlumniCard({ user, onClose }) {
               className="relative flex flex-col items-center"
               style={{
                 background: "linear-gradient(180deg,#0F1C80 0%,#1a2fa0 100%)",
-                paddingTop: 30,
-                paddingBottom: 22,
+                paddingTop: 24,
+                paddingBottom: 16,
               }}
             >
               {/* Subtle orange accent circle */}
               <div style={{
-                position: "absolute", bottom: -30, right: -30,
-                width: 100, height: 100, borderRadius: "50%",
+                position: "absolute", bottom: -20, right: -20,
+                width: 80, height: 80, borderRadius: "50%",
                 background: "rgba(243,137,0,0.12)", pointerEvents: "none",
               }} />
 
               {/* Circular avatar */}
               <div style={{
-                width: 88, height: 88,
+                width: 76, height: 76,
                 borderRadius: "50%",
-                border: "4px solid rgba(255,255,255,0.55)",
+                border: "3px solid rgba(255,255,255,0.55)",
                 overflow: "hidden",
                 background: "rgba(255,255,255,0.18)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                marginBottom: 12,
+                marginBottom: 10,
                 flexShrink: 0,
                 position: "relative", zIndex: 1,
               }}>
@@ -150,7 +149,7 @@ export default function AlumniCard({ user, onClose }) {
                     style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   />
                 ) : (
-                  <span style={{ color: "#fff", fontSize: 28, fontWeight: 800 }}>{initials}</span>
+                  <span style={{ color: "#fff", fontSize: 24, fontWeight: 800 }}>{initials}</span>
                 )}
               </div>
 
@@ -172,13 +171,13 @@ export default function AlumniCard({ user, onClose }) {
             <div style={{ height: 3, background: "linear-gradient(90deg,#0F1C80,#F38900)" }} />
 
             {/* Info rows */}
-            <div style={{ padding: "6px 22px 2px", background: "#fff" }}>
+            <div style={{ padding: "4px 20px 2px", background: "#fff" }}>
               {rows.map((r, i) => (
                 <div key={i} style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "flex-start",
-                  padding: "8px 0",
+                  padding: "6px 0",
                   borderBottom: i < rows.length - 1 ? "1px solid #f1f5f9" : "none",
                   gap: 12,
                 }}>
@@ -195,16 +194,16 @@ export default function AlumniCard({ user, onClose }) {
             {/* Logo footer */}
             <div style={{
               borderTop: "1px solid #f1f5f9",
-              padding: "14px 22px 18px",
+              padding: "10px 20px 14px",
               display: "flex", flexDirection: "column",
-              alignItems: "center", gap: 3,
+              alignItems: "center", gap: 2,
               background: "#fff",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
                 <img
                   src={FooterLogo}
                   alt="Alumni Portal"
-                  style={{ width: 100, height: 50, objectFit: "contain" }}
+                  style={{ width: 85, height: 40, objectFit: "contain" }}
                 />
               </div>
               <p style={{ fontSize: 10, color: "#94a3b8", fontWeight: 500, margin: 0, letterSpacing: "0.3px" }}>
@@ -218,12 +217,11 @@ export default function AlumniCard({ user, onClose }) {
           <button
             onClick={handleDownload}
             disabled={loading}
-            className="flex items-center justify-center gap-2 py-3 rounded-2xl
-              text-white text-sm font-extrabold tracking-wide
+            className="flex items-center justify-center gap-2 py-2.5 rounded-xl
+              text-white text-sm font-extrabold tracking-wide w-full max-w-[330px]
               transition-all duration-150 hover:opacity-90 hover:-translate-y-0.5
               disabled:opacity-60 disabled:cursor-not-allowed"
             style={{
-              width: 300,
               background: "linear-gradient(135deg,#0F1C80 0%,#F38900 100%)",
               boxShadow: "0 8px 28px rgba(15,28,128,0.35)",
             }}

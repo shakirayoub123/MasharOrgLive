@@ -259,6 +259,8 @@ export default function LatestResources({ onNavigate }) {
       {/* ── Outer flex wrapper with LEFT gradient bar outside the card ── */}
       <div style={{
         display: "flex",
+        width: "100%",
+        minWidth: 0,
         borderRadius: 18,
         overflow: "hidden",
         boxShadow: "0 2px 12px rgba(15,28,128,.07)",
@@ -279,6 +281,7 @@ export default function LatestResources({ onNavigate }) {
           borderLeft: "none",
           borderRadius: "0 18px 18px 0",
           flex: 1,
+          minWidth: 0,
           overflow: "visible",
         }}>
 
