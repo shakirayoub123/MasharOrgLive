@@ -99,10 +99,19 @@ function MemberPopup({ name, onClose, allMembers = [] }) {
                 </div>
                 <div className="px-5 pb-5" style={{ overflow: "visible" }}>
                     <div className="flex items-end gap-3 mb-3" style={{ marginTop: -32 }}>
-                        <div className="rounded-2xl border-4 border-white shadow-lg flex items-center justify-center font-black shrink-0"
-                            style={{ width: 64, height: 64, background: bg, color: fg, fontSize: 22, zIndex: 1, position: "relative" }}>
-                            {initials(name)}
-                        </div>
+                        {member?.avatar ? (
+                            <img
+                                src={resolveAssetUrl(member.avatar)}
+                                alt={name}
+                                className="rounded-2xl border-4 border-white shadow-lg shrink-0"
+                                style={{ width: 64, height: 64, objectFit: "cover", zIndex: 1, position: "relative" }}
+                            />
+                        ) : (
+                            <div className="rounded-2xl border-4 border-white shadow-lg flex items-center justify-center font-black shrink-0"
+                                style={{ width: 64, height: 64, background: bg, color: fg, fontSize: 22, zIndex: 1, position: "relative" }}>
+                                {initials(name)}
+                            </div>
+                        )}
                         {member && (
                             <div className="pb-1">
                                 <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${member.isOnline ? "bg-emerald-50 text-emerald-600 border border-emerald-200" : "bg-gray-100 text-gray-400 border border-gray-200"}`}>
@@ -148,8 +157,20 @@ function MemberPopup({ name, onClose, allMembers = [] }) {
 }
 
 // ─── AVATAR ──────────────────────────────────────────────────────────────────
-function Av({ name, size = 36 }) {
+function Av({ name, size = 36, avatar }) {
     const { bg, fg } = avatarColor(name);
+    const avatarSrc = avatar ? resolveAssetUrl(avatar) : null;
+
+    if (avatarSrc) {
+        return (
+            <img
+                src={avatarSrc}
+                alt={name}
+                className="rounded-full shrink-0 select-none"
+                style={{ width: size, height: size, minWidth: size, objectFit: "cover" }}
+            />
+        );
+    }
     return (
         <div className="rounded-full flex items-center justify-center font-black shrink-0 select-none"
             style={{ width: size, height: size, minWidth: size, background: bg, color: fg, fontSize: size * 0.32 }}>
@@ -235,7 +256,7 @@ function MentionInput({ value, onChange, placeholder, rows = 1, className = "", 
                     {suggestions.map((m, i) => (
                         <div key={m._id} onMouseDown={() => insertMention(m)}
                             className={`flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors ${i === selIdx ? "bg-[#EEF0FF]" : "hover:bg-gray-50"}`}>
-                            <Av name={m.full_name} size={26} />
+                            <Av name={m.full_name} size={26} avatar={m.avatar} />
                             <div>
                                 <p className="text-xs font-bold text-[#0D1240]">{m.full_name}</p>
                                 <p className="text-[10px] text-gray-400">{m.course}</p>
@@ -252,7 +273,7 @@ function MentionInput({ value, onChange, placeholder, rows = 1, className = "", 
 function Comment({ c, onMentionClick, allMembers = [] }) {
     return (
         <div className="flex gap-2 items-start">
-            <Av name={c.author.full_name} size={28} />
+            <Av name={c.author.full_name} size={28} avatar={c.author.avatar} />
             <div className="flex-1 min-w-0">
                 <div className="bg-[#EEF0FF] rounded-2xl rounded-tl-sm px-3 py-2">
                     <span className="text-xs font-bold text-[#0D1240]">{c.author.full_name}</span>
@@ -286,7 +307,7 @@ function PostModal({ post, onClose, onLike, onComment, onPin, pinnedIds, current
                 style={{ animation: "modalIn .2s ease" }}>
                 <div className="h-[3px]" style={{ background: "linear-gradient(90deg,#0F1C80,#F38900)" }} />
                 <div className="flex items-center gap-3 px-4 py-3 border-b border-[#DDE0FF] shrink-0">
-                    <Av name={post.author.full_name} size={40} />
+                    <Av name={post.author.full_name} size={40} avatar={post.author.avatar} />
                     <div className="flex-1 min-w-0">
                         <p className="font-black text-[#0D1240] text-sm truncate">{post.author.full_name}</p>
                         <p className="text-xs text-gray-400 mt-0.5">
@@ -346,7 +367,7 @@ function PostModal({ post, onClose, onLike, onComment, onPin, pinnedIds, current
                 </div>
                 {post.commentsOpen && (
                     <div className="px-4 py-3 border-t border-[#EEF0FF] flex gap-2 items-end shrink-0">
-                        <Av name={currentUser?.full_name || ""} size={30} />
+                        <Av name={currentUser?.full_name || ""} size={30} avatar={currentUser?.avatar} />
                         <MentionInput value={txt} onChange={setTxt} placeholder="Write a comment… Use @ to mention"
                             onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } }} members={members} />
                         <button onClick={submit} disabled={!txt.trim()}
@@ -385,7 +406,7 @@ function ComposeModal({ activeTab, onPost, onClose, currentUser, members = [] })
                 style={{ animation: "modalIn .2s ease" }}>
                 <div className="h-[3px]" style={{ background: "linear-gradient(90deg,#0F1C80,#F38900)" }} />
                 <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[#EEF0FF]">
-                    <Av name={currentUser?.full_name || ""} size={40} />
+                    <Av name={currentUser?.full_name || ""} size={40} avatar={currentUser?.avatar} />
                     <div className="flex-1 min-w-0">
                         <p className="font-black text-[#0D1240] text-sm">{currentUser?.full_name}</p>
                         <p className="text-[11px] text-gray-400">Posting in <span className="text-[#F38900] font-semibold">Mashar Alumni Community</span></p>
@@ -460,15 +481,15 @@ function PostCard({ post, onLike, onOpen, onPin, pinnedIds, allMembers = [] }) {
     // ✅ Add pending status badge for user's own posts
     const { user } = useAuth();
     const isOwnPost = user && post.author._id === user._id;
-    const pendingBadge = isOwnPost && post.approvalStatus === "pending" ? 
+    const pendingBadge = isOwnPost && post.approvalStatus === "pending" ?
         <span className="text-[10px] font-bold text-orange-700 bg-orange-50 border border-orange-200 rounded-full px-2 py-0.5">⏳ Pending Approval</span> : null;
-    const rejectedBadge = isOwnPost && post.approvalStatus === "rejected" ? 
+    const rejectedBadge = isOwnPost && post.approvalStatus === "rejected" ?
         <span className="text-[10px] font-bold text-red-700 bg-red-50 border border-red-200 rounded-full px-2 py-0.5">❌ Rejected</span> : null;
 
     return (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#DDE0FF] transition-all duration-200 overflow-hidden group">
             <div className="flex items-start gap-3 px-4 pt-4 pb-0">
-                <Av name={post.author.full_name} size={42} />
+                <Av name={post.author.full_name} size={42} avatar={post.author.avatar} />
                 <div className="flex-1 min-w-0 pt-0.5">
                     <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-black text-[#0D1240] text-sm leading-none">{post.author.full_name}</span>
@@ -660,7 +681,7 @@ function RightBar({ pinnedPosts, topMembers = [] }) {
                         {topMembers.slice(0, 5).map((m) => (
                             <div key={m._id} className="flex items-center gap-2.5 px-2 py-2 rounded-xl cursor-pointer hover:bg-[#EEF0FF] transition-colors">
                                 <div className="relative shrink-0">
-                                    <Av name={m.full_name} size={30} />
+                                    <Av name={m.full_name} size={30} avatar={m.avatar} />
                                     {m.isOnline && <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white" />}
                                 </div>
                                 <div className="flex-1 min-w-0">

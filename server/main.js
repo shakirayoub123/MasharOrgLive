@@ -1,6 +1,7 @@
 const express = require("express");
 const dns = require("dns");
 const path = require("path");
+const fs = require("fs");
 
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
@@ -66,7 +67,12 @@ app.use((req, res, next) => {
         return res.sendStatus(404);
     }
 
-    res.sendFile(path.join(distPath, "index.html"));
+    const indexPath = path.join(distPath, "index.html");
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        res.status(404).send("API is running (No frontend build found context)");
+    }
 });
 
 const { startServer } = require("./helpers");
