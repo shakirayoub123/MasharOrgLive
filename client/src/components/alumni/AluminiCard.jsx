@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import FooterLogo from "../../assets/masharBlackFinal.svg?url";
@@ -45,12 +45,12 @@ export default function AlumniCard({ user, onClose }) {
 
   const rows = [
     { label: "Alumni ID", value: user._id || user.id || "N/A" },
-    { label: "Course",    value: course },
+    { label: "Course", value: course },
     { label: "Graduated", value: graduated },
-    { label: "Phone",     value: user.phone || "N/A" },
-    { label: "Email",     value: user.email },
-    { label: "Location",  value: location },
-    { label: "Joined",    value: `${joinYear}` },
+    { label: "Phone", value: user.phone || "N/A" },
+    { label: "Email", value: user.email },
+    { label: "Location", value: location },
+    { label: "Joined", value: `${joinYear}` },
   ];
 
   /* ── PDF export — white A4, card centered ───── */
@@ -111,7 +111,7 @@ export default function AlumniCard({ user, onClose }) {
         style={{ backgroundColor: "rgba(15,23,42,0.65)", backdropFilter: "blur(8px)" }}
       >
         <div className="fixed inset-0" onClick={onClose} />
-        
+
         {/* Floating Close Button */}
         <button
           onClick={onClose}
