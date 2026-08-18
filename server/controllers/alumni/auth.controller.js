@@ -58,7 +58,7 @@ class AuthController extends BaseController {
             }
 
             // 2. Name Heuristics Check (5+ consecutive consonants)
-            if (/(?![aeiouy])[a-z]{5,}/i.test(full_name)) {
+            if (/[bcdfghjklmnpqrstvwxz]{5,}/i.test(full_name)) {
                 return this.success(res, "Registration submitted successfully! You will receive an email once approved.", {});
             }
 
@@ -109,7 +109,7 @@ class AuthController extends BaseController {
 
         const { getAdminEmails } = require("../../helpers");
         const adminEmails = getAdminEmails();
-        
+
         // Send notification to all admin emails
         adminEmails.forEach(adminEmail => {
             mailer.emit("sendEmail", {
