@@ -20,7 +20,13 @@
             padding: 40px 16px;
         }
 
-        .email-wrapper { max-width: 600px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #E1E5ED; border-radius: 10px; }
+        .email-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #E1E5ED;
+            border-radius: 10px;
+        }
 
         /* Orange top accent bar */
         .top-accent {
@@ -305,47 +311,80 @@
         <div class="email-header">
             <div class="brand-logo">Mashar Alumni Network</div>
             <h1 class="header-title">Your Application Has Been Received</h1>
-            <p class="header-subtitle">We've successfully received your alumni application here's what to expect next.
-            </p>
         </div>
 
         <!-- Body -->
         <div class="email-body">
 
-            <p class="greeting">Dear <strong><%= full_name.split(' ')[0] %></strong>,</p>
+            <p class="greeting">Dear <strong>
+                    <%= full_name.split(' ')[0] %></strong>,</p>
 
             <p class="body-text">
-                Thank you for applying to join the <strong style="color:#1A237E;">Mashar Alumni Network</strong>. We have successfully received your application.
+                Thank you for applying to join the Mashar Alumni Network.
             </p>
 
             <p class="body-text">
-                Our team will review your eligibility, and you can expect a decision within <strong>5–7 business days</strong>. Once approved, you will receive a confirmation email with your dashboard access and next steps.
+                We have received your submission and will review your eligibility based on your completed program and certification status.
             </p>
 
-            <div class="cta-wrap">
-                <a href="https://mashar.org/" class="cta-btn" style="color: #FFFFFF;">Visit Mashar.org</a>
-            </div>
+            <p class="body-text">
+                You will receive a confirmation email once your alumni access has been activated.
+            </p>
+
+            <h3 style="font-size: 18px; color: #1A237E; margin: 28px 0 16px;">What Happens Next?</h3>
+            <ul style="color: #555; line-height: 1.75; font-size: 15px; margin-bottom: 20px; padding-left: 20px;">
+                <li style="margin-bottom: 8px;">Our team verifies your program completion and year.</li>
+                <li style="margin-bottom: 8px;">Your alumni status and badge level are confirmed.</li>
+                <li style="margin-bottom: 8px;">You will receive login access and guidance to complete your profile.</li>
+            </ul>
+
+            <p class="body-text">
+                Applications are typically reviewed within a few business days.
+            </p>
+
+            <h3 style="font-size: 18px; color: #1A237E; margin: 28px 0 16px;">A Gentle Reminder!</h3>
+            
+            <p class="body-text">
+                The Mashar Alumni Network is more than a professional space. It is a continuation of your professional journey.
+            </p>
+            
+            <p class="body-text" style="margin-bottom: 12px;">
+                As a member, you are part of a community grounded in:
+            </p>
+            <ul style="color: #555; line-height: 1.75; font-size: 15px; margin-bottom: 24px; padding-left: 36px; list-style-type: disc;">
+                <li>Ethical practice</li>
+                <li>Reflection and growth</li>
+                <li>Shared responsibility</li>
+                <li>Conscious leadership</li>
+            </ul>
+
+            <p class="body-text">
+                We are honored to continue this journey with you.
+            </p>
 
             <div class="signature">
                 <p class="sig-warm">Warm regards,</p>
-                <div class="sig-name">Mashar Alumni Team</div>
-                <div class="sig-role">Alumni Relations &amp; Community</div>
-                <a href="https://mashar.org/" class="sig-link">mashar.org</a>
+                <div class="sig-name" style="margin-bottom: 4px;">Mashar Team</div>
+                <div class="sig-role" style="font-weight: 600; font-size: 13px; color: #555; text-transform: none; letter-spacing: normal;">Mashar Coaching &middot; Training &middot; Consultancy</div>
+                
+                <div style="margin-top: 20px; font-size: 14px; line-height: 1.8;">
+                    <div>🌐 <a href="https://www.mashar.org" style="color: #0B5299; text-decoration: none;">www.mashar.org</a></div>
+                    <div>✉️ <a href="mailto:masharteam@mashar.org" style="color: #0B5299; text-decoration: none;">masharteam@mashar.org</a></div>
+                    <div>📱 +1(613)2613210 WhatsApp</div>
+                </div>
             </div>
 
         </div>
 
         <!-- Footer -->
         <div class="email-footer">
-            <div class="footer-links">
-                <a href="https://mashar.org/">Website</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Contact Us</a>
-                <a href="#">Unsubscribe</a>
+            <div style="color: #B0B8E8; font-size: 13px; margin-bottom: 16px;">
+                Follow us: <a href="#" style="color: #FFFFFF; text-decoration: none; margin: 0 4px;">LinkedIn</a> | <a href="#" style="color: #FFFFFF; text-decoration: none; margin: 0 4px;">Instagram</a>
             </div>
+            <div style="height: 1px; background: rgba(255,255,255,0.2); margin: 0 auto 16px; width: 60%;"></div>
             <p class="footer-note">
-                You're receiving this because you applied to the Mashar Alumni Network.<br>
-                © 2025 Mashar. All rights reserved. · <a href="https://mashar.org/">mashar.org</a>
+                You' re receiving this because you applied to the Mashar Alumni Network.<br>
+                        © 2025 Mashar. All rights reserved. · <a href="https://mashar.org/">mashar.org</a>
             </p>
         </div>
 
