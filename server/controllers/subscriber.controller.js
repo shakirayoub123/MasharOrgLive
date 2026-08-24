@@ -49,6 +49,22 @@ exports.subscribe = async (req, res) => {
       downloadLink
     });
 
+    try {
+      const actionLink = baseUrl + "/admin/subscribers";
+      await sendMail(
+        "elise@mashar.org",
+        "New Newsletter Subscriber",
+        "news_announcement",
+        {
+          name: "Elise",
+          message: `You have a new subscriber: <strong>${name}</strong> (${lowercaseEmail}) from <strong>${company || 'N/A'}</strong>.`,
+          actionLink
+        }
+      );
+    } catch (mailErr) {
+      console.error("Failed to notify admin of new subscriber:", mailErr);
+    }
+
     res.status(201).json({ success: true, message: "Subscribed successfully!", data: subscriber });
   } catch (err) {
     console.error("Subscriber.subscribe error:", err.message);
