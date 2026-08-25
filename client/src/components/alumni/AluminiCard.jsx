@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import FooterLogo from "../../assets/masharBlackFinal.svg?url";
@@ -17,6 +17,19 @@ export default function AlumniCard({ user, onClose }) {
   const cardRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [logoSvg, setLogoSvg] = useState("");
+
+  useEffect(() => {
+    // Fetch and inline the SVG so html2canvas renders it correctly
+    fetch(FooterLogo)
+      .then((res) => res.text())
+      .then((svg) => {
+        // Force the SVG to scale inside its container
+        const scaledSvg = svg.replace('<svg', '<svg style="width: 100%; height: 100%;"');
+        setLogoSvg(scaledSvg);
+      })
+      .catch((err) => console.error("Failed to load footer logo SVG", err));
+  }, []);
 
   /* ── derived fields ─────────────────────────── */
   const initials = user.full_name?.split(" ").filter(Boolean).map((w) => w[0]).join("").toUpperCase().slice(0, 2) ?? "?";
@@ -32,12 +45,12 @@ export default function AlumniCard({ user, onClose }) {
 
   const rows = [
     { label: "Alumni ID", value: user._id || user.id || "N/A" },
-    { label: "Course",    value: course },
+    { label: "Course", value: course },
     { label: "Graduated", value: graduated },
-    { label: "Phone",     value: user.phone || "N/A" },
-    { label: "Email",     value: user.email },
-    { label: "Location",  value: location },
-    { label: "Joined",    value: `${joinYear}` },
+    { label: "Phone", value: user.phone || "N/A" },
+    { label: "Email", value: user.email },
+    { label: "Location", value: location },
+    { label: "Joined", value: `${joinYear}` },
   ];
 
   /* ── PDF export — white A4, card centered ───── */
@@ -98,6 +111,15 @@ export default function AlumniCard({ user, onClose }) {
         style={{ backgroundColor: "rgba(15,23,42,0.65)", backdropFilter: "blur(8px)" }}
       >
         <div className="fixed inset-0" onClick={onClose} />
+
+        {/* Floating Close Button */}
+        <button
+          onClick={onClose}
+          className="fixed top-4 right-4 md:top-6 md:right-8 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/25 text-white text-xl font-bold transition-all backdrop-blur-sm border border-white/20 shadow-lg"
+          title="Close"
+        >
+          ✕
+        </button>
 
         <div className="relative z-10 m-auto flex flex-col items-center gap-3 acard-pop py-6 px-4 w-full">
 
@@ -200,11 +222,18 @@ export default function AlumniCard({ user, onClose }) {
               background: "#fff",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-                <img
-                  src={FooterLogo}
-                  alt="Alumni Portal"
-                  style={{ width: 85, height: 40, objectFit: "contain" }}
-                />
+                {logoSvg ? (
+                  <div
+                    dangerouslySetInnerHTML={{ __html: logoSvg }}
+                    style={{ width: 85, height: 40, display: "flex", alignItems: "center", justifyContent: "center" }}
+                  />
+                ) : (
+                  <img
+                    src={FooterLogo}
+                    alt="Alumni Portal"
+                    style={{ width: 85, height: 40, objectFit: "contain" }}
+                  />
+                )}
               </div>
               <p style={{ fontSize: 10, color: "#94a3b8", fontWeight: 500, margin: 0, letterSpacing: "0.3px" }}>
                 Powered by Alumni Management System

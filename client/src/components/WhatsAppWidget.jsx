@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function WhatsAppWidget({ phone = "971501234567", message = "Hello! I need help with Mashar.", autoShowDelay = null }) {
     const [open, setOpen] = useState(false);
@@ -42,10 +43,7 @@ export default function WhatsAppWidget({ phone = "971501234567", message = "Hell
                     onClick={openWhatsApp}
                     className="bg-secondary hover:scale-105 transition-transform shadow-lg text-white rounded-full w-14 h-14 flex items-center justify-center"
                 >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20.52 3.48A11.94 11.94 0 0 0 12.01.03C6.47.03 1.8 3.94.53 9.02c-.7 2.5-.35 5.08.98 7.42L0 24l7.8-1.95c2.26 1.22 4.83 1.86 7.45 1.86h.01c5.55 0 10.21-3.9 11.48-8.98.62-2.2.48-4.49-.21-6.51z" fill="#fff" />
-                        <path d="M17.6 14.95c-.32-.16-1.88-.93-2.18-1.03-.3-.1-.52-.16-.74.16-.22.32-.86 1.03-1.06 1.24-.2.21-.4.23-.74.08-.32-.16-1.36-.5-2.59-1.6-.96-.86-1.6-1.93-1.78-2.26-.18-.33-.02-.51.13-.67.14-.14.32-.36.48-.54.16-.18.21-.3.32-.5.1-.2.05-.37-.03-.53-.08-.16-.74-1.78-1.02-2.43-.27-.64-.55-.55-.74-.56l-.63-.01c-.21 0-.54.08-.82.37-.27.28-1.04 1.01-1.04 2.46 0 1.45 1.06 2.85 1.21 3.05.15.2 2.09 3.2 5.06 4.49 3.01 1.3 3.01.87 3.55.82.54-.05 1.76-.72 2.01-1.41.25-.69.25-1.28.17-1.41-.08-.13-.3-.2-.62-.36z" fill="#fff" />
-                    </svg>
+                    <FaWhatsapp size={28} color="#fff" />
                 </button>
             </div>
 
@@ -57,10 +55,7 @@ export default function WhatsAppWidget({ phone = "971501234567", message = "Hell
                         <button aria-label="Close" onClick={markSeen} className="absolute top-3 right-3 text-gray-500">×</button>
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-white flex-shrink-0">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M20.52 3.48A11.94 11.94 0 0 0 12.01.03C6.47.03 1.8 3.94.53 9.02c-.7 2.5-.35 5.08.98 7.42L0 24l7.8-1.95c2.26 1.22 4.83 1.86 7.45 1.86h.01c5.55 0 10.21-3.9 11.48-8.98.62-2.2.48-4.49-.21-6.51z" fill="#fff" />
-                                    <path d="M17.6 14.95c-.32-.16-1.88-.93-2.18-1.03-.3-.1-.52-.16-.74.16-.22.32-.86 1.03-1.06 1.24-.2.21-.4.23-.74.08-.32-.16-1.36-.5-2.59-1.6-.96-.86-1.6-1.93-1.78-2.26-.18-.33-.02-.51.13-.67.14-.14.32-.36.48-.54.16-.18.21-.3.32-.5.1-.2.05-.37-.03-.53-.08-.16-.74-1.78-1.02-2.43-.27-.64-.55-.55-.74-.56l-.63-.01c-.21 0-.54.08-.82.37-.27.28-1.04 1.01-1.04 2.46 0 1.45 1.06 2.85 1.21 3.05.15.2 2.09 3.2 5.06 4.49 3.01 1.3 3.01.87 3.55.82.54-.05 1.76-.72 2.01-1.41.25-.69.25-1.28.17-1.41-.08-.13-.3-.2-.62-.36z" fill="#fff" />
-                                </svg>
+                                <FaWhatsapp size={24} color="#fff" />
                             </div>
 
                             <div className="flex-1">

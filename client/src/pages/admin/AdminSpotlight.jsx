@@ -194,7 +194,7 @@ export default function AdminSpotlight() {
             {showForm && (
                 <>
                     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40" onClick={() => setShowForm(false)} />
-                    <div className="fixed right-0 top-0 h-full w-full max-w-2xl bg-white z-50 shadow-2xl flex flex-col overflow-hidden"
+                    <div className="fixed right-0 top-0 bottom-0 w-full max-w-3xl bg-white z-50 shadow-2xl flex flex-col overflow-hidden"
                         style={{ animation: "slideIn 0.3s cubic-bezier(.16,1,.3,1)" }}>
                         <style>{`@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }`}</style>
 
@@ -208,10 +208,10 @@ export default function AdminSpotlight() {
                         </div>
 
                         {/* Two-column body */}
-                        <div className="flex-1 overflow-hidden flex">
+                        <div className="flex-1 min-h-0 overflow-y-auto md:overflow-hidden flex flex-col md:flex-row">
 
                             {/* Left: Form */}
-                            <div className="w-1/2 border-r border-slate-100 overflow-y-auto p-6 space-y-5">
+                            <div className="w-full md:w-1/2 border-b md:border-b-0 md:border-r border-slate-100 md:overflow-y-auto p-6 space-y-5">
 
                                 {/* Type Selector */}
                                 <div className="space-y-2">
@@ -321,7 +321,7 @@ export default function AdminSpotlight() {
                             </div>
 
                             {/* Right: Live Preview */}
-                            <div className="w-1/2 bg-slate-50/60 overflow-y-auto p-6 flex flex-col gap-4">
+                            <div className="w-full md:w-1/2 bg-slate-50/60 md:overflow-y-auto p-6 flex flex-col gap-4">
                                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Live Preview</p>
                                 <AnnouncementPreview form={form} />
                                 <p className="text-xs text-slate-400 text-center mt-auto pt-4 border-t border-slate-200 font-medium">

@@ -51,12 +51,12 @@ function BookCard({ book, onEdit, onDelete }) {
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
 
             {/* Cover — plain white/light-grey bg, image floats with shadow */}
-            <div className="relative bg-slate-50 flex items-center justify-center p-5 flex-shrink-0" style={{ minHeight: 220 }}>
+            <div className="relative bg-slate-50 flex items-center justify-center p-4 flex-shrink-0 h-[200px]">
                 {book.cover_image ? (
                     <img
                         src={resolveImage(book.cover_image)}
                         alt={book.heading}
-                        className="h-44 w-auto object-contain drop-shadow-lg group-hover:scale-[1.03] transition-transform duration-500 rounded"
+                        className="h-full w-auto object-contain drop-shadow-md group-hover:scale-[1.03] transition-transform duration-500 rounded-sm"
                         onError={(e) => { e.target.onerror = null; e.target.style.display = "none"; }}
                     />
                 ) : (
@@ -96,13 +96,13 @@ function BookCard({ book, onEdit, onDelete }) {
 
             {/* Content */}
             <div className="flex flex-col flex-1 px-5 pt-4 pb-5">
-                <h2 className="text-sm font-black text-slate-900 leading-snug line-clamp-2 mb-1.5">
+                <h2 className="text-[15px] font-black text-slate-900 leading-snug line-clamp-2 mb-1">
                     {book.heading}
                 </h2>
-                <p className="text-xs font-semibold text-indigo-500 mb-3 line-clamp-1">
+                <p className="text-[13px] font-bold text-indigo-500 mb-3 line-clamp-1">
                     {book.author}
                 </p>
-                <p className="text-xs text-slate-500 leading-relaxed line-clamp-3 flex-1 mb-5">
+                <p className="text-[12.5px] text-slate-500 leading-relaxed line-clamp-3 flex-1 mb-5">
                     {book.description}
                 </p>
 
@@ -111,7 +111,7 @@ function BookCard({ book, onEdit, onDelete }) {
                     href={book.amazonLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-black bg-indigo-600 hover:bg-indigo-700 text-white transition-all shadow-lg shadow-indigo-200"
+                    className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-[13px] font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-all shadow-md hover:shadow-lg shadow-indigo-200"
                 >
                     <ShoppingBag size={14} />
                     Buy on Amazon
@@ -125,7 +125,7 @@ function BookCard({ book, onEdit, onDelete }) {
 function SkeletonCard() {
     return (
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden animate-pulse flex flex-col">
-            <div className="bg-slate-100 flex-shrink-0" style={{ minHeight: 220 }} />
+            <div className="bg-slate-100 flex-shrink-0 h-[200px]" />
             <div className="px-5 pt-4 pb-5 space-y-3">
                 <div className="h-4 bg-slate-100 rounded-lg w-5/6" />
                 <div className="h-3 bg-slate-100 rounded-lg w-1/2" />
@@ -247,7 +247,7 @@ export default function BookList() {
                     </div>
 
                     <div className="p-6">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {fetching ? (
                                 Array.from({ length: 10 }).map((_, i) => <SkeletonCard key={i} />)
                             ) : books.length > 0 ? (

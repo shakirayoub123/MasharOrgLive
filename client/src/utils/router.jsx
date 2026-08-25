@@ -44,6 +44,7 @@ import UploadBooks from "../pages/admin/UploadBooks.jsx";
 import UploadEvents from "../pages/admin/UploadEvents.jsx";
 import AdminDiscussion from "../pages/admin/AdminDiscussion.jsx";
 import AdminSubscribers from "../pages/admin/AdminSubscribers.jsx";
+import AdminDiscovery from "../pages/admin/AdminDiscovery.jsx";
 
 // ── Alumni Pages ──
 import AlumniDashboard from "../components/alumni/AlumniDashboard.jsx";
@@ -147,6 +148,7 @@ const browserRoutes = createBrowserRouter([
       { path: "event/requests", element: <AdminEventRequests /> },
       { path: "contact/requests", element: <AdminContactRequests /> },
       { path: "subscribers", element: <AdminSubscribers /> },
+      { path: "discovery", element: <AdminDiscovery /> },
 
 
 

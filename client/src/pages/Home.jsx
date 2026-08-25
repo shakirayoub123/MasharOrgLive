@@ -37,7 +37,7 @@ import GlobalSection from "../components/logos2";
 import DiscoveryModal from "../Models/DiscoveryModal.jsx";
 import CornorGroup from "../assets/CornorGroup.png";
 import LeftCornorGroup from "../assets/LeftCornorGroup.png";
-import WhatsAppWidget from "../components/WhatsAppWidget";
+
 
 const faqs = [
     {
@@ -529,8 +529,6 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* WhatsApp connect widget */}
-            <WhatsAppWidget phone="16132613210" message="Hi, I saw your site and would like to know more." />
 
             {/* evolve section */}
             <section className="px-6 md:px-10 lg:px-16 py-16 bg-white flex flex-col md:flex-row items-center justify-center gap-12 max-w-7xl mx-auto">

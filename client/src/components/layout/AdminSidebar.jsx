@@ -104,6 +104,7 @@ export default function AdminSidebar({ collapsed, mobileOpen, closeMobile }) {
                     {/* <Item to="/admin/messages" icon={<MessageSquare size={20} />} label="Messages" collapsed={collapsed} /> */}
                     <Item to="/admin/spotlight" icon={<FileText size={20} />} label="Spotlight" collapsed={collapsed} />
                     <Item to="/admin/subscribers" icon={<Mail size={20} />} label="Subscribers" collapsed={collapsed} />
+                    <Item to="/admin/discovery" icon={<MessageSquare size={20} />} label="Discovery Requests" collapsed={collapsed} />
 
                     <Section label="Resources" collapsed={collapsed} />
 

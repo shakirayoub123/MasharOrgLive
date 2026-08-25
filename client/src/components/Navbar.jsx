@@ -17,14 +17,14 @@ const Navbar = () => {
     return (
         <div className="w-full font-poppins bg-white">
             {/* Main Navbar */}
-            <div className="max-w-7xl mx-auto flex justify-between items-center md:px-6 py-2 relative">
+            <div className="max-w-7xl mx-auto flex justify-between items-center md:px-6 py-0 relative">
 
                 {/* Logo */}
                 <NavLink to="/" className="flex items-center">
                     <img
                         src={logoMashar}
                         alt="Mashar Logo"
-                        className="w-28 md:w-40 h-auto object-contain"
+                        className="w-28 md:w-[150px] lg:w-[170px] h-auto object-contain -mt-2 md:-mt-4"
                     />
                 </NavLink>
 
@@ -81,7 +81,7 @@ const Navbar = () => {
 
                     {/* Language Dropdown */}
                     <div className="relative">
-                    
+
 
                         {langOpen && (
                             <div className="absolute top-full right-0 mt-2 w-auto bg-white py-2 z-[60] shadow-md">
