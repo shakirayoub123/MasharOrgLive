@@ -1091,13 +1091,15 @@ transition-colors duration-300 group-hover:text-[#F39300]">
 
                         {/* Founder Info */}
                         <div className="flex flex-col items-center mt-2">
-                            <div className="relative group mb-4">
+                            <div className="relative group mb-4 mx-auto w-32 h-32 md:w-36 md:h-36">
                                 <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                <img
-                                    src={founderImg}
-                                    alt="Raja Allaho"
-                                    className="relative w-32 h-32 md:w-36 md:h-36 object-cover rounded-full border-4 border-white shadow-xl transition-transform duration-500 group-hover:scale-105"
-                                />
+                                <div className="relative w-full h-full rounded-full border-4 border-white shadow-xl overflow-hidden">
+                                    <img
+                                        src={founderImg}
+                                        alt="Raja Allaho"
+                                        className="w-full h-full object-cover object-top scale-[1.25] origin-top transition-transform duration-500 group-hover:scale-[1.35]"
+                                    />
+                                </div>
                             </div>
                             <h3 className="text-[22px] font-semibold font-poppins text-primary mb-1">
                                 Raja Allaho
@@ -1430,8 +1432,8 @@ transition-colors duration-300 group-hover:text-[#F39300]">
                                 aria-controls={`faq-${index}`}
                                 onClick={() => toggleFAQ(index)}
                                 className={`w-full flex justify-between items-center font-poppins px-5 py-4 text-left font-medium transition text-[16px] sm:text-[18px] ${openIndex === index
-                                        ? "bg-primary text-white font-normal"
-                                        : "bg-[#2B347608] text-primary"
+                                    ? "bg-primary text-white font-normal"
+                                    : "bg-[#2B347608] text-primary"
                                     }`}
                             >
                                 <span>{faq.question}</span>
