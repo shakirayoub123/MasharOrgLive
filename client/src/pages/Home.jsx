@@ -555,13 +555,13 @@ const Home = () => {
                         The World is Changing <br />
                         Are You <span className="text-primary">Ready to</span>{" "}
                         <span className="text-secondary relative inline-block">
-              Evolve?
-              <img
-                  src={CurvedLine}
-                  alt="curve"
-                  className="absolute left-1/2 -translate-x-1/2  w-[250px] h-[14px] opacity-100"
-              />
-            </span>
+                            Evolve?
+                            <img
+                                src={CurvedLine}
+                                alt="curve"
+                                className="absolute left-1/2 -translate-x-1/2  w-[250px] h-[14px] opacity-100"
+                            />
+                        </span>
                     </h2>
 
                     <p className="font-poppins text-[14px] mb-6">
@@ -700,15 +700,15 @@ const Home = () => {
                     {/* Left Content */}
                     <div className="space-y-6 relative">
                         <h2 className="text-3xl md:text-[46px] font-medium mb-6 leading-tight font-spartan relative inline-block">
-                                We Grow People <br /><span className="relative text-primary">Not Just</span>{" "}
+                            We Grow People <br /><span className="relative text-primary">Not Just</span>{" "}
                             <span className="text-secondary  inline-block">
-              Skills
-              <img
-                  src={CurvedLine}
-                  alt="curve"
-                  className="absolute md:left-[220px] -translate-x-1/2  w-[180px] h-[14px] opacity-100"
-              />
-            </span>
+                                Skills
+                                <img
+                                    src={CurvedLine}
+                                    alt="curve"
+                                    className="absolute md:left-[220px] -translate-x-1/2  w-[180px] h-[14px] opacity-100"
+                                />
+                            </span>
                         </h2>
 
                         {/* Floating Animation */}
@@ -725,9 +725,9 @@ const Home = () => {
                             <p className="text-xs sm:text-sm leading-snug">
                                 The question is no longer "How do we grow?", but: <br />
                                 <span className="text-primary font-bold">
-                        "How do we grow{" "}
+                                    "How do we grow{" "}
                                     <span className="text-secondary">Future Ready?</span>"
-                    </span>
+                                </span>
                             </p>
                         </div>
 
@@ -839,17 +839,17 @@ const Home = () => {
                         className="absolute right-0 top-[82px] -translate-y-1/2 w-[80px] h-[200px] pointer-events-none z-0"
                     />
                     <h2 className="text-3xl md:text-[46px] font-medium font-spartan mb-12 leading-tight text-center">
-  <span className="relative inline-block">
-    Our{" "}
-      <span className="text-primary">Areas of</span>{" "}
-      <span className="text-secondary">Impact</span>
+                        <span className="relative inline-block">
+                            Our{" "}
+                            <span className="text-primary">Areas of</span>{" "}
+                            <span className="text-secondary">Impact</span>
 
-    <img
-        src={CurvedLine}
-        alt="curve"
-        className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
-    />
-  </span>
+                            <img
+                                src={CurvedLine}
+                                alt="curve"
+                                className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
+                            />
+                        </span>
                     </h2>
 
                     <p className="mb-10 max-w-4xl mx-auto font-poppins text-[15px] leading-7">
@@ -957,17 +957,17 @@ const Home = () => {
 
                 {/* Heading */}
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[46px] font-medium font-spartan mb-10 leading-tight text-center">
-  <span className="relative inline-block">
-    Programs That{" "}
-      <span className="text-primary">Inspire Real</span>{" "}
-      <span className="text-secondary">Change</span>
+                    <span className="relative inline-block">
+                        Programs That{" "}
+                        <span className="text-primary">Inspire Real</span>{" "}
+                        <span className="text-secondary">Change</span>
 
-    <img
-        src={CurvedLine}
-        alt="curve"
-        className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
-    />
-  </span>
+                        <img
+                            src={CurvedLine}
+                            alt="curve"
+                            className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
+                        />
+                    </span>
                 </h2>
 
 
@@ -981,49 +981,49 @@ const Home = () => {
                     {/* Background Rings (Top Left) */}
                     <div className="grid grid-cols-1 833:grid-cols-2 gap-8">
 
-                    {programs.map((item, index) => (
-                        <div
-                            key={index}
-                            className="group items-center relative bg-[#eeeeee] hover:bg-[linear-gradient(279.6deg,#FFFFFF_0.39%,rgba(15,28,128,0.15)_99.69%)] transition-all duration-1000 ease-in-out rounded-xl sm:rounded-[12px] hover:shadow-[0px_4px_8px_0px_#00000040] p-6 sm:p-8 py-16 sm:py-20 text-left flex flex-col justify-between overflow-hidden"
-                        >
+                        {programs.map((item, index) => (
+                            <div
+                                key={index}
+                                className="group items-center relative bg-[#eeeeee] hover:bg-[linear-gradient(279.6deg,#FFFFFF_0.39%,rgba(15,28,128,0.15)_99.69%)] transition-all duration-1000 ease-in-out rounded-xl sm:rounded-[12px] hover:shadow-[0px_4px_8px_0px_#00000040] p-6 sm:p-8 py-16 sm:py-20 text-left flex flex-col justify-between overflow-hidden"
+                            >
 
-                            {/* gradient overlay (on card hover) */}
-                            <div className="absolute inset-0 bg-black/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[12px] pointer-events-none">
+                                {/* gradient overlay (on card hover) */}
+                                <div className="absolute inset-0 bg-black/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[12px] pointer-events-none">
 
-                            </div>
+                                </div>
 
-                            {/* card content */}
-                            <div className="relative z-10 text-center">
-                                <h3 className="text-[32px] font-semibold font-spartan mb-2 text-primary
+                                {/* card content */}
+                                <div className="relative z-10 text-center">
+                                    <h3 className="text-[32px] font-semibold font-spartan mb-2 text-primary
 transition-colors duration-300 group-hover:text-[#F39300]">
-                                    {item.title}
-                                </h3>
+                                        {item.title}
+                                    </h3>
 
-                                <p className="text-black font-poppins text-[18px] font-medium mb-4">
-                                    {item.subtitle}
-                                </p>
-                                <p className="text-[15px] leading-7 mb-6  font-poppins">
-                                    {item.description}
-                                </p>
-                            </div>
+                                    <p className="text-black font-poppins text-[18px] font-medium mb-4">
+                                        {item.subtitle}
+                                    </p>
+                                    <p className="text-[15px] leading-7 mb-6  font-poppins">
+                                        {item.description}
+                                    </p>
+                                </div>
 
-                            <div className="group">
-                                <div
-                                    className="group  tracking-wide "
-                                    onClick={() => {
-                                        navigate(item.route, {
-                                            state: { targetTab: item.tabKey },
-                                        });
-                                    }}
-                                >
-                                    <ArrowButton
-                                        text={item.buttonText}
-                                        textSize={window.innerWidth < 640 ? "11px" : "14px"}
-                                    />
+                                <div className="group">
+                                    <div
+                                        className="group  tracking-wide "
+                                        onClick={() => {
+                                            navigate(item.route, {
+                                                state: { targetTab: item.tabKey },
+                                            });
+                                        }}
+                                    >
+                                        <ArrowButton
+                                            text={item.buttonText}
+                                            textSize={window.innerWidth < 640 ? "11px" : "14px"}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
                     </div>
                 </div>
             </section>
@@ -1090,12 +1090,15 @@ transition-colors duration-300 group-hover:text-[#F39300]">
                         </div>
 
                         {/* Founder Info */}
-                        <div className="flex flex-col items-center">
-                            <img
-                                src={founderImg}
-                                alt="Raja Allaho"
-                                className="w-20 h-20 object-cover rounded-full mb-4 border-2 border-gray-100 shadow-sm"
-                            />
+                        <div className="flex flex-col items-center mt-2">
+                            <div className="relative group mb-4">
+                                <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                <img
+                                    src={founderImg}
+                                    alt="Raja Allaho"
+                                    className="relative w-32 h-32 md:w-36 md:h-36 object-cover rounded-full border-4 border-white shadow-xl transition-transform duration-500 group-hover:scale-105"
+                                />
+                            </div>
                             <h3 className="text-[22px] font-semibold font-poppins text-primary mb-1">
                                 Raja Allaho
                             </h3>
@@ -1105,8 +1108,6 @@ transition-colors duration-300 group-hover:text-[#F39300]">
                             <p className="text-[14px] font-poppins text-gray-600">
                                 Executive, Team & Mentor Coach
                             </p>
-
-
                         </div>
                     </div>
                 </div>
@@ -1157,17 +1158,17 @@ transition-colors duration-300 group-hover:text-[#F39300]">
             <section className="relative mx-auto px-6 md:px-12 lg:px-[130px] max-w-7xl py-20 lg:py-[120px] gap-12 items-center">
                 {/* Left Content */}
                 <h2 className="text-3xl md:text-[46px] font-medium font-spartan mb-12 leading-tight text-center">
-  <span className="relative inline-block">
-    Purpose-Driven.{" "}
-      <span className="text-primary">Baked by</span>{" "}
-      <span className="text-secondary">Experience</span>
+                    <span className="relative inline-block">
+                        Purpose-Driven.{" "}
+                        <span className="text-primary">Baked by</span>{" "}
+                        <span className="text-secondary">Experience</span>
 
-    <img
-        src={CurvedLine}
-        alt="curve"
-        className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
-    />
-  </span>
+                        <img
+                            src={CurvedLine}
+                            alt="curve"
+                            className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
+                        />
+                    </span>
                 </h2>
                 <p className="text-center font-poppins text-[16px] max-w-3xl mx-auto mb-12 text-sm md:text-base leading-6">
                     Here’s why Mashar is trusted by those who lead with heart and vision.
@@ -1179,27 +1180,27 @@ transition-colors duration-300 group-hover:text-[#F39300]">
                                 <li key={index} className="flex items-start gap-[16px]">
                                     {/* ✅ Inline SVG icon */}
                                     <span className=" text-black">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        width="32"
-                        height="32"
-                        fill="none"
-                        className="stroke-current"
-                    >
-                      <path
-                          d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
-                          stroke="currentColor"
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            width="32"
+                                            height="32"
+                                            fill="none"
+                                            className="stroke-current"
+                                        >
+                                            <path
+                                                d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
+                                                stroke="currentColor"
+                                                strokeWidth="2.5"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg>
+                                    </span>
 
                                     <span className="font-poppins text-[15px] font-normal leading-[30px] tracking-[0.5px]">
-  {point}
-</span>
+                                        {point}
+                                    </span>
                                 </li>
                             ))}
                         </ul>
@@ -1272,17 +1273,17 @@ transition-colors duration-300 group-hover:text-[#F39300]">
                 </div>
                 {/* Heading */}
                 <h2 className="text-3xl md:text-[46px] font-medium font-spartan mb-12 leading-tight text-center">
-            <span className="relative inline-block">
-            Accredited Certified{" "}
-          <span className="text-primary">Globally</span>{" "}
-           <span className="text-secondary">Recognized</span>
+                    <span className="relative inline-block">
+                        Accredited Certified{" "}
+                        <span className="text-primary">Globally</span>{" "}
+                        <span className="text-secondary">Recognized</span>
 
-       <img
-        src={CurvedLine}
-        alt="curve"
-        className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
-        />
-      </span>
+                        <img
+                            src={CurvedLine}
+                            alt="curve"
+                            className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
+                        />
+                    </span>
                 </h2>
 
                 <GlobalSection />
@@ -1297,16 +1298,16 @@ transition-colors duration-300 group-hover:text-[#F39300]">
                 />
                 <div className="mb-[50px]">
                     <h2 className="text-3xl md:text-[46px] font-medium font-spartan mb-12 leading-tight text-center">
-  <span className="relative inline-block">
-    Testimonials
+                        <span className="relative inline-block">
+                            Testimonials
 
-    <img
-        src={CurvedLine}
-        alt="curve"
-        className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
-    />
-  </span>
-                </h2>
+                            <img
+                                src={CurvedLine}
+                                alt="curve"
+                                className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
+                            />
+                        </span>
+                    </h2>
 
                 </div>
                 <TestimonialsSlider />
@@ -1363,15 +1364,15 @@ transition-colors duration-300 group-hover:text-[#F39300]">
                         ></div>
                     </div>
                     <h2 className="text-2xl sm:text-3xl md:text-[46px] font-medium font-spartan mb-12 leading-tight text-center">
-  <span className="relative inline-block">
-    Frequently <span className="text-primary">Asked</span>{" "}
-      <span className="text-secondary">Questions</span>
-    <img
-        src={CurvedLine}
-        alt="curve"
-        className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
-    />
-  </span>
+                        <span className="relative inline-block">
+                            Frequently <span className="text-primary">Asked</span>{" "}
+                            <span className="text-secondary">Questions</span>
+                            <img
+                                src={CurvedLine}
+                                alt="curve"
+                                className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
+                            />
+                        </span>
                     </h2>
                     <p className="max-w-3xl mx-auto mb-12 text-sm md:text-base leading-6">
                         Find answers to common questions about our services and discover how
@@ -1428,18 +1429,16 @@ transition-colors duration-300 group-hover:text-[#F39300]">
                                 aria-expanded={openIndex === index}
                                 aria-controls={`faq-${index}`}
                                 onClick={() => toggleFAQ(index)}
-                                className={`w-full flex justify-between items-center font-poppins px-5 py-4 text-left font-medium transition text-[16px] sm:text-[18px] ${
-                                    openIndex === index
+                                className={`w-full flex justify-between items-center font-poppins px-5 py-4 text-left font-medium transition text-[16px] sm:text-[18px] ${openIndex === index
                                         ? "bg-primary text-white font-normal"
                                         : "bg-[#2B347608] text-primary"
-                                }`}
+                                    }`}
                             >
                                 <span>{faq.question}</span>
 
                                 <ChevronDown
-                                    className={`w-5 h-5 flex-shrink-0 ml-3 transform transition-transform duration-300 ${
-                                        openIndex === index ? "rotate-180" : "rotate-0"
-                                    }`}
+                                    className={`w-5 h-5 flex-shrink-0 ml-3 transform transition-transform duration-300 ${openIndex === index ? "rotate-180" : "rotate-0"
+                                        }`}
                                 />
                             </button>
 
@@ -1504,16 +1503,16 @@ transition-colors duration-300 group-hover:text-[#F39300]">
                 </div>
                 {/* Heading */}
                 <h2 className="text-2xl sm:text-3xl md:text-[46px] font-medium font-spartan mb-12 leading-tight text-center">
-  <span className="relative inline-block">
-    Trusted by Leaders <span className="text-primary">Across the</span>{" "}
-      <span className="text-secondary">Region</span>
-      {/* Curved line image centered to content */}
-      <img
-          src={CurvedLine}
-          alt="curve"
-          className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px]"
-      />
-  </span>
+                    <span className="relative inline-block">
+                        Trusted by Leaders <span className="text-primary">Across the</span>{" "}
+                        <span className="text-secondary">Region</span>
+                        {/* Curved line image centered to content */}
+                        <img
+                            src={CurvedLine}
+                            alt="curve"
+                            className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px]"
+                        />
+                    </span>
                 </h2>
 
 
@@ -1540,17 +1539,17 @@ transition-colors duration-300 group-hover:text-[#F39300]">
                 <div className="mx-auto">
                     {/* Heading */}
                     <h2 className="text-3xl md:text-[46px] font-medium font-spartan mb-12 leading-tight text-center">
-  <span className="relative inline-block">
-    Start a Conversation{" "}
-      <span className="text-primary">That Changes</span>{" "}
-      <span className="text-secondary">Everything</span>
+                        <span className="relative inline-block">
+                            Start a Conversation{" "}
+                            <span className="text-primary">That Changes</span>{" "}
+                            <span className="text-secondary">Everything</span>
 
-    <img
-        src={CurvedLine}
-        alt="curve"
-        className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
-    />
-  </span>
+                            <img
+                                src={CurvedLine}
+                                alt="curve"
+                                className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
+                            />
+                        </span>
                     </h2>
 
 
