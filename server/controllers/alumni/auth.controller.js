@@ -45,7 +45,7 @@ class AuthController extends BaseController {
 
     register = async (req, res) => {
         try {
-            const { full_name, email, phone, country, course, completion_year, completion_status, website } = req.body;
+            let { full_name, email, phone, country, course, completion_year, completion_status, website } = req.body;
 
             // 1. Honeypot Check
             if (website) {
@@ -56,6 +56,8 @@ class AuthController extends BaseController {
             if (!full_name || !email) {
                 return this.error(res, "Name and email are required", 400);
             }
+
+            email = email.toLowerCase().trim();
 
             // 2. Name Heuristics Check (5+ consecutive consonants)
             if (/[bcdfghjklmnpqrstvwxz]{5,}/i.test(full_name)) {
@@ -69,7 +71,7 @@ class AuthController extends BaseController {
             }
 
             // Block Gmail dot trick (more than 2 dots in local part)
-            if (email.toLowerCase().endsWith("@gmail.com")) {
+            if (email.endsWith("@gmail.com")) {
                 const localPart = email.split("@")[0];
                 const dotCount = (localPart.match(/\./g) || []).length;
                 if (dotCount > 2) {
@@ -83,7 +85,7 @@ class AuthController extends BaseController {
 
             await Alumni.create({
                 full_name, email, phone, country, course, completion_year, completion_status,
-                status: "pending", remember_token: generateRandomString(37, "_k3d_"),
+                account_status: "pending", remember_token: generateRandomString(37, "_k3d_"),
             });
 
             this.dispatchNotifications(full_name, email, phone);
@@ -95,7 +97,12 @@ class AuthController extends BaseController {
                 const messages = Object.values(error.errors).map(e => e.message);
                 return this.error(res, messages.join(", "), 400);
             }
-            return this.error(res, "Server error", 500);
+            if (error.code === 11000) {
+                const field = Object.keys(error.keyPattern || error.keyValue || {})[0] || "Record";
+                return this.error(res, `${field} already registered in the database.`, 400);
+            }
+            // Expose the error message to help identify production-only issues (e.g. missing modules, etc.)
+            return this.error(res, error.message || "Server error", 500);
         }
     };
 
