@@ -64,9 +64,10 @@ class AuthController extends BaseController {
                 return this.success(res, "Registration submitted successfully! You will receive an email once approved.", {});
             }
 
-            // 4. Email Heuristics Check
-            const isDisposable = require("is-disposable-email");
-            if (isDisposable(email)) {
+            // 4. Email Heuristics Check (Common disposable domains)
+            const commonDisposable = ["mailinator.com", "yopmail.com", "guerrillamail.com", "temp-mail.org", "10minutemail.com", "throwawaymail.com"];
+            const domain = email.split('@')[1];
+            if (domain && commonDisposable.includes(domain.toLowerCase())) {
                 return this.error(res, "Please use a valid, non-disposable email address.", 400);
             }
 
