@@ -207,4 +207,10 @@ router.get("/contact-requests", contactRequestCtrl.getAll);
 router.patch("/contact-requests/:id/status", contactRequestCtrl.updateStatus);
 router.delete("/contact-requests/:id", contactRequestCtrl.deleteRequest);
 
+// ✅ Public Website "Let's Talk" Submissions
+const publicContactCtrl = require("../controllers/admin/publicContact.controller");
+router.get("/public-inquiries", publicContactCtrl.getAll);
+router.patch("/public-inquiries/:id/status", publicContactCtrl.updateStatus);
+router.delete("/public-inquiries/:id", publicContactCtrl.deleteSubmission);
+
 module.exports = router;

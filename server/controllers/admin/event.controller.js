@@ -1,14 +1,14 @@
 const Event = require("../../models/Event");
 const fs = require("fs");
 const path = require("path");
-const {notifyGlobally} = require("../../events/notifier");
+const { notifyGlobally } = require("../../events/notifier");
 
 // @desc    Create a new event
 // @route   POST /api/admin/events
 // @access  Admin
 const createEvent = async (req, res) => {
     try {
-        const { eventName, eventDate, eventTime, platform, meetingLink, location, host, description, capacity } = req.body;
+        const { eventName, eventDate, eventTime, platform, meetingLink, location, host, description, capacity, audience } = req.body;
 
         if (!eventName || !eventDate || !eventTime || !location || !description || !capacity || !meetingLink) {
             if (req.file) fs.unlinkSync(req.file.path);
@@ -37,6 +37,7 @@ const createEvent = async (req, res) => {
             host: host ? host.trim() : "",
             description: description.trim(),
             capacity: capacityNum,
+            audience: ["alumni", "public", "both"].includes(audience) ? audience : "alumni",
             image: imagePath,
         });
 
@@ -55,8 +56,26 @@ const createEvent = async (req, res) => {
 // @access  Admin
 const getAllEvents = async (req, res) => {
     try {
-        const events = await Event.find().sort({ createdAt: -1 }).populate("registeredAlumni", "full_name email course");
-        return res.status(200).json({ events });
+        const events = await Event.find().sort({ createdAt: -1 }).populate("registeredAlumni", "full_name email course").lean();
+
+        // Fetch public registrations
+        const PublicEventRegistration = require("../../models/PublicEventRegistration");
+        const publicRegs = await PublicEventRegistration.find().lean();
+
+        // Group by event ID
+        const publicByEvent = {};
+        publicRegs.forEach(reg => {
+            const evId = reg.event.toString();
+            if (!publicByEvent[evId]) publicByEvent[evId] = [];
+            publicByEvent[evId].push(reg);
+        });
+
+        const enhancedEvents = events.map(ev => ({
+            ...ev,
+            publicRegistrations: publicByEvent[ev._id.toString()] || []
+        }));
+
+        return res.status(200).json({ events: enhancedEvents });
     } catch (error) {
         console.error("getAllEvents error:", error);
         return res.status(500).json({ message: "Internal server error." });
@@ -68,9 +87,13 @@ const getAllEvents = async (req, res) => {
 // @access  Admin
 const getEventById = async (req, res) => {
     try {
-        const event = await Event.findById(req.params.id).populate("registeredAlumni", "full_name email course");
+        const event = await Event.findById(req.params.id).populate("registeredAlumni", "full_name email course").lean();
         if (!event) return res.status(404).json({ message: "Event not found." });
-        return res.status(200).json({ event });
+
+        const PublicEventRegistration = require("../../models/PublicEventRegistration");
+        const publicRegs = await PublicEventRegistration.find({ event: req.params.id }).lean();
+
+        return res.status(200).json({ event: { ...event, publicRegistrations: publicRegs } });
     } catch (error) {
         console.error("getEventById error:", error);
         return res.status(500).json({ message: "Internal server error." });
@@ -88,7 +111,7 @@ const updateEvent = async (req, res) => {
             return res.status(404).json({ message: "Event not found." });
         }
 
-        const { eventName, eventDate, eventTime, platform, meetingLink, location, host, description, capacity } = req.body;
+        const { eventName, eventDate, eventTime, platform, meetingLink, location, host, description, capacity, audience } = req.body;
 
         if (capacity) {
             const capacityNum = parseInt(capacity);
@@ -107,6 +130,7 @@ const updateEvent = async (req, res) => {
         if (location) event.location = location.trim();
         if (host !== undefined) event.host = host.trim();
         if (description) event.description = description.trim();
+        if (audience && ["alumni", "public", "both"].includes(audience)) event.audience = audience;
 
         if (req.file) {
             const oldImagePath = path.join(process.cwd(), event.image);

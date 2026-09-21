@@ -19,6 +19,7 @@ import Articles from "../components/Articles.jsx";
 import Videos from "../components/videos.jsx";
 import Books from "../components/Books.jsx";
 import Events from "../components/Events.jsx";
+import NotFound from "../pages/NotFound.jsx";
 
 // ── Auth Pages ──
 import AdminLogin from "../pages/admin/AdminLogin.jsx";
@@ -68,6 +69,7 @@ import AdminProgramsList from "../components/admin/AdminProgramsList.jsx";
 import AdminEngagementSubmissions from "../components/admin/AdminEngagementSubmissions.jsx";
 import AdminEventRequests from "../components/admin/AdminEventRequests.jsx";
 import AdminContactRequests from "../components/admin/AdminContactRequests.jsx";
+import AdminPublicInquiries from "../pages/admin/AdminPublicInquiries.jsx";
 
 // ─────────────────────────────────────────────
 const browserRoutes = createBrowserRouter([
@@ -145,8 +147,9 @@ const browserRoutes = createBrowserRouter([
 
       // Engagement
       { path: "engage", element: <AdminEngagementSubmissions /> },
-      { path: "event/requests", element: <AdminEventRequests /> },
-      { path: "contact/requests", element: <AdminContactRequests /> },
+      { path: "event-requests", element: <AdminEventRequests /> },
+      { path: "contact-requests", element: <AdminContactRequests /> },
+      { path: "public-inquiries", element: <AdminPublicInquiries /> },
       { path: "subscribers", element: <AdminSubscribers /> },
       { path: "discovery", element: <AdminDiscovery /> },
 
@@ -183,6 +186,9 @@ const browserRoutes = createBrowserRouter([
 
     ],
   },
+
+  // ── 🌐 Catch-All 404 Route ──────────────────
+  { path: "*", element: <NotFound /> },
 ]);
 
 export default browserRoutes;

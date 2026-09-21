@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 // ── Helpers ──
-const AVATAR_COLORS = ["bg-indigo-500","bg-emerald-500","bg-violet-500","bg-sky-500","bg-rose-500","bg-amber-500","bg-teal-500"];
+const AVATAR_COLORS = ["bg-indigo-500", "bg-emerald-500", "bg-violet-500", "bg-sky-500", "bg-rose-500", "bg-amber-500", "bg-teal-500"];
 const getAvatarColor = (id) => AVATAR_COLORS[parseInt(id?.slice(-2) || "0", 16) % AVATAR_COLORS.length];
 const getInitials = (name) => name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?";
 const resolveImage = (img) => {
@@ -38,6 +38,8 @@ export default function AdminDashboard() {
     const [books, setBooks] = useState([]);
     const [articles, setArticles] = useState([]);
     const [videos, setVideos] = useState([]);
+    const [inquiries, setInquiries] = useState([]);
+    const [subscribers, setSubscribers] = useState([]);
     const [contentLoading, setContentLoading] = useState(true);
 
     // ── Fetch alumni ──
@@ -50,7 +52,7 @@ export default function AdminDashboard() {
                 setStats({
                     totalAlumni: data.length,
                     approvedAlumni: data.filter(a => a.account_status?.toLowerCase() === "approved").length,
-                    pendingAlumni:  data.filter(a => a.account_status?.toLowerCase() === "pending").length,
+                    pendingAlumni: data.filter(a => a.account_status?.toLowerCase() === "pending").length,
                     rejectedAlumni: data.filter(a => a.account_status?.toLowerCase() === "rejected").length,
                 });
             })
@@ -63,11 +65,13 @@ export default function AdminDashboard() {
         if (!token) return;
         const h = { Authorization: `Bearer ${token}` };
         Promise.allSettled([
-            axios.get("/api/admin/events",   { headers: h }),
-            axios.get("/api/admin/books",    { headers: h }),
+            axios.get("/api/admin/events", { headers: h }),
+            axios.get("/api/admin/books", { headers: h }),
             axios.get("/api/admin/articles", { headers: h }),
-            axios.get("/api/admin/videos",   { headers: h }),
-        ]).then(([ev, bk, ar, vi]) => {
+            axios.get("/api/admin/videos", { headers: h }),
+            axios.get("/api/admin/public-inquiries", { headers: h }),
+            axios.get("/api/subscribers", { headers: h }),
+        ]).then(([ev, bk, ar, vi, inq, sub]) => {
             if (ev.status === "fulfilled") setEvents(ev.value.data.events || []);
             if (bk.status === "fulfilled") setBooks(bk.value.data.books || []);
             if (ar.status === "fulfilled") {
@@ -75,6 +79,8 @@ export default function AdminDashboard() {
                 setArticles(d?.data?.data || d?.data || d?.articles || []);
             }
             if (vi.status === "fulfilled") setVideos(vi.value.data.data || vi.value.data.data || []);
+            if (inq.status === "fulfilled") setInquiries(inq.value.data.submissions || []);
+            if (sub.status === "fulfilled") setSubscribers(sub.value.data.data || []);
         }).finally(() => setContentLoading(false));
     }, [token]);
 
@@ -86,9 +92,9 @@ export default function AdminDashboard() {
     const maxCourseCount = topCourses[0]?.[1] || 1;
     const now = new Date();
     const upcomingEvents = [...events].filter(e => new Date(e.eventDate) >= now).sort((a, b) => new Date(a.eventDate) - new Date(b.eventDate)).slice(0, 3);
-    const recentBooks    = [...books].sort((a, b)    => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3);
+    const recentBooks = [...books].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3);
     const recentArticles = [...articles].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3);
-    const recentVideos   = [...videos].sort((a, b)   => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3);
+    const recentVideos = [...videos].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3);
 
     return (
         <div className="space-y-8 pb-12">
@@ -106,20 +112,20 @@ export default function AdminDashboard() {
 
             {/* ── Alumni Stats ── */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard icon={<Users />}     label="Total Alumni"    value={alumniLoading ? "..." : stats.totalAlumni.toLocaleString()}    trend="+12%" trendUp color="indigo"  />
-                <StatCard icon={<UserCheck />} label="Approved"        value={alumniLoading ? "..." : stats.approvedAlumni.toLocaleString()}  trend="+5.2%" trendUp color="emerald" />
-                <StatCard icon={<UserPlus />}  label="Pending Review"  value={alumniLoading ? "..." : stats.pendingAlumni.toLocaleString()}                  color="amber"  />
-                <StatCard icon={<Activity />}  label="Rejected"        value={alumniLoading ? "..." : stats.rejectedAlumni.toLocaleString()}                 color="rose"   />
+                <StatCard icon={<Users />} label="Total Alumni" value={alumniLoading ? "..." : stats.totalAlumni.toLocaleString()} trend="+12%" trendUp color="indigo" />
+                <StatCard icon={<UserCheck />} label="Approved" value={alumniLoading ? "..." : stats.approvedAlumni.toLocaleString()} trend="+5.2%" trendUp color="emerald" />
+                <StatCard icon={<UserPlus />} label="Pending Review" value={alumniLoading ? "..." : stats.pendingAlumni.toLocaleString()} color="amber" />
+                <StatCard icon={<Activity />} label="Rejected" value={alumniLoading ? "..." : stats.rejectedAlumni.toLocaleString()} color="rose" />
             </div>
 
             {/* ── Content Counter Row ── */}
             <div>
                 <SectionHeader title="Content Overview" subtitle="Live counts from all published content" />
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <ContentCountCard icon={<CalendarDays />} label="Events"   count={contentLoading ? null : events.length}   color="indigo" sub={`${upcomingEvents.length} upcoming`} onNew={() => navigate("/admin/upload-event")} onView={() => navigate("/admin/events")} />
-                    <ContentCountCard icon={<BookOpen />}     label="Books"    count={contentLoading ? null : books.length}    color="amber"  sub={books.length > 0 ? `Latest: ${books.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))[0]?.heading?.slice(0,20)}…` : "No books yet"} onNew={() => navigate("/admin/upload-book")} onView={() => navigate("/admin/books")} />
-                    <ContentCountCard icon={<FileText />}     label="Articles" count={contentLoading ? null : articles.length} color="emerald" sub={articles.length > 0 ? `Latest: ${articles.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))[0]?.heading?.slice(0,20)}…` : "No articles yet"} onNew={() => navigate("/admin/upload-article")} onView={() => navigate("/admin/articles")} />
-                    <ContentCountCard icon={<Video />}        label="Videos"   count={contentLoading ? null : videos.length}   color="red"   sub={videos.length > 0 ? `Latest: ${videos.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))[0]?.heading?.slice(0,20)}…` : "No videos yet"} onNew={() => navigate("/admin/upload-video")} onView={() => navigate("/admin/videos")} />
+                    <ContentCountCard icon={<CalendarDays />} label="Events" count={contentLoading ? null : events.length} color="indigo" sub={`${upcomingEvents.length} upcoming`} onNew={() => navigate("/admin/upload-event")} onView={() => navigate("/admin/events")} />
+                    <ContentCountCard icon={<BookOpen />} label="Books" count={contentLoading ? null : books.length} color="amber" sub={books.length > 0 ? `Latest: ${books.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0]?.heading?.slice(0, 20)}…` : "No books yet"} onNew={() => navigate("/admin/upload-book")} onView={() => navigate("/admin/books")} />
+                    <ContentCountCard icon={<FileText />} label="Articles" count={contentLoading ? null : articles.length} color="emerald" sub={articles.length > 0 ? `Latest: ${articles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0]?.heading?.slice(0, 20)}…` : "No articles yet"} onNew={() => navigate("/admin/upload-article")} onView={() => navigate("/admin/articles")} />
+                    <ContentCountCard icon={<Video />} label="Videos" count={contentLoading ? null : videos.length} color="red" sub={videos.length > 0 ? `Latest: ${videos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0]?.heading?.slice(0, 20)}…` : "No videos yet"} onNew={() => navigate("/admin/upload-video")} onView={() => navigate("/admin/videos")} />
                 </div>
             </div>
 
@@ -187,7 +193,7 @@ export default function AdminDashboard() {
                                     <p className="text-[10px] text-slate-400">{formatTimeAgo(book.createdAt)}</p>
                                 </div>
                                 <a href={book.amazonLink} target="_blank" rel="noopener noreferrer"
-                                   className="w-7 h-7 rounded-lg bg-amber-50 hover:bg-amber-100 flex items-center justify-center flex-shrink-0 transition-colors">
+                                    className="w-7 h-7 rounded-lg bg-amber-50 hover:bg-amber-100 flex items-center justify-center flex-shrink-0 transition-colors">
                                     <ShoppingBag size={11} className="text-amber-600" />
                                 </a>
                             </div>
@@ -274,10 +280,10 @@ export default function AdminDashboard() {
                             <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
                                 <circle cx="60" cy="60" r="50" fill="none" stroke="#f1f5f9" strokeWidth="12" />
                                 <circle cx="60" cy="60" r="50" fill="none" stroke="#4f46e5" strokeWidth="12"
-                                        strokeLinecap="round"
-                                        strokeDasharray={`${2 * Math.PI * 50}`}
-                                        strokeDashoffset={`${2 * Math.PI * 50 * (1 - approvalRate / 100)}`}
-                                        className="transition-all duration-1000"
+                                    strokeLinecap="round"
+                                    strokeDasharray={`${2 * Math.PI * 50}`}
+                                    strokeDashoffset={`${2 * Math.PI * 50 * (1 - approvalRate / 100)}`}
+                                    className="transition-all duration-1000"
                                 />
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -289,8 +295,8 @@ export default function AdminDashboard() {
                     <div className="grid grid-cols-3 gap-2 mt-4">
                         {[
                             { label: "Approved", value: stats.approvedAlumni, color: "text-emerald-600", dot: "bg-emerald-500" },
-                            { label: "Pending",  value: stats.pendingAlumni,  color: "text-amber-600",  dot: "bg-amber-500" },
-                            { label: "Rejected", value: stats.rejectedAlumni, color: "text-rose-600",   dot: "bg-rose-500" },
+                            { label: "Pending", value: stats.pendingAlumni, color: "text-amber-600", dot: "bg-amber-500" },
+                            { label: "Rejected", value: stats.rejectedAlumni, color: "text-rose-600", dot: "bg-rose-500" },
                         ].map(({ label, value, color, dot }) => (
                             <div key={label} className="text-center p-2 bg-slate-50 rounded-xl">
                                 <div className="flex items-center justify-center gap-1 mb-1">
@@ -311,16 +317,18 @@ export default function AdminDashboard() {
                             <Zap size={15} className="text-indigo-500" />
                         </span>
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 max-h-[235px] overflow-y-auto custom-scrollbar pr-2">
                         {[
-                            { label: "Review Pending Alumni", sub: `${stats.pendingAlumni} awaiting`, icon: <Clock size={14} />,        color: "bg-amber-50 text-amber-600",   path: "/admin/alumni-approval" },
-                            { label: "Create New Event",      sub: `${events.length} published`,       icon: <CalendarDays size={14} />, color: "bg-indigo-50 text-indigo-600", path: "/admin/upload-event" },
-                            { label: "Upload a Book",         sub: `${books.length} in library`,        icon: <BookOpen size={14} />,     color: "bg-amber-50 text-amber-700",   path: "/admin/upload-book" },
-                            { label: "Write an Article",      sub: `${articles.length} published`,      icon: <FileText size={14} />,     color: "bg-emerald-50 text-emerald-600", path: "/admin/upload-article" },
-                            { label: "Upload a Video",        sub: `${videos.length} published`,        icon: <Video size={14} />,        color: "bg-red-50 text-red-600",       path: "/admin/upload-video" },
+                            { label: "Review Pending Alumni", sub: `${stats.pendingAlumni} awaiting`, icon: <Clock size={14} />, color: "bg-amber-50 text-amber-600", path: "/admin/alumni-approval" },
+                            { label: "Create New Event", sub: `${events.length} published`, icon: <CalendarDays size={14} />, color: "bg-indigo-50 text-indigo-600", path: "/admin/upload-event" },
+                            { label: "Public Inquiries", sub: `${inquiries.filter(i => i.status === "New").length} new`, icon: <Mail size={14} />, color: "bg-teal-50 text-teal-600", path: "/admin/public-inquiries" },
+                            { label: "Newsletter Subscribers", sub: `${subscribers.length} total`, icon: <Users size={14} />, color: "bg-pink-50 text-pink-600", path: "/admin/subscribers" },
+                            { label: "Upload a Book", sub: `${books.length} in library`, icon: <BookOpen size={14} />, color: "bg-amber-50 text-amber-700", path: "/admin/upload-book" },
+                            { label: "Write an Article", sub: `${articles.length} published`, icon: <FileText size={14} />, color: "bg-emerald-50 text-emerald-600", path: "/admin/upload-article" },
+                            { label: "Upload a Video", sub: `${videos.length} published`, icon: <Video size={14} />, color: "bg-red-50 text-red-600", path: "/admin/upload-video" },
                         ].map(({ label, sub, icon, color, path }) => (
                             <button key={label} onClick={() => navigate(path)}
-                                    className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all group text-left"
+                                className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all group text-left"
                             >
                                 <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${color}`}>{icon}</div>
                                 <div className="flex-1 min-w-0">
@@ -353,7 +361,7 @@ export default function AdminDashboard() {
                     ) : (
                         <div className="space-y-4">
                             {topCourses.map(([course, count], i) => {
-                                const colors = ["bg-indigo-500","bg-emerald-500","bg-violet-500","bg-sky-500","bg-amber-500"];
+                                const colors = ["bg-indigo-500", "bg-emerald-500", "bg-violet-500", "bg-sky-500", "bg-amber-500"];
                                 return (
                                     <div key={course}>
                                         <div className="flex items-center justify-between mb-1.5">
@@ -388,7 +396,7 @@ export default function AdminDashboard() {
                     <div className="divide-y divide-slate-50 flex-1">
                         {alumniLoading ? (
                             <div className="p-6 space-y-4 animate-pulse">
-                                {[1,2,3,4,5].map(i => (
+                                {[1, 2, 3, 4, 5].map(i => (
                                     <div key={i} className="flex items-center gap-4">
                                         <div className="w-10 h-10 bg-slate-100 rounded-2xl shrink-0" />
                                         <div className="flex-1 space-y-2"><div className="h-3 bg-slate-100 rounded w-32" /><div className="h-2.5 bg-slate-100 rounded w-48" /></div>
@@ -404,7 +412,7 @@ export default function AdminDashboard() {
                         ) : recentAlumni.map(a => {
                             const statusCls = {
                                 approved: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                                pending:  "bg-amber-50 text-amber-700 border-amber-200",
+                                pending: "bg-amber-50 text-amber-700 border-amber-200",
                                 rejected: "bg-rose-50 text-rose-700 border-rose-200",
                             }[a.account_status] || "bg-slate-100 text-slate-500 border-slate-200";
                             return (
@@ -453,12 +461,12 @@ export default function AdminDashboard() {
 
                     <div className="grid grid-cols-2 gap-2.5 my-6 relative z-10">
                         {[
-                            { label: "Alumni",   value: alumniLoading   ? "—" : stats.totalAlumni,     color: "text-white" },
-                            { label: "Active",   value: alumniLoading   ? "—" : stats.approvedAlumni,  color: "text-emerald-400" },
-                            { label: "Events",   value: contentLoading  ? "—" : events.length,         color: "text-indigo-400" },
-                            { label: "Books",    value: contentLoading  ? "—" : books.length,          color: "text-amber-400" },
-                            { label: "Articles", value: contentLoading  ? "—" : articles.length,       color: "text-emerald-300" },
-                            { label: "Videos",   value: contentLoading  ? "—" : videos.length,         color: "text-red-400" },
+                            { label: "Alumni", value: alumniLoading ? "—" : stats.totalAlumni, color: "text-white" },
+                            { label: "Active", value: alumniLoading ? "—" : stats.approvedAlumni, color: "text-emerald-400" },
+                            { label: "Events", value: contentLoading ? "—" : events.length, color: "text-indigo-400" },
+                            { label: "Books", value: contentLoading ? "—" : books.length, color: "text-amber-400" },
+                            { label: "Inquiries", value: contentLoading ? "—" : inquiries.length, color: "text-teal-400" },
+                            { label: "Subscribers", value: contentLoading ? "—" : subscribers.length, color: "text-pink-400" },
                         ].map(({ label, value, color }) => (
                             <div key={label} className="bg-white/5 border border-white/10 rounded-xl p-3">
                                 <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">{label}</p>
@@ -489,10 +497,10 @@ function SectionHeader({ title, subtitle }) {
 
 function StatCard({ icon, label, value, trend, trendUp, color }) {
     const colors = {
-        indigo:  "bg-indigo-50 text-indigo-600",
+        indigo: "bg-indigo-50 text-indigo-600",
         emerald: "bg-emerald-50 text-emerald-600",
-        amber:   "bg-amber-50 text-amber-600",
-        rose:    "bg-rose-50 text-rose-600",
+        amber: "bg-amber-50 text-amber-600",
+        rose: "bg-rose-50 text-rose-600",
     };
     return (
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:shadow-slate-200/40 transition-all duration-300 group">
@@ -515,10 +523,10 @@ function StatCard({ icon, label, value, trend, trendUp, color }) {
 
 function ContentCountCard({ icon, label, count, color, sub, onNew, onView }) {
     const colors = {
-        indigo:  { bg: "bg-indigo-50",  icon: "text-indigo-600",  btn: "bg-indigo-50 hover:bg-indigo-100 text-indigo-700" },
-        amber:   { bg: "bg-amber-50",   icon: "text-amber-600",   btn: "bg-amber-50 hover:bg-amber-100 text-amber-700" },
+        indigo: { bg: "bg-indigo-50", icon: "text-indigo-600", btn: "bg-indigo-50 hover:bg-indigo-100 text-indigo-700" },
+        amber: { bg: "bg-amber-50", icon: "text-amber-600", btn: "bg-amber-50 hover:bg-amber-100 text-amber-700" },
         emerald: { bg: "bg-emerald-50", icon: "text-emerald-600", btn: "bg-emerald-50 hover:bg-emerald-100 text-emerald-700" },
-        red:     { bg: "bg-red-50",     icon: "text-red-600",     btn: "bg-red-50 hover:bg-red-100 text-red-700" },
+        red: { bg: "bg-red-50", icon: "text-red-600", btn: "bg-red-50 hover:bg-red-100 text-red-700" },
     }[color];
 
     return (
@@ -547,17 +555,17 @@ function ContentCountCard({ icon, label, count, color, sub, onNew, onView }) {
 
 function ContentPanel({ icon, title, accentColor, onAdd, onViewAll, loading, empty, emptyLabel, children }) {
     const addColors = {
-        indigo:  "text-indigo-600 bg-indigo-50 hover:bg-indigo-100",
-        amber:   "text-amber-700 bg-amber-50 hover:bg-amber-100",
+        indigo: "text-indigo-600 bg-indigo-50 hover:bg-indigo-100",
+        amber: "text-amber-700 bg-amber-50 hover:bg-amber-100",
         emerald: "text-emerald-700 bg-emerald-50 hover:bg-emerald-100",
-        red:     "text-red-700 bg-red-50 hover:bg-red-100",
+        red: "text-red-700 bg-red-50 hover:bg-red-100",
     }[accentColor];
 
     const viewColors = {
-        indigo:  "text-indigo-500 hover:text-indigo-700",
-        amber:   "text-amber-500 hover:text-amber-700",
+        indigo: "text-indigo-500 hover:text-indigo-700",
+        amber: "text-amber-500 hover:text-amber-700",
         emerald: "text-emerald-500 hover:text-emerald-700",
-        red:     "text-red-500 hover:text-red-700",
+        red: "text-red-500 hover:text-red-700",
     }[accentColor];
 
     return (
@@ -574,7 +582,7 @@ function ContentPanel({ icon, title, accentColor, onAdd, onViewAll, loading, emp
             <div className="flex-1 divide-y divide-slate-50 min-h-[160px]">
                 {loading ? (
                     <div className="p-4 space-y-3 animate-pulse">
-                        {[1,2,3].map(i => <div key={i} className="flex gap-3"><div className="w-9 h-9 bg-slate-100 rounded-xl" /><div className="flex-1 space-y-2"><div className="h-2.5 bg-slate-100 rounded w-3/4" /><div className="h-2 bg-slate-100 rounded w-1/2" /></div></div>)}
+                        {[1, 2, 3].map(i => <div key={i} className="flex gap-3"><div className="w-9 h-9 bg-slate-100 rounded-xl" /><div className="flex-1 space-y-2"><div className="h-2.5 bg-slate-100 rounded w-3/4" /><div className="h-2 bg-slate-100 rounded w-1/2" /></div></div>)}
                     </div>
                 ) : empty ? (
                     <div className="flex flex-col items-center justify-center py-8 px-4 gap-2">

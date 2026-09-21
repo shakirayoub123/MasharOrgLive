@@ -22,10 +22,18 @@ import ArrowButton from "../components/Arrowbutton";
 import React from "react";
 import CurvedLine from "../assets/CurvedLine.png";
 import CornorGroup from "../assets/CornorGroup.png";
-import {useNavigate} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { scrollToHash } from "../utils/scrollToHash";
+import SEO from "../components/SEO";
 
 export default function OurSignature() {
-    const navigate = useNavigate(); // ✅ CORRECT PLACE
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        scrollToHash(location.hash, 120);
+    }, [location.hash]);
 
     const openCalendly = () => {
         console.log("clicked"); // ✅ WILL PRINT
@@ -37,6 +45,10 @@ export default function OurSignature() {
     };
     return (
         <div className="overflow-hidden">
+            <SEO
+                title="Our Signature Programs | Mashar"
+                description="Discover our premier coaching and leadership programs that transform human insights into modern leadership."
+            />
             {/* Header Section */}
             <header className="relative h-[200px]  sm:min-h-[400px] lg:min-h-[500px] flex flex-col justify-center items-center text-white text-center p-8">
                 <div
@@ -44,7 +56,7 @@ export default function OurSignature() {
                     style={{ backgroundImage: `url(${whyMashar})` }}
                 >
                     <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-black/30" />
-        </div>
+                </div>
                 <div className="relative z-10 tracking-wider text-center px-4">
                     <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-semibold tracking-[0.5px] font-spartan mb-4">
                         OUR SIGNATURE
@@ -52,7 +64,7 @@ export default function OurSignature() {
                 </div>
             </header>
             {/* Our Signature Approach */}
-            <section className="bg-white px-6 sm:px-10 lg:px-16 xl:px-24 pt-[40px] sm:pt-[100px] lg:pt-[140px] pb-[40px] relative overflow-hidden">
+            <section id="approach" className="bg-white px-6 sm:px-10 lg:px-16 xl:px-24 pt-[40px] sm:pt-[100px] lg:pt-[140px] pb-[40px] relative overflow-hidden">
 
                 {/* corner decoration */}
                 <img
@@ -70,16 +82,16 @@ export default function OurSignature() {
                             <h2 className="text-3xl md:text-5xl lg:text-5xl font-spartan font-medium leading-tight mb-4">
                                 Our{" "}
                                 <span className="relative inline-block text-[#f39300] pb-4">
-    Signature
-    <img
-        src={curvedLine}
-        alt="curve"
-        className="absolute left-1/2 -translate-x-1/2 bottom-0 w-[200px] md:w-[240px]"
-    />
-  </span>{" "}
+                                    Signature
+                                    <img
+                                        src={curvedLine}
+                                        alt="curve"
+                                        className="absolute left-1/2 -translate-x-1/2 bottom-0 w-[200px] md:w-[240px]"
+                                    />
+                                </span>{" "}
                                 <span className="text-[#0f1c80]">
-    Approach
-  </span>
+                                    Approach
+                                </span>
                             </h2>
 
 
@@ -131,75 +143,75 @@ export default function OurSignature() {
             </section>
 
             {/*                <div className="relative">*/}
-    {/*            {" "}*/}
-    {/*            <img*/}
-    {/*                src={CornorGroup}*/}
-    {/*                alt="corner decoration"*/}
-    {/*                className="absolute right-0 top-[700px] -translate-y-1/2 w-[80px] h-[200px] pointer-events-none z-0"*/}
-    {/*            />*/}
-    {/*            <section className="bg-white md:pb-[18px] px-4 sm:px-6 lg:px-[100px]  sm:pt-[100px] lg:pt-[140px] pb-[10px] overflow-x-hidden">*/}
-    {/*                <div className="max-w-[1600px] mx-auto">*/}
-    {/*                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 2xl:gap-20 items-start">*/}
-    {/*                        /!* Left Content *!/*/}
-    {/*                        <div className="relative pt-8 sm:pt-12 w-full min-w-0">*/}
-    {/*                            <div className="w-full max-w-[620px] min-w-0">*/}
-    {/*                                <h2 className="text-3xl md:text-5xl lg:text-5xl font-spartan font-medium leading-tight mb-8">*/}
-    {/*                                    Our <span className="text-[#f39300]">Signature</span>{" "}*/}
-    {/*                                    <span className="relative inline-block text-[#0f1c80]">*/}
-    {/*  Approach*/}
-    {/*  <img*/}
-    {/*      src={curvedLine}*/}
-    {/*      alt="curve"*/}
-    {/*      className="absolute left-1/2 -translate-x-1/2 -bottom-3 w-[240px]"*/}
-    {/*  />*/}
-    {/*</span>*/}
-    {/*                                </h2>*/}
-    {/*                            </div>*/}
+            {/*            {" "}*/}
+            {/*            <img*/}
+            {/*                src={CornorGroup}*/}
+            {/*                alt="corner decoration"*/}
+            {/*                className="absolute right-0 top-[700px] -translate-y-1/2 w-[80px] h-[200px] pointer-events-none z-0"*/}
+            {/*            />*/}
+            {/*            <section className="bg-white md:pb-[18px] px-4 sm:px-6 lg:px-[100px]  sm:pt-[100px] lg:pt-[140px] pb-[10px] overflow-x-hidden">*/}
+            {/*                <div className="max-w-[1600px] mx-auto">*/}
+            {/*                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 2xl:gap-20 items-start">*/}
+            {/*                        /!* Left Content *!/*/}
+            {/*                        <div className="relative pt-8 sm:pt-12 w-full min-w-0">*/}
+            {/*                            <div className="w-full max-w-[620px] min-w-0">*/}
+            {/*                                <h2 className="text-3xl md:text-5xl lg:text-5xl font-spartan font-medium leading-tight mb-8">*/}
+            {/*                                    Our <span className="text-[#f39300]">Signature</span>{" "}*/}
+            {/*                                    <span className="relative inline-block text-[#0f1c80]">*/}
+            {/*  Approach*/}
+            {/*  <img*/}
+            {/*      src={curvedLine}*/}
+            {/*      alt="curve"*/}
+            {/*      className="absolute left-1/2 -translate-x-1/2 -bottom-3 w-[240px]"*/}
+            {/*  />*/}
+            {/*</span>*/}
+            {/*                                </h2>*/}
+            {/*                            </div>*/}
 
-    {/*                            /!* Highlight line *!/*/}
-    {/*                            <p className="font-poppins font-medium text-[clamp(0.875rem,1.8vw,1.125rem)] leading-[1.6] tracking-[0.5px] text-[#0f1c80] pb-[10px] max-w-[600px]">*/}
-    {/*                                The Mashar Method: Where Insight Meets Impact*/}
-    {/*                            </p>*/}
+            {/*                            /!* Highlight line *!/*/}
+            {/*                            <p className="font-poppins font-medium text-[clamp(0.875rem,1.8vw,1.125rem)] leading-[1.6] tracking-[0.5px] text-[#0f1c80] pb-[10px] max-w-[600px]">*/}
+            {/*                                The Mashar Method: Where Insight Meets Impact*/}
+            {/*                            </p>*/}
 
-    {/*                            /!* Body copy *!/*/}
-    {/*                            <p className="text-[clamp(0.875rem,1.6vw,1rem)] leading-[1.8] text-gray-800 mb-6 max-w-[600px]">*/}
-    {/*                                Transformation at Mashar is Personal, purposeful, and deeply human. We blend global standards with cultural intelligence to create learning experiences that truly lasts.*/}
-    {/*                            </p>*/}
+            {/*                            /!* Body copy *!/*/}
+            {/*                            <p className="text-[clamp(0.875rem,1.6vw,1rem)] leading-[1.8] text-gray-800 mb-6 max-w-[600px]">*/}
+            {/*                                Transformation at Mashar is Personal, purposeful, and deeply human. We blend global standards with cultural intelligence to create learning experiences that truly lasts.*/}
+            {/*                            </p>*/}
 
-    {/*                            /!* CTA *!/*/}
-    {/*                            <div className="mt-6 sm:mt-8 flex justify-center lg:justify-start">*/}
-    {/*                                <ArrowButton*/}
-    {/*                                    text="Explore Our Signature Experiance"*/}
-    {/*                                    textSize="clamp(0.75rem, 1.5vw, 1rem)"*/}
-    {/*                                    className="!px-6 sm:!px-8 lg:!px-10 !py-3 sm:!py-4"*/}
-    {/*                                    onClick={() => (window.location.href = "/explorePrograms")}*/}
-    {/*                                />*/}
-    {/*                            </div>*/}
-    {/*                        </div>*/}
+            {/*                            /!* CTA *!/*/}
+            {/*                            <div className="mt-6 sm:mt-8 flex justify-center lg:justify-start">*/}
+            {/*                                <ArrowButton*/}
+            {/*                                    text="Explore Our Signature Experiance"*/}
+            {/*                                    textSize="clamp(0.75rem, 1.5vw, 1rem)"*/}
+            {/*                                    className="!px-6 sm:!px-8 lg:!px-10 !py-3 sm:!py-4"*/}
+            {/*                                    onClick={() => (window.location.href = "/explorePrograms")}*/}
+            {/*                                />*/}
+            {/*                            </div>*/}
+            {/*                        </div>*/}
 
-    {/*                        /!* Right Image *!/*/}
-    {/*                        <div className="flex mt-5 lg:mt-0 justify-center lg:justify-end w-full min-w-0">*/}
-    {/*                            <div className="relative w-full max-w-[90vw] lg:max-w-[560px] aspect-[560/520] rounded-[20px] sm:rounded-[28px] overflow-hidden">*/}
-    {/*                                <img*/}
-    {/*                                    src={teamMashar}*/}
-    {/*                                    alt="Our Signature Approach"*/}
-    {/*                                    className="w-full h-full object-cover"*/}
-    {/*                                />*/}
+            {/*                        /!* Right Image *!/*/}
+            {/*                        <div className="flex mt-5 lg:mt-0 justify-center lg:justify-end w-full min-w-0">*/}
+            {/*                            <div className="relative w-full max-w-[90vw] lg:max-w-[560px] aspect-[560/520] rounded-[20px] sm:rounded-[28px] overflow-hidden">*/}
+            {/*                                <img*/}
+            {/*                                    src={teamMashar}*/}
+            {/*                                    alt="Our Signature Approach"*/}
+            {/*                                    className="w-full h-full object-cover"*/}
+            {/*                                />*/}
 
-    {/*                                /!* Decorative accent *!/*/}
-    {/*                                <img*/}
-    {/*                                    src={squareAnimation}*/}
-    {/*                                    alt=""*/}
-    {/*                                    className="absolute -top-3 -left-3 sm:-top-6 sm:-left-6 md:-top-10 md:-left-10 w-12 h-12 sm:w-20 sm:h-20 md:w-32 md:h-32 rotate-45 opacity-40 pointer-events-none"*/}
-    {/*                                />*/}
-    {/*                            </div>*/}
-    {/*                        </div>*/}
-    {/*                    </div>*/}
-    {/*                </div>*/}
-    {/*            </section>*/}
-    {/*        </div>*/}
+            {/*                                /!* Decorative accent *!/*/}
+            {/*                                <img*/}
+            {/*                                    src={squareAnimation}*/}
+            {/*                                    alt=""*/}
+            {/*                                    className="absolute -top-3 -left-3 sm:-top-6 sm:-left-6 md:-top-10 md:-left-10 w-12 h-12 sm:w-20 sm:h-20 md:w-32 md:h-32 rotate-45 opacity-40 pointer-events-none"*/}
+            {/*                                />*/}
+            {/*                            </div>*/}
+            {/*                        </div>*/}
+            {/*                    </div>*/}
+            {/*                </div>*/}
+            {/*            </section>*/}
+            {/*        </div>*/}
             {/* our method */}
-            <section className="px-6 md:px-12 md:py-[70px] py-16 bg-white flex flex-col md:flex-row items-center gap-24 mx-auto max-w-7xl">
+            <section id="method" className="px-6 md:px-12 md:py-[70px] py-16 bg-white flex flex-col md:flex-row items-center gap-24 mx-auto max-w-7xl">
                 {/* LEFT: Images */}
                 <div className="relative  flex justify-start z-20">
                     <img
@@ -260,14 +272,14 @@ export default function OurSignature() {
                         Why <span className="text-primary">Our Method</span>
                         <br />
                         <span className="text-secondary relative inline-block">
-              Stand Apart
+                            Stand Apart
                             {/* Curved underline */}
                             <img
                                 src={curvedLine}
                                 alt="curve"
                                 className="absolute left-1/2 -translate-x-1/2 -bottom-4 w-[140px] md:w-[180px] lg:w-[220px]"
                             />
-            </span>
+                        </span>
                     </h2>
 
                     <p className="font-poppins text-[14px] mb-6">
@@ -283,68 +295,68 @@ export default function OurSignature() {
                         <li className="flex  items-start gap-3">
                             {/* Icon */}
                             <span>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="32"
-                    height="32"
-                    fill="none"
-                    className="stroke-current"
-                >
-                  <path
-                      d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="32"
+                                    height="32"
+                                    fill="none"
+                                    className="stroke-current"
+                                >
+                                    <path
+                                        d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </span>
                             {/* Text Block */}
                             <p className="font-poppins text-[16px]">Globally Validated</p>
                         </li>
 
                         <li className="flex items-start gap-3">
-              <span className="">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="32"
-                    height="32"
-                    fill="none"
-                    className="stroke-current"
-                >
-                  <path
-                      d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+                            <span className="">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="32"
+                                    height="32"
+                                    fill="none"
+                                    className="stroke-current"
+                                >
+                                    <path
+                                        d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </span>
                             <p className="   font-poppins text-[16px] ">Locally Relevant</p>
                         </li>
 
                         <li className="flex  items-start gap-3">
-              <span className="">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="32"
-                    height="32"
-                    fill="none"
-                    className="stroke-current"
-                >
-                  <path
-                      d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+                            <span className="">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="32"
+                                    height="32"
+                                    fill="none"
+                                    className="stroke-current"
+                                >
+                                    <path
+                                        d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </span>
                             <p className="font-poppins text-[16px]  ">
                                 Deeply Human-Centered
                             </p>
@@ -361,40 +373,40 @@ export default function OurSignature() {
                 </div>
             </section>
             {/*  how we work */}
-            <section className="px-6 md:px-16 lg:px-24 py-12 mx-auto max-w-7xl">
+            <section id="how" className="px-6 md:px-16 lg:px-24 py-12 mx-auto max-w-7xl">
                 {/* Title */}
                 <div className="text-left mb-4 font-spartan">
                     <h2 className="text-3xl md:text-[46px] font-medium mb-8 leading-tight font-spartan relative inline-block">
                         How We{" "}
                         <span className="text-[#f39300] relative inline-block">
-              Work
-              <svg
-                  className="absolute left-[-42px] bottom-[-20px] w-[calc(100%+54px)] h-[20px] overflow-visible"
-                  viewBox="0 0 250 60"
-                  preserveAspectRatio="none"
-                  xmlns="http://www.w3.org/2000/svg"
-              >
-                <defs>
-                  <linearGradient
-                      id="curveGradient"
-                      x1="0%"
-                      y1="0%"
-                      x2="0%"
-                      y2="100%"
-                  >
-                    <stop offset="54.8%" stopColor="#000000" />
-                    <stop offset="54.81%" stopColor="#0038F0" />
-                  </linearGradient>
-                </defs>
-                <path
-                    d="M0,50 Q125,0 250,50"
-                    stroke="url(#curveGradient)"
-                    strokeWidth="15"
-                    fill="transparent"
-                    strokeLinecap="round"
-                />
-              </svg>{" "}
-            </span>
+                            Work
+                            <svg
+                                className="absolute left-[-42px] bottom-[-20px] w-[calc(100%+54px)] h-[20px] overflow-visible"
+                                viewBox="0 0 250 60"
+                                preserveAspectRatio="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <defs>
+                                    <linearGradient
+                                        id="curveGradient"
+                                        x1="0%"
+                                        y1="0%"
+                                        x2="0%"
+                                        y2="100%"
+                                    >
+                                        <stop offset="54.8%" stopColor="#000000" />
+                                        <stop offset="54.81%" stopColor="#0038F0" />
+                                    </linearGradient>
+                                </defs>
+                                <path
+                                    d="M0,50 Q125,0 250,50"
+                                    stroke="url(#curveGradient)"
+                                    strokeWidth="15"
+                                    fill="transparent"
+                                    strokeLinecap="round"
+                                />
+                            </svg>{" "}
+                        </span>
                     </h2>
                 </div>
 
@@ -595,19 +607,19 @@ export default function OurSignature() {
                         className="hidden lg:block w-[120px] m-l[150px] lg:left-[110px] absolute left-0 top-1/2 -translate-y-1/2 opacity-70"
                     />
 
-                        <h2 className="text-3xl md:text-[46px] font-medium font-spartan mb-6 leading-tight text-center">
-    <span className="relative inline-block">
-      Our{" "}
-        <span className="text-primary">5-Step</span>{" "}
-        <span className="text-secondary">Growth Plan</span>
+                    <h2 className="text-3xl md:text-[46px] font-medium font-spartan mb-6 leading-tight text-center">
+                        <span className="relative inline-block">
+                            Our{" "}
+                            <span className="text-primary">5-Step</span>{" "}
+                            <span className="text-secondary">Growth Plan</span>
 
-      <img
-          src={CurvedLine}
-          alt="curve"
-          className="absolute left-1/2 -translate-x-1/2 -bottom-5 w-[229px] h-[12px] opacity-100"
-      />
-    </span>
-                        </h2>
+                            <img
+                                src={CurvedLine}
+                                alt="curve"
+                                className="absolute left-1/2 -translate-x-1/2 -bottom-5 w-[229px] h-[12px] opacity-100"
+                            />
+                        </span>
+                    </h2>
                     {/* Background Rings – desktop only */}
                     <div className="hidden lg:block absolute right-0 top-[270px] -translate-y-1/2 pointer-events-none">
                         <img src={CircularGroupCenter} alt="" className="block w-[320px] xl:w-[360px] h-auto opacity-90" />
@@ -639,7 +651,7 @@ export default function OurSignature() {
 
             </section>
             {/* tools unlock */}
-            <section className="relative py-16 sm:py-20 px-4 sm:px-8 lg:px-24">
+            <section id="tools" className="relative py-16 sm:py-20 px-4 sm:px-8 lg:px-24">
                 <img
                     src={CornorGroup}
                     alt="corner decoration"
@@ -658,8 +670,8 @@ export default function OurSignature() {
                         <h2 className="text-2xl sm:text-3xl lg:text-[46px] font-medium font-spartan leading-tight">
                             Tools that Unlock{" "}
                             <span className="text-secondary relative inline-block">
-                Insight
-              </span>
+                                Insight
+                            </span>
                         </h2>
 
                         {/* SVG underline (auto-scaling) */}
@@ -751,7 +763,7 @@ export default function OurSignature() {
                 </div>
             </section>
             {/* Philosophy */}
-            <section className="w-full py-16 px-6 md:px-16 text-center relative">
+            <section id="philosophy" className="w-full py-16 px-6 md:px-16 text-center relative">
                 {/* Background Rings (Top Left) */}
                 <div className="absolute  top-5  left-0 z-0  pointer-events-none">
                     <div
@@ -790,36 +802,36 @@ export default function OurSignature() {
                     ></div>
                 </div>
                 {/* Heading */}
-          {/*      <h2 className="text-3xl md:text-[46px] font-medium font-spartan mb-12">*/}
-          {/*          Our Learning{" "}*/}
-          {/*          <span className="text-[#f39300] relative">*/}
-          {/*  Philosophy{" "}*/}
-          {/*              <img*/}
-          {/*                  src={curvedLine}*/}
-          {/*                  alt="curve"*/}
-          {/*                  className="absolute mt-2 left-1/2 -translate-x-1/2 -bottom-4 w-[140px] md:w-[180px] lg:w-[220px]"*/}
-          {/*              />*/}
-          {/*              {" "}*/}
-          {/*</span>*/}
-          {/*      </h2>*/}
+                {/*      <h2 className="text-3xl md:text-[46px] font-medium font-spartan mb-12">*/}
+                {/*          Our Learning{" "}*/}
+                {/*          <span className="text-[#f39300] relative">*/}
+                {/*  Philosophy{" "}*/}
+                {/*              <img*/}
+                {/*                  src={curvedLine}*/}
+                {/*                  alt="curve"*/}
+                {/*                  className="absolute mt-2 left-1/2 -translate-x-1/2 -bottom-4 w-[140px] md:w-[180px] lg:w-[220px]"*/}
+                {/*              />*/}
+                {/*              {" "}*/}
+                {/*</span>*/}
+                {/*      </h2>*/}
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[46px] font-medium font-spartan mb-10 leading-tight text-center">
-  <span className="relative inline-block">
-    Our Learning{" "}
-      <span className="text-secondary">Philosophy</span>
+                    <span className="relative inline-block">
+                        Our Learning{" "}
+                        <span className="text-secondary">Philosophy</span>
 
-    <img
-        src={CurvedLine}
-        alt="curve"
-        className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
-    />
-  </span>
+                        <img
+                            src={CurvedLine}
+                            alt="curve"
+                            className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
+                        />
+                    </span>
                 </h2>
                 <p className="max-w-6xl mx-auto text-center font-poppins text-[16px] leading-[30px] text-[#1A1A1A] mb-20">
                     We don’t just develop skills. We shape the inner life of leaders. Leadership begins from within, and real learning goes beyond the course.
                     <br />
                     <span>
-    Our model ignites a journey of <span className="font-semibold">discovery, mastery, and lasting behavioral change.</span>
-  </span>
+                        Our model ignites a journey of <span className="font-semibold">discovery, mastery, and lasting behavioral change.</span>
+                    </span>
                 </p>
 
 
@@ -875,10 +887,10 @@ export default function OurSignature() {
                 {/* Heading */}
 
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[46px] font-medium font-spartan mb-10 leading-tight text-center">
-  <span className="relative inline-block">
-    Curious About <span className="text-secondary">the Mashar Way?</span>
-    <img src={CurvedLine} alt="curve" className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100" />
-  </span>
+                    <span className="relative inline-block">
+                        Curious About <span className="text-secondary">the Mashar Way?</span>
+                        <img src={CurvedLine} alt="curve" className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100" />
+                    </span>
                 </h2>
 
 
@@ -891,16 +903,16 @@ export default function OurSignature() {
                 {/* Button */}
                 <div className="flex justify-center">
                     <ArrowButton text="Start Your Growth" textSize="16px"
-                                 onClick={() => {
-                                     navigate("/explorePrograms");
-                                     window.scrollTo(0, 0);
-                                 }}
+                        onClick={() => {
+                            navigate("/explorePrograms");
+                            window.scrollTo(0, 0);
+                        }}
 
                     />
                 </div>
             </section>
             ;{/* signature programs */}
-            <section className="px-6 md:px-12 py-16 relative bg-white flex flex-col md:flex-row items-center gap-8 mx-auto max-w-7xl">
+            <section id="programs" className="px-6 md:px-12 py-16 relative bg-white flex flex-col md:flex-row items-center gap-8 mx-auto max-w-7xl">
                 {/* Circle + Square Animation together */}
                 <div className="absolute top-0 -left-20 z-0 pointer-events-none">
                     <div className="relative w-[166px] h-[166px]">
@@ -939,10 +951,10 @@ export default function OurSignature() {
                 {/* RIGHT: Text Content */}
                 <div className="md:w-1/2 text-center md:text-left relative">
                     <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[46px] font-medium font-spartan mb-10 leading-tight text-center">
-             <span className="relative inline-block">
-               Our Signature <span className="text-secondary">Programs</span>
-             <img src={CurvedLine} alt="curve" className="absolute left-[185px] -translate-x-1/2 -bottom-6 w-[139px] h-[15px] opacity-100" />
-             </span>
+                        <span className="relative inline-block">
+                            Our Signature <span className="text-secondary">Programs</span>
+                            <img src={CurvedLine} alt="curve" className="absolute left-[185px] -translate-x-1/2 -bottom-6 w-[139px] h-[15px] opacity-100" />
+                        </span>
                     </h2>
                     <p className="mt-8 mb-1 max-w-2xl text-[15px] md:text-[16px] font-poppins text-gray-700">Our Signature programs bring our methodology and philosophy to life delivering customized, measurable, and high impact experiences.
                     </p>
@@ -950,23 +962,23 @@ export default function OurSignature() {
                         <li className="flex items-start gap-6">
                             {/* Icon */}
                             <span className=" text-[#0f1c80]">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="32"
-                    height="32"
-                    fill="none"
-                    className="stroke-current"
-                >
-                  <path
-                      d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="32"
+                                    height="32"
+                                    fill="none"
+                                    className="stroke-current"
+                                >
+                                    <path
+                                        d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </span>
                             {/* Text Block */}
                             <p className="font-poppins text-[16px]">
                                 An Authentic Leadership Journey
@@ -974,70 +986,70 @@ export default function OurSignature() {
                         </li>
 
                         <li className="flex items-start gap-6">
-              <span className=" text-[#0f1c80]">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="32"
-                    height="32"
-                    fill="none"
-                    className="stroke-current"
-                >
-                  <path
-                      d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+                            <span className=" text-[#0f1c80]">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="32"
+                                    height="32"
+                                    fill="none"
+                                    className="stroke-current"
+                                >
+                                    <path
+                                        d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </span>
                             <p className="   font-poppins text-[16px]">
                                 Leading Through Teams
                             </p>
                         </li>
 
                         <li className="flex  items-start gap-6">
-              <span className="  text-[#0f1c80] ">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="32"
-                    height="32"
-                    fill="none"
-                    className="stroke-current"
-                >
-                  <path
-                      d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+                            <span className="  text-[#0f1c80] ">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="32"
+                                    height="32"
+                                    fill="none"
+                                    className="stroke-current"
+                                >
+                                    <path
+                                        d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </span>
                             <p className="   font-poppins text-[16px]">Coach with Impact</p>
                         </li>
 
                         <li className="flex  items-start gap-6">
-              <span className="  text-[#0f1c80]">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="32"
-                    height="32"
-                    fill="none"
-                    className="stroke-current"
-                >
-                  <path
-                      d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+                            <span className="  text-[#0f1c80]">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="32"
+                                    height="32"
+                                    fill="none"
+                                    className="stroke-current"
+                                >
+                                    <path
+                                        d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </span>
                             <p className="   font-poppins text-[16px] ">
                                 {" "}
                                 360° Culture Reset
@@ -1045,24 +1057,24 @@ export default function OurSignature() {
                         </li>
 
                         <li className="flex  items-start gap-6">
-              <span className="  text-[#0f1c80]">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="32"
-                    height="32"
-                    fill="none"
-                    className="stroke-current"
-                >
-                  <path
-                      d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+                            <span className="  text-[#0f1c80]">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="32"
+                                    height="32"
+                                    fill="none"
+                                    className="stroke-current"
+                                >
+                                    <path
+                                        d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </span>
                             <p className="   font-poppins text-[16px]">
                                 {" "}
                                 Cultural Intelligence for Impact
@@ -1086,17 +1098,17 @@ export default function OurSignature() {
                 <div className="relative z-10 flex flex-col items-center justify-center px-4 text-center">
                     {/* Heading */}
                     <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[46px] font-medium font-spartan mb-10 leading-tight text-center">
-  <span className="relative inline-block">
-    Let’s Design. {" "}
-      <span className="text-primary">The Transformation </span>{" "}
-      <span className="text-secondary"> You Need</span>
+                        <span className="relative inline-block">
+                            Let’s Design. {" "}
+                            <span className="text-primary">The Transformation </span>{" "}
+                            <span className="text-secondary"> You Need</span>
 
-    <img
-        src={CurvedLine}
-        alt="curve"
-        className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
-    />
-  </span>
+                            <img
+                                src={CurvedLine}
+                                alt="curve"
+                                className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
+                            />
+                        </span>
                     </h2>
 
                     {/* Subheading */}
@@ -1109,11 +1121,11 @@ export default function OurSignature() {
                     </p>
 
                     {/* Button */}
-                        <ArrowButton
-                            text="Book a Discovery Call"
-                            className="px-8 py-4 text-[12px] sm:text-[16px]"
-                            onClick={openCalendly}
-                        />
+                    <ArrowButton
+                        text="Book a Discovery Call"
+                        className="px-8 py-4 text-[12px] sm:text-[16px]"
+                        onClick={openCalendly}
+                    />
                 </div>
             </div>
         </div>

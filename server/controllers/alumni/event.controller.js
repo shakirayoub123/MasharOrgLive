@@ -5,7 +5,13 @@ const { sendMail } = require("../../helpers");
 // @route   GET /api/alumni/events
 const getEvents = async (req, res) => {
     try {
-        const events = await Event.find().sort({ eventDate: 1 });
+        const events = await Event.find({
+            $or: [
+                { audience: { $in: ["alumni", "both"] } },
+                { audience: { $exists: false } },   // legacy events before audience field was added
+                { audience: null },
+            ]
+        }).sort({ eventDate: 1 });
 
         // Add isRegistered flag for the logged-in alumni
         const alumniId = req.user._id.toString();

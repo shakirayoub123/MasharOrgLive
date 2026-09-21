@@ -3,6 +3,7 @@ const alumniRoutes = require("./alumni.routes");
 const adminRoutes = require("./admin.routes");
 const subscriberRoutes = require("./subscriber.routes");
 const discoveryRoutes = require("./discovery.routes");
+const publicRoutes = require("./public.routes");
 
 module.exports = (app) => {
     app.use("/api/auth", authRoutes);
@@ -10,5 +11,6 @@ module.exports = (app) => {
     app.use("/api/admin", adminRoutes);
     app.use("/api/subscribers", subscriberRoutes);
     app.use("/api/discovery", discoveryRoutes);
-    app.use("/api/v1/admin", adminRoutes); // support legacy /api/v1/admin paths from frontend
+    app.use("/api/public", publicRoutes);          // ← no auth, public website
+    app.use("/api/v1/admin", adminRoutes);           // legacy support
 };

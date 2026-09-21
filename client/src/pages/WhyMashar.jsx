@@ -1,6 +1,8 @@
 // App.js
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { scrollToHash } from "../utils/scrollToHash";
 import { motion, useAnimation } from "framer-motion";
 
 // For local image, place image_622ebd.jpg in the src folder
@@ -18,12 +20,19 @@ import skull1 from "../assets/skull1.svg";
 import skull2 from "../assets/skull2.svg";
 import eqa from "../assets/eqa.svg";
 import one from "../assets/one.svg";
+import SEO from "../components/SEO";
 import persona from "../assets/persona.svg";
 import ArrowButton from "../components/Arrowbutton";
 import ImageMagick from "../assets/WhyMasharHero.jpeg";
 import GlobalSection from "../components/logos2.jsx";
 
 const WhyMashar = () => {
+    const location = useLocation();
+
+    useEffect(() => {
+        scrollToHash(location.hash, 120);
+    }, [location.hash]);
+
     const openCalendly = () => {
         console.log("clicked"); // ✅ WILL PRINT
         window.open(
@@ -86,9 +95,9 @@ const WhyMashar = () => {
                 }}
             >
 
-            <div
+                <div
                     className="absolute inset-0 flex flex-col items-center justify-center w-full h-full px-8"
-                    // style={{ pointerEvents: "none" }}
+                // style={{ pointerEvents: "none" }}
                 >
                     {isFront ? frontContent : backContent}
                 </div>
@@ -98,6 +107,10 @@ const WhyMashar = () => {
 
     return (
         <div className="font-spartan">
+            <SEO
+                title="Why Mashar | The Mashar Difference"
+                description="Learn why Mashar is the leading global network designed to connect brilliant minds across industries for growth and collective opportunity."
+            />
             {/* Header Section */}
             <header className="relative h-[200px]  sm:min-h-[400px] lg:min-h-[500px] flex flex-col justify-center items-center text-white text-center p-8">
                 {/* Background Image */}
@@ -117,7 +130,7 @@ const WhyMashar = () => {
             </header>
 
             {/* Roots Run Deep Section */}
-            <section className="bg-white px-6 sm:px-10 lg:px-16 xl:px-24 pt-[40px] sm:pt-[100px] lg:pt-[140px] pb-[40px]">
+            <section id="roots" className="bg-white px-6 sm:px-10 lg:px-16 xl:px-24 pt-[40px] sm:pt-[100px] lg:pt-[140px] pb-[40px]">
                 <div className="max-w-7xl mx-auto">
 
                     {/* 👇 collapse earlier for zoom safety */}
@@ -128,13 +141,13 @@ const WhyMashar = () => {
                             <h2 className="text-3xl md:text-4xl lg:text-5xl font-spartan font-medium leading-tight mb-8">
                                 Our <span className="text-[#f39300]">Roots</span>{" "}
                                 <span className="relative inline-block text-[#0f1c80]">
-            Run Deep
-            <img
-                src={curvedLine}
-                alt="curve"
-                className="absolute left-0 -bottom-3 w-[240px]"
-            />
-          </span>
+                                    Run Deep
+                                    <img
+                                        src={curvedLine}
+                                        alt="curve"
+                                        className="absolute left-0 -bottom-3 w-[240px]"
+                                    />
+                                </span>
                             </h2>
 
                             <p className="text-[17px] text-[#0F1C80] leading-[28px] mb-6">
@@ -183,7 +196,7 @@ const WhyMashar = () => {
             </section>
 
             {/* Vision & Mission Section */}
-            <section className="bg-white md:py-[120px] text-center relative">
+            <section id="mission" className="bg-white md:py-[120px] text-center relative">
                 <img
                     src={CornorGroup}
                     alt="corner decoration"
@@ -196,22 +209,22 @@ const WhyMashar = () => {
 
                     {/* Built for with curved line - Desktop only */}
                     <span className="hidden md:inline-block relative pb-4">
-        <span className="text-black">Built for&nbsp;</span>
-        <img
-            src={curvedLine}
-            alt=""
-            className="absolute bottom-0 left-[-17px] w-[280px] pointer-events-none"
-        />
-    </span>
+                        <span className="text-black">Built for&nbsp;</span>
+                        <img
+                            src={curvedLine}
+                            alt=""
+                            className="absolute bottom-0 left-[-17px] w-[280px] pointer-events-none"
+                        />
+                    </span>
 
                     {/* Built for - Mobile only (no underline) */}
                     <span className="md:hidden text-black">Built for &nbsp;</span>
 
                     {/* Transformation with curved line - Mobile only */}
                     <span className="md:hidden relative inline-block pb-[10px]">
-        <span className="text-[#F39300]">Transformation</span>
+                        <span className="text-[#F39300]">Transformation</span>
 
-    </span>
+                    </span>
 
                     {/* Transformation - Desktop only (no underline) */}
                     <span className="hidden md:inline text-[#F39300]">Transformation</span>
@@ -412,43 +425,43 @@ const WhyMashar = () => {
             {/* Founder Section */}
             <div className="relative  mb-16">
                 <div className="absolute  top-5  left-[80px] z-0  pointer-events-none">
-                        <div
-                            className="absolute rounded-full"
-                            style={{
-                                width: "138.76px",
-                                height: "136.43px",
-                                top: "-19.51px",
-                                left: "-9.76px",
-                                opacity: 0.1,
-                                borderWidth: "11px",
-                                borderStyle: "solid",
-                                borderColor: "rgba(15, 28, 128, 0.4)",
-                                borderRadius: "100px",
-                                boxShadow: "0px 4px 16px rgba(43, 52, 118, 0.3)",
-                            }}
-                        />
+                    <div
+                        className="absolute rounded-full"
+                        style={{
+                            width: "138.76px",
+                            height: "136.43px",
+                            top: "-19.51px",
+                            left: "-9.76px",
+                            opacity: 0.1,
+                            borderWidth: "11px",
+                            borderStyle: "solid",
+                            borderColor: "rgba(15, 28, 128, 0.4)",
+                            borderRadius: "100px",
+                            boxShadow: "0px 4px 16px rgba(43, 52, 118, 0.3)",
+                        }}
+                    />
 
-                        <div
-                            className="absolute rounded-full"
-                            style={{
-                                width: "170.73px",
-                                height: "126.57px",
-                                top: "-47px",
-                                left: "-78px",
-                                transform: "rotate(-233.73deg)",
-                                opacity: 0.1,
-                                borderWidth: "11px",
-                                borderStyle: "solid",
-                                borderColor: "rgba(15, 28, 128, 0.4)",
-                                borderRadius: "100px",
-                                boxShadow: "0px 4px 16px rgba(43, 52, 118, 0.3)",
-                            }}
-                        />
-                    </div>
+                    <div
+                        className="absolute rounded-full"
+                        style={{
+                            width: "170.73px",
+                            height: "126.57px",
+                            top: "-47px",
+                            left: "-78px",
+                            transform: "rotate(-233.73deg)",
+                            opacity: 0.1,
+                            borderWidth: "11px",
+                            borderStyle: "solid",
+                            borderColor: "rgba(15, 28, 128, 0.4)",
+                            borderRadius: "100px",
+                            boxShadow: "0px 4px 16px rgba(43, 52, 118, 0.3)",
+                        }}
+                    />
                 </div>
+            </div>
 
             {/* team section */}
-            <section className="bg-white px-6 sm:px-10 lg:px-16 xl:px-24 pt-[40px] sm:pt-[100px] lg:pt-[140px] pb-[40px]">
+            <section id="team" className="bg-white px-6 sm:px-10 lg:px-16 xl:px-24 pt-[40px] sm:pt-[100px] lg:pt-[140px] pb-[40px]">
                 <div className="relative container mx-auto max-w-7xl flex flex-col lg:flex-row items-center gap-10 px-5 lg:px-0">
 
                     {/* Left Side */}
@@ -517,9 +530,9 @@ const WhyMashar = () => {
                             <h2 className="md:text-5xl text-3xl font-medium font-spartan mb-4 leading-snug relative inline-block">
                                 Meet <span className="text-[#0f1c80]">Our Founder</span> &{" "}
                                 <span className="text-[#f39300] relative md:leading-[50px]  ">
-                  <br className="md:block hidden" />
-                  Lead Coach
-                </span>
+                                    <br className="md:block hidden" />
+                                    Lead Coach
+                                </span>
                             </h2>
 
                             <blockquote className="font-poppins text-[16px] font-semibold leading-[24px] mb-2 tracking-[0.5px] text-[#0F1C80]">
@@ -574,17 +587,17 @@ const WhyMashar = () => {
             <div className="min-h-screen">
                 <section className="max-w-[70rem] mx-auto px-4 pt-16 ">
                     <h2 className="relative md:text-5xl text-3xl font-spartan font-medium text-center text-[#2B3476] mb-8">
-  <span className="relative inline-block tracking-wide">
-    Accredited. Certified. Globally{" "}
-      <span className="text-[#f39300] relative inline-block">
-      Recognized
-    </span>
-       <img
-           src={curvedLine}
-           alt="curve"
-           className="absolute left-1/2 -translate-x-1/2 -bottom-3 w-[220px] h-[12px]"
-       />
-  </span>
+                        <span className="relative inline-block tracking-wide">
+                            Accredited. Certified. Globally{" "}
+                            <span className="text-[#f39300] relative inline-block">
+                                Recognized
+                            </span>
+                            <img
+                                src={curvedLine}
+                                alt="curve"
+                                className="absolute left-1/2 -translate-x-1/2 -bottom-3 w-[220px] h-[12px]"
+                            />
+                        </span>
                     </h2>
 
 
@@ -597,94 +610,94 @@ const WhyMashar = () => {
                         Trusted by leaders across the region.
                     </p>
 
-                 <div>
-                     <div className="flex justify-center mt-16 gap-8 max-w-6xl mx-auto 645:flex-row flex-col items-center">
-                         {/* Card 1 */}
-                         {createCard(
-                             <>
-                                 <div className="bg-white w-[220px] h-[180px] p-2 flex items-center justify-center rounded-3xl mb-4">
-                                     <img src={one} alt="front" className="h-36 object-contain" />
-                                 </div>
-                                 <p className="text-[21px] font-spartan text-[#0F1C80] font-medium text-center tracking-wide">
-                                     ICF Coaching Accreditation
-                                 </p>
-                             </>,
-                             <div className="leading-snug text-center sm:text-left">
-                                 <h1 className="text-[20px] sm:text-[26px] lg:text-[22px]
+                    <div>
+                        <div className="flex justify-center mt-16 gap-8 max-w-6xl mx-auto 645:flex-row flex-col items-center">
+                            {/* Card 1 */}
+                            {createCard(
+                                <>
+                                    <div className="bg-white w-[220px] h-[180px] p-2 flex items-center justify-center rounded-3xl mb-4">
+                                        <img src={one} alt="front" className="h-36 object-contain" />
+                                    </div>
+                                    <p className="text-[21px] font-spartan text-[#0F1C80] font-medium text-center tracking-wide">
+                                        ICF Coaching Accreditation
+                                    </p>
+                                </>,
+                                <div className="leading-snug text-center sm:text-left">
+                                    <h1 className="text-[20px] sm:text-[26px] lg:text-[22px]
         mb-2
         text-[#f39300]
         font-spartan font-semibold">
-                                     ICF Coaching Accreditation
-                                 </h1>
+                                        ICF Coaching Accreditation
+                                    </h1>
 
-                                 <p className="font-spartan text-[#2B3476]
+                                    <p className="font-spartan text-[#2B3476]
         text-[16px] sm:text-xl
         mb-4 sm:mb-6">
-                                     Setting the Global Standard for Leadership coaching
-                                 </p>
+                                        Setting the Global Standard for Leadership coaching
+                                    </p>
 
-                                 <p className="font-poppins font-normal text-[16px] leading-[30px] tracking-[0.5px] text-[#1A1A1A] max-w-[520px] mb-3">
-                                     The world’s leading authority on professional coaching, empowering internal coaches, professionals, consultants, and leaders to deepen their skills and embrace coaching as a leadership approach.
-                                     Ready to elevate your coaching career and leadership impact?
-                                 </p>
+                                    <p className="font-poppins font-normal text-[16px] leading-[30px] tracking-[0.5px] text-[#1A1A1A] max-w-[520px] mb-3">
+                                        The world’s leading authority on professional coaching, empowering internal coaches, professionals, consultants, and leaders to deepen their skills and embrace coaching as a leadership approach.
+                                        Ready to elevate your coaching career and leadership impact?
+                                    </p>
 
-                                 <div className="w-full flex justify-center sm:justify-start">
-                                     <ArrowButton text="Explore Our ICF-Certified Program" textSize="14px" />
-                                 </div>
-                             </div>,
-                             "#EEEEEE", // default background (image shows through)
-                             "radial-gradient(120% 120% at 50% 0%, #F3F6FF 0%, #ECEFFF 45%, #FFFFFF 100%)",
-                             "500px",
-                         )}
-                         {/* Card 2 */}
-                         {createCard(
-                             <>
-                                 <div className="bg-white w-[220px] h-[180px] flex items-center justify-center rounded-3xl mb-4">
+                                    <div className="w-full flex justify-center sm:justify-start">
+                                        <ArrowButton text="Explore Our ICF-Certified Program" textSize="14px" />
+                                    </div>
+                                </div>,
+                                "#EEEEEE", // default background (image shows through)
+                                "radial-gradient(120% 120% at 50% 0%, #F3F6FF 0%, #ECEFFF 45%, #FFFFFF 100%)",
+                                "500px",
+                            )}
+                            {/* Card 2 */}
+                            {createCard(
+                                <>
+                                    <div className="bg-white w-[220px] h-[180px] flex items-center justify-center rounded-3xl mb-4">
 
-                                     <img
-                                         src={eqa}
-                                         alt="Persona Global logo"
-                                         className="h-36 object-contain"
-                                     />
-                                 </div>
-                                 <p className="text-[21px] text-[#0F1C80] font-spartan font-medium text-center tracking-wide">
-                                     EMCC Mentoring Accreditation{" "}
-                                 </p>
-                             </>,
-                             <div>
-                                 <div className="leading-relaxed w-[350px] sm:w-full mx-auto px-4 sm:px-0 overflow-x-hidden">
-                                     <h1 className="text-[22px] mb-2 sm:text-[26px] lg:text-[22px] text-[#f39300] font-spartan font-semibold">
-                                         ICF Coaching Accreditation
-                                     </h1>
+                                        <img
+                                            src={eqa}
+                                            alt="Persona Global logo"
+                                            className="h-36 object-contain"
+                                        />
+                                    </div>
+                                    <p className="text-[21px] text-[#0F1C80] font-spartan font-medium text-center tracking-wide">
+                                        EMCC Mentoring Accreditation{" "}
+                                    </p>
+                                </>,
+                                <div>
+                                    <div className="leading-relaxed w-[350px] sm:w-full mx-auto px-4 sm:px-0 overflow-x-hidden">
+                                        <h1 className="text-[22px] mb-2 sm:text-[26px] lg:text-[22px] text-[#f39300] font-spartan font-semibold">
+                                            ICF Coaching Accreditation
+                                        </h1>
 
-                                     <p className="font-spartan text-[#2B3476] text-xl mb-6">
-                                         Setting the Global Standard for Leadership Coaching
-                                     </p>
+                                        <p className="font-spartan text-[#2B3476] text-xl mb-6">
+                                            Setting the Global Standard for Leadership Coaching
+                                        </p>
 
-                                     <p className="font-poppins font-normal text-[16px] leading-[30px] tracking-[0.5px] text-[#1A1A1A] max-w-[520px] mb-3">
-                                         The world’s leading authority on professional coaching, empowering internal
-                                         coaches, professionals, consultants, and leaders to deepen their skills and
-                                         embrace coaching as a leadership approach. <br /> &nbsp;
-                                     </p>
+                                        <p className="font-poppins font-normal text-[16px] leading-[30px] tracking-[0.5px] text-[#1A1A1A] max-w-[520px] mb-3">
+                                            The world’s leading authority on professional coaching, empowering internal
+                                            coaches, professionals, consultants, and leaders to deepen their skills and
+                                            embrace coaching as a leadership approach. <br /> &nbsp;
+                                        </p>
 
-                                     <div className="w-full flex justify-center sm:justify-start">
-                                         <ArrowButton text="Explore Our ICF-Certified Program" textSize="12px sm:16px" />
-                                     </div>
-                                 </div></div>,
-                             "#EEEEEE", // default background (image shows through)
-                             "radial-gradient(120% 120% at 50% 0%, #F3F6FF 0%, #ECEFFF 45%, #FFFFFF 100%)",
-                             "500px",
-                         )}
-                     </div>
+                                        <div className="w-full flex justify-center sm:justify-start">
+                                            <ArrowButton text="Explore Our ICF-Certified Program" textSize="12px sm:16px" />
+                                        </div>
+                                    </div></div>,
+                                "#EEEEEE", // default background (image shows through)
+                                "radial-gradient(120% 120% at 50% 0%, #F3F6FF 0%, #ECEFFF 45%, #FFFFFF 100%)",
+                                "500px",
+                            )}
+                        </div>
 
-                 </div>
+                    </div>
                     <h2 className="relative md:pt-[64px] text-3xl lg:text-5xl font-spartan font-medium text-center mb-8 mt-20">
-                 <span className="relative inline-block tracking-wide">
+                        <span className="relative inline-block tracking-wide">
 
-                   Global Tools for{" "}
-                <span className="text-[#2B3476]">Human-Centered &nbsp;</span>
-                <span className="text-[#f39300]">Leadership</span>
-                </span>
+                            Global Tools for{" "}
+                            <span className="text-[#2B3476]">Human-Centered &nbsp;</span>
+                            <span className="text-[#f39300]">Leadership</span>
+                        </span>
                         {/* SVG underline */}
                         <img
                             src={curvedLine}
@@ -713,13 +726,13 @@ const WhyMashar = () => {
                                 </div>
 
                                 <p className="font-poppins text-center text-[#0F1C80]">
-                            <span className="block font-medium md:text-[16px] sm:text-[18px] leading-[36px] tracking-[0.5px] whitespace-nowrap">
-                            Academy of Brain Based Leadership
-                            </span>
+                                    <span className="block font-medium md:text-[16px] sm:text-[18px] leading-[36px] tracking-[0.5px] whitespace-nowrap">
+                                        Academy of Brain Based Leadership
+                                    </span>
 
                                     <span className="block font-normal text-[14px] leading-[30px] tracking-[0.5px] whitespace-nowrap">
-    Certified Facilitator
-  </span>
+                                        Certified Facilitator
+                                    </span>
                                 </p>
 
                             </>,
@@ -757,12 +770,12 @@ const WhyMashar = () => {
                                 </div>
 
                                 <p className="font-poppins text-center text-[#0F1C80]">
-                                   <span className="block font-medium text-[18px] leading-[36px] tracking-[0.5px] whitespace-nowrap">
-                                   Persona Global
-                                   </span>
+                                    <span className="block font-medium text-[18px] leading-[36px] tracking-[0.5px] whitespace-nowrap">
+                                        Persona Global
+                                    </span>
                                     <span className="block font-normal text-[14px] leading-[30px] tracking-[0.5px] whitespace-nowrap">
-                                     Certified Facilitator
-                                   </span>
+                                        Certified Facilitator
+                                    </span>
                                 </p>
 
                             </>,
@@ -803,13 +816,13 @@ const WhyMashar = () => {
                     <h2 className="relative text-3xl lg:text-5xl font-spartan font-medium text-center mb-8 mt-20">
                         Let’s <span className="text-[#0f1c80]">Grow</span>{" "}
                         <span className="relative inline-block text-[#f39300]">
-              Together
-                 <img
-                     src={curvedLine}
-                     alt="curve"
-                     className="absolute left-1/2 -translate-x-1/2 -bottom-4 w-[229px] h-[12px]"
-                 />
-            </span>
+                            Together
+                            <img
+                                src={curvedLine}
+                                alt="curve"
+                                className="absolute left-1/2 -translate-x-1/2 -bottom-4 w-[229px] h-[12px]"
+                            />
+                        </span>
                     </h2>
 
                     {/* At Mashar text */}

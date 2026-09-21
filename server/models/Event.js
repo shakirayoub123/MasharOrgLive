@@ -49,6 +49,11 @@ const eventSchema = new mongoose.Schema(
             required: true,
             min: 1,
         },
+        audience: {
+            type: String,
+            enum: ["alumni", "public", "both"],
+            default: "alumni",
+        },
         image: {
             type: String,
             required: true,

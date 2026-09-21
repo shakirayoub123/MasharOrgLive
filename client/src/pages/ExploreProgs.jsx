@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import teamMashar from "../assets/LeadershipHubHero.jpeg";
 import WhyMashar from "../assets/FinalPrograms.jpeg";
 import whyMasharCircle from "../assets/why-mashar-circle.svg";
@@ -11,6 +11,7 @@ import AssessmentToolsSection from "../components/AssessmentToolsSection.jsx";
 import CustomSolutions from "../components/CustomSolutions.jsx";
 import curvedLine from "../assets/CurvedLine.png";
 import { useLocation } from "react-router-dom";
+import SEO from "../components/SEO";
 
 const ExplorePrograms = () => {
     const [activeTab, setActiveTab] = useState("training");
@@ -32,6 +33,10 @@ const ExplorePrograms = () => {
 
     return (
         <div className="font-spartan overflow-hidden">
+            <SEO
+                title="Explore Programs | Mashar"
+                description="Explore Mashar's rigorous training methodology and targeted programs designed to grow your skillset and capacity for leading the future."
+            />
 
             {/* ================= HEADER ================= */}
             <header className="relative h-[200px]  sm:min-h-[400px] lg:min-h-[500px] flex flex-col justify-center items-center text-white text-center p-8">
@@ -74,14 +79,14 @@ const ExplorePrograms = () => {
                                 <br />
                                 <span className="text-[#1A2A8A]">Create Lasting </span>
                                 <span className="relative inline-block text-[#F39300]">
-            Impact
+                                    Impact
                                     {/* Curved underline */}
                                     <img
                                         src={curvedLine}
                                         alt="curve"
                                         className="absolute left-1/2 -translate-x-1/2 -bottom-3 sm:-bottom-4 xl:h-[15px] w-[180px] sm:w-[220px]"
                                     />
-          </span>
+                                </span>
                             </h2>
 
                             <p className="font-poppins text-[15px] sm:text-[15px] leading-[1.85] tracking-[0.025em] text-[#222] mb-6">
@@ -105,7 +110,7 @@ const ExplorePrograms = () => {
             <section ref={programsRef} className="relative bg-[#F2F2F2] pt-8 pb-28">
 
                 {/* ===== TABS (BOTTOM-ALIGNED) ===== */}
-            <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-full z-30">
+                <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-full z-30">
                     <div className="w-[95vw] sm:w-[90vw] mx-auto">
                         <div className="bg-[#0f1c80] rounded-[18px] shadow-[0px_14px_40px_rgba(0,0,0,0.2)] p-2">
 

@@ -17,10 +17,21 @@ export default defineConfig({
         } : undefined,
     },
     build: {
+        minify: "terser",
+        terserOptions: {
+            compress: {
+                drop_console: true,
+                drop_debugger: true,
+            },
+        },
         rollupOptions: {
             output: {
                 manualChunks: {
-                    react: ["react", "react-dom"],
+                    react: ["react", "react-dom", "react-router-dom"],
+                    ui: ["lucide-react", "framer-motion", "react-icons", "react-slick", "slick-carousel"],
+                    calendar: ["@fullcalendar/react", "@fullcalendar/daygrid", "@fullcalendar/timegrid", "@fullcalendar/interaction", "react-big-calendar"],
+                    utils: ["axios", "date-fns"],
+                    editor: ["@tinymce/tinymce-react"]
                 },
             },
         },

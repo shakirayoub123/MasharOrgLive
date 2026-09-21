@@ -2,6 +2,9 @@ const express = require("express");
 const dns = require("dns");
 const path = require("path");
 const fs = require("fs");
+const helmet = require("helmet");
+const hpp = require("hpp");
+const compression = require("compression");
 
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
@@ -9,11 +12,35 @@ require("dotenv").config();
 
 const app = express();
 
+// Optimize payloads with Gzip Compression
+app.use(compression());
+
+// 1. Set security HTTP headers using Helmet
+app.use(helmet({
+    contentSecurityPolicy: false, // Disabled to ensure inline scripts from React and external CDNs don't break
+    crossOriginEmbedderPolicy: false, // Disabled to ensure embedded iframes (e.g. YouTube) work
+}));
+
+// 2. Enforce HTTPS in production environments behind a load balancer/reverse proxy
+if (process.env.NODE_ENV === 'production') {
+    app.use((req, res, next) => {
+        if (req.headers['x-forwarded-proto'] !== 'https') {
+            return res.redirect(`https://${req.header('host')}${req.url}`);
+        }
+        next();
+    });
+}
+
 app.use(require("./middlewares/cors"));
 
 require("./events/notifier");
 
-app.use(express.json());
+// 3. Body parser with payload limit (prevents denial of service via huge payloads)
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
+// 4. Prevent HTTP Parameter Pollution (removes duplicate query parameters)
+app.use(hpp());
 
 // Disable cache ONLY for API responses
 app.use("/api", (req, res, next) => {

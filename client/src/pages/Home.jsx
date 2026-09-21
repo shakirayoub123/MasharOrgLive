@@ -11,6 +11,7 @@ import LeadersSection from "../components/logos";
 import TestimonialsSlider from "../components/TestimonialsSlider";
 import squareAnimation from "../assets/squareAnimation.gif";
 import { useNavigate } from "react-router-dom";
+import SEO from "../components/SEO";
 
 // import frame2847 from "../assets/frame-1000002847.svg";
 // import frame2844 from "../assets/frame-1000002844.svg";
@@ -318,6 +319,10 @@ const Home = () => {
 
     return (
         <>
+            <SEO
+                title="Mashar | A Stronger Tomorrow Together"
+                description="Mashar is a global alumni network that connects people, inspires growth, and creates opportunities."
+            />
             {showPopup && (
                 <NewsletterPopup isOpen={showPopup} onClose={handleClosePopup} />
             )}
@@ -325,7 +330,7 @@ const Home = () => {
 
             <section className="flex overflow-hidden flex-col 924:flex-row items-center justify-center gap-10 lg:gap-16 px-6 md:px-12 lg:px-20 py-12 lg:py-20 bg-white">
                 {/* LEFT CONTENT */}
-                <div className="w-full 924:max-w-[560px] sm:text-left text-center space-y-6 relative mb-[20px] 924:mb-0">
+                <div className="w-full 924:max-w-[560px] sm:text-left text-center space-y-6 r   4:mb-0">
                     <div className="absolute right-2 md:-right-8 top-[90%] md:top-48  lg:-mt-150 opacity-65">
                         <img
                             src={squareAnimation}

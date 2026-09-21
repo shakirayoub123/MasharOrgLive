@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+import { scrollToHash } from "../utils/scrollToHash";
 import whyMashar from "../assets/letsTalkBg.jpeg";
 import { ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaInstagram,FaFacebookF, FaLinkedin, FaTwitter, FaYoutube, FaFacebook } from "react-icons/fa";
+import { FaInstagram, FaFacebookF, FaLinkedin, FaTwitter, FaYoutube, FaFacebook } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
 import { MdLocationOn, MdMessage, MdPhone } from "react-icons/md";
@@ -13,10 +16,31 @@ import CurvedLine from "../assets/CurvedLine.png";
 import gif from "../assets/gif2.gif";
 import circle from "../assets/ellipseorange.svg";
 import LeftCornorGroup from "../assets/LeftCornorGroup.png";
+import SEO from "../components/SEO";
 
 export default function LetsTalk() {
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [openIndex, setOpenIndex] = useState(0);
+    const location = useLocation();
+
+    const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        organization: "",
+        service: "",
+        message: ""
+    });
+
+    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    // Scroll to section when navigated with a hash (e.g. #contact, #faq)
+    useEffect(() => {
+        scrollToHash(location.hash, 120);
+    }, [location.hash]);
+
     const openCalendly = () => {
         window.open(
             "https://calendly.com/raja-20/15min?month=2026-01",
@@ -24,13 +48,25 @@ export default function LetsTalk() {
             "noopener,noreferrer"
         );
     };
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setFormSubmitted(true);
 
-        setTimeout(() => {
-            setFormSubmitted(false);
-        }, 5000);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setErrorMsg("");
+
+        try {
+            await axios.post("/api/public/contact", formData);
+            setFormSubmitted(true);
+            setTimeout(() => {
+                setFormSubmitted(false);
+                setFormData({ name: "", email: "", phone: "", organization: "", service: "", message: "" });
+            }, 6000);
+        } catch (err) {
+            console.error(err);
+            setErrorMsg("Sorry, our system encountered an error. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
 
@@ -104,6 +140,10 @@ export default function LetsTalk() {
 
     return (
         <div className="relative overflow-hidden">
+            <SEO
+                title="Let's Talk | Mashar"
+                description="Connect with Mashar to discuss opportunities, partnerships, and how we can achieve a stronger tomorrow together."
+            />
 
             {/* ================= HERO ================= */}
             <header className="relative h-[200px]  sm:min-h-[400px] lg:min-h-[500px] flex flex-col justify-center items-center text-white text-center p-8">
@@ -126,7 +166,7 @@ export default function LetsTalk() {
 
 
             {/* ================= CONTACT ================= */}
-            <section className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-24 py-16 grid grid-cols-1 md:grid-cols-2 gap-14">
+            <section id="contact" className="scroll-mt-24 max-w-7xl mx-auto px-6 sm:px-10 lg:px-24 py-16 grid grid-cols-1 md:grid-cols-2 gap-14">
 
                 {/* LEFT */}
                 <div>
@@ -135,13 +175,13 @@ export default function LetsTalk() {
                             <span>Let’s Start the </span>
 
                             <span className="relative inline-block text-secondary pt-7 pb-6">
-                     Conversation!
-        <img
-        src={CurvedLine}
-        alt="curve"
-        className="absolute  sm:left-[65%] left-[50%] -translate-x-1/2 bottom-0 w-[160px] sm:w-[200px] md:w-[149px] h-[15px]"
-       />
-       </span>
+                                Conversation!
+                                <img
+                                    src={CurvedLine}
+                                    alt="curve"
+                                    className="absolute  sm:left-[65%] left-[50%] -translate-x-1/2 bottom-0 w-[160px] sm:w-[200px] md:w-[149px] h-[15px]"
+                                />
+                            </span>
                         </h2>
 
                         <img src={aeroplane} alt="" className="w-20 sm:w-28" />
@@ -160,9 +200,9 @@ export default function LetsTalk() {
                             { icon: <MdMessage />, text: "info@mashar.org" },
                         ].map((item, i) => (
                             <div key={i} className="flex items-center gap-3">
-                <span className="w-6 h-6 flex items-center justify-center rounded-full text-white bg-secondary hover:scale-110">
-                  {item.icon}
-                </span>
+                                <span className="w-6 h-6 flex items-center justify-center rounded-full text-white bg-secondary hover:scale-110">
+                                    {item.icon}
+                                </span>
                                 {item.text}
                             </div>
                         ))}
@@ -219,7 +259,7 @@ export default function LetsTalk() {
                     </div>
                 </div>
 
-                 {/*RIGHT*/}
+                {/*RIGHT*/}
                 {formSubmitted ? (
                     <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
                         <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#14247B] mb-6">
@@ -248,22 +288,42 @@ export default function LetsTalk() {
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        {[
-                            "Your name*",
-                            "Your email*",
-                            "Phone",
-                            "Organization",
-                        ].map((p, i) => (
-                            <input
-                                key={i}
-                                placeholder={p}
-                                required={p.includes("*")}
-                                className="w-full border-b p-2 text-sm focus:outline-none focus:border-primary"
-                            />
-                        ))}
+                        {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
+                        <input
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            placeholder="Your name*"
+                            required
+                            className="w-full border-b p-2 text-sm focus:outline-none focus:border-primary"
+                        />
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="Your email*"
+                            required
+                            className="w-full border-b p-2 text-sm focus:outline-none focus:border-primary"
+                        />
+                        <input
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            placeholder="Phone"
+                            className="w-full border-b p-2 text-sm focus:outline-none focus:border-primary"
+                        />
+                        <input
+                            name="organization"
+                            value={formData.organization}
+                            onChange={handleChange}
+                            placeholder="Organization"
+                            className="w-full border-b p-2 text-sm focus:outline-none focus:border-primary"
+                        />
 
                         <CustomSelect
                             placeholder="Select Service"
+                            onChange={(val) => setFormData({ ...formData, service: val })}
                             options={[
                                 "Coaching",
                                 "Training",
@@ -275,6 +335,9 @@ export default function LetsTalk() {
                         />
 
                         <textarea
+                            name="message"
+                            value={formData.message}
+                            onChange={handleChange}
                             rows="3"
                             placeholder="Message"
                             className="w-full border rounded-lg p-3 text-sm"
@@ -282,7 +345,7 @@ export default function LetsTalk() {
 
                         <ArrowButton
                             type="submit"
-                            text="Submit"
+                            text={loading ? "Sending..." : "Submit"}
                             className="h-[50px]"
                             textSize="16px"
                         />
@@ -331,15 +394,15 @@ export default function LetsTalk() {
 
                 {/* Title */}
                 <h2 className="font-spartan font-medium leading-[1.15] text-[36px] md:text-[46px] lg:text-[52px] mb-10">
-  <span className="relative inline-block pb-8">
-    Why <span className="text-secondary">Contact Us</span>
+                    <span className="relative inline-block pb-8">
+                        Why <span className="text-secondary">Contact Us</span>
 
-    <img
-        src={CurvedLine}
-        alt="curve"
-        className="absolute left-1/2 -translate-x-1/2 bottom-0 w-[160px] mb-2 sm:w-[200px] md:w-[229px] h-[12px]"
-    />
-  </span>
+                        <img
+                            src={CurvedLine}
+                            alt="curve"
+                            className="absolute left-1/2 -translate-x-1/2 bottom-0 w-[160px] mb-2 sm:w-[200px] md:w-[229px] h-[12px]"
+                        />
+                    </span>
                 </h2>
 
 
@@ -363,9 +426,9 @@ export default function LetsTalk() {
                 {/* CTA */}
                 <div className="flex justify-center mt-4 lg-mt-20 relative z-10">
                     <ArrowButton text="Book a Discovery Call"
-                                 textSize={window.innerWidth < 640 ? "12px" : "16px"}
-                                 className="!px-6 mt-4 w-fit max-w-full"
-                                 onClick={openCalendly}
+                        textSize={window.innerWidth < 640 ? "12px" : "16px"}
+                        className="!px-6 mt-4 w-fit max-w-full"
+                        onClick={openCalendly}
                     />
                 </div>
             </section>
@@ -373,7 +436,7 @@ export default function LetsTalk() {
 
 
             {/* ================= MAP ================= */}
-            <div className="w-full px-4 sm:px-10 lg:px-16 mt-20">
+            <div id="map" className="scroll-mt-24 w-full px-4 sm:px-10 lg:px-16 mt-20">
                 <iframe
                     title="Mashar Coaching, Training and Consultation - Kuwait"
                     className="w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-xl shadow-lg border-0"
@@ -387,18 +450,18 @@ export default function LetsTalk() {
 
 
             {/* ================= FAQ ================= */}
-            <section className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-24 py-20">
+            <section id="faq" className="scroll-mt-24 max-w-7xl mx-auto px-6 sm:px-10 lg:px-24 py-20">
                 <h2 className="text-2xl sm:text-3xl lg:text-[46px] font-medium text-center font-spartan mb-12">
                     <span>Frequently </span>
 
                     <span className="relative inline-block text-secondary pt-7 pb-6 sm:pb-10">
-                     Asked Questions
-        <img
-            src={CurvedLine}
-            alt="curve"
-            className="absolute left-[50px] -translate-x-1/2 bottom-0 w-[160px] sm:w-[200px] md:w-[209px] h-[15px]"
-        />
-       </span>
+                        Asked Questions
+                        <img
+                            src={CurvedLine}
+                            alt="curve"
+                            className="absolute left-[50px] -translate-x-1/2 bottom-0 w-[160px] sm:w-[200px] md:w-[209px] h-[15px]"
+                        />
+                    </span>
                 </h2>
 
                 <div className="space-y-4 max-w-4xl mx-auto">
@@ -406,17 +469,15 @@ export default function LetsTalk() {
                         <div key={i} className="rounded-xl overflow-hidden shadow">
                             <button
                                 onClick={() => toggleFAQ(i)}
-                                className={`w-full flex justify-between items-center p-5 text-left font-poppins text-sm sm:text-base ${
-                                    openIndex === i
-                                        ? "bg-primary text-white"
-                                        : "bg-[#2B347608] text-primary"
-                                }`}
+                                className={`w-full flex justify-between items-center p-5 text-left font-poppins text-sm sm:text-base ${openIndex === i
+                                    ? "bg-primary text-white"
+                                    : "bg-[#2B347608] text-primary"
+                                    }`}
                             >
                                 {faq.question}
                                 <ChevronDown
-                                    className={`transition-transform ${
-                                        openIndex === i ? "rotate-180" : ""
-                                    }`}
+                                    className={`transition-transform ${openIndex === i ? "rotate-180" : ""
+                                        }`}
                                 />
                             </button>
 

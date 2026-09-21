@@ -50,8 +50,16 @@ function resolveImage(img) {
 
 // ── Registrations Modal ──
 function RegistrationsModal({ event, onClose }) {
-    const alumni = event?.registeredAlumni || [];
-    const pct = event.capacity > 0 ? Math.round((alumni.length / event.capacity) * 100) : 0;
+    const alumni = Array.isArray(event?.registeredAlumni) ? event.registeredAlumni.map(a => ({
+        ...a, isPublic: false
+    })) : [];
+
+    const publicRegs = Array.isArray(event?.publicRegistrations) ? event.publicRegistrations.map(a => ({
+        ...a, full_name: a.name, course: a.organisation, isPublic: true
+    })) : [];
+
+    const allRegistrations = [...alumni, ...publicRegs];
+    const pct = event.capacity > 0 ? Math.round((allRegistrations.length / event.capacity) * 100) : 0;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -71,7 +79,7 @@ function RegistrationsModal({ event, onClose }) {
                 <div className="px-6 pt-4 pb-2">
                     <div className="flex items-center justify-between mb-2">
                         <span className="text-xs font-bold text-slate-500">
-                            {alumni.length} / {event.capacity} registered
+                            {allRegistrations.length} / {event.capacity} registered
                         </span>
                         <span className={`text-xs font-black ${pct > 80 ? "text-orange-600" : "text-indigo-600"}`}>
                             {pct}%
@@ -85,40 +93,52 @@ function RegistrationsModal({ event, onClose }) {
                     </div>
                 </div>
 
-                {/* Alumni List */}
+                {/* Registration List */}
                 <div className="p-6 pt-3 max-h-[50vh] overflow-y-auto">
-                    {alumni.length === 0 ? (
+                    {allRegistrations.length === 0 ? (
                         <div className="text-center py-12">
                             <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
                                 <Users size={28} className="text-slate-300" />
                             </div>
                             <p className="text-sm font-bold text-slate-500">No registrations yet</p>
-                            <p className="text-xs text-slate-400 mt-1">Alumni will appear here when they register.</p>
+                            <p className="text-xs text-slate-400 mt-1">Users will appear here when they register.</p>
                         </div>
                     ) : (
                         <div className="space-y-2">
-                            {alumni.map((a, idx) => (
-                                <div key={a._id || idx} className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors">
-                                    {/* Avatar */}
-                                    <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-sm flex-shrink-0">
-                                        {(a.full_name || "?").charAt(0).toUpperCase()}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-bold text-slate-800 truncate">{a.full_name}</p>
-                                        <div className="flex items-center gap-3 mt-0.5">
-                                            <span className="flex items-center gap-1 text-[11px] text-slate-400 font-medium truncate">
-                                                <Mail size={10} className="flex-shrink-0" />
-                                                {a.email}
-                                            </span>
-                                            {a.course && (
-                                                <span className="flex items-center gap-1 text-[11px] text-slate-400 font-medium truncate">
-                                                    <GraduationCap size={10} className="flex-shrink-0" />
-                                                    {a.course}
-                                                </span>
-                                            )}
+                            {allRegistrations.map((a, idx) => (
+                                <div key={a._id || idx} className="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors">
+                                    <div className="flex items-center gap-3">
+                                        {/* Avatar */}
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0 ${a.isPublic ? 'bg-orange-100 text-orange-600' : 'bg-indigo-100 text-indigo-600'}`}>
+                                            {(a.full_name || "?").charAt(0).toUpperCase()}
                                         </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2">
+                                                <p className="text-sm font-bold text-slate-800 truncate">{a.full_name}</p>
+                                                <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${a.isPublic ? 'bg-orange-50 text-orange-600 border border-orange-100' : 'bg-indigo-50 text-indigo-600 border border-indigo-100'}`}>
+                                                    {a.isPublic ? 'Public' : 'Alumni'}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-3 mt-0.5">
+                                                <span className="flex items-center gap-1 text-[11px] text-slate-400 font-medium truncate">
+                                                    <Mail size={10} className="flex-shrink-0" />
+                                                    {a.email}
+                                                </span>
+                                                {a.course && (
+                                                    <span className="flex items-center gap-1 text-[11px] text-slate-400 font-medium truncate">
+                                                        {a.isPublic ? <MapPin size={10} className="flex-shrink-0" /> : <GraduationCap size={10} className="flex-shrink-0" />}
+                                                        {a.course}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <span className="text-[10px] font-bold text-slate-400 flex-shrink-0">#{idx + 1}</span>
                                     </div>
-                                    <span className="text-[10px] font-bold text-slate-400 flex-shrink-0">#{idx + 1}</span>
+                                    {a.note && (
+                                        <div className="mt-1 ml-13 pl-3 border-l-2 border-slate-200">
+                                            <p className="text-[11px] text-slate-500 italic">"{a.note}"</p>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -145,7 +165,10 @@ function formatTime(timeString) {
 // ── Event Card ──
 function EventCard({ event, onEdit, onDelete, onViewRegistrations }) {
     const [menuOpen, setMenuOpen] = useState(false);
-    const regCount = event.registeredAlumni?.length || event.registeredCount || 0;
+
+    const alumniCount = event.registeredAlumni?.length || 0;
+    const publicCount = event.publicRegistrations?.length || 0;
+    const regCount = alumniCount + publicCount || event.registeredCount || 0;
 
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden group hover:shadow-md hover:border-slate-200 transition-all duration-200 flex flex-col">
@@ -229,6 +252,14 @@ function EventCard({ event, onEdit, onDelete, onViewRegistrations }) {
                         <Users size={13} className="text-indigo-400 flex-shrink-0" />
                         <span>Capacity: {event.capacity}</span>
                     </div>
+                    {/* Audience badge */}
+                    <div className="pt-1">
+                        {{
+                            alumni: <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-50 text-indigo-600">🎓 Alumni Only</span>,
+                            public: <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-orange-50 text-orange-600">🌐 Public Website</span>,
+                            both: <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-green-50 text-green-600">⚡ Alumni + Public</span>,
+                        }[event.audience || "alumni"]}
+                    </div>
                 </div>
             </div>
 
@@ -237,8 +268,8 @@ function EventCard({ event, onEdit, onDelete, onViewRegistrations }) {
                 <button
                     onClick={() => onViewRegistrations(event)}
                     className={`w-full text-xs font-bold py-2.5 rounded-xl text-center transition-colors flex items-center justify-center gap-2 ${regCount > 0
-                            ? "bg-green-50 hover:bg-green-100 text-green-700 border border-green-200"
-                            : "bg-indigo-50 hover:bg-indigo-100 text-indigo-700"
+                        ? "bg-green-50 hover:bg-green-100 text-green-700 border border-green-200"
+                        : "bg-indigo-50 hover:bg-indigo-100 text-indigo-700"
                         }`}
                 >
                     <Users size={13} />

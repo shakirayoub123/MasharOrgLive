@@ -250,8 +250,8 @@ export default function AdminNavbar({ toggleSidebar, openMobile, admin }) {
                             {admin?.email?.charAt(0).toUpperCase() || "A"}
                         </div>
                         <div className="hidden sm:block text-left">
-                            <p className="text-[13px] font-black text-slate-800 leading-tight">Staff Account</p>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">{admin?.email || "Administrator"}</p>
+                            <p className="text-[13px] font-black text-slate-800 leading-tight truncate max-w-[150px]">{admin?.name || "Staff Account"}</p>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5 truncate max-w-[150px]">{admin?.email || "Administrator"}</p>
                         </div>
                         <ChevronDown size={16} className={`text-slate-300 transition-transform duration-300 ${showProfile ? "rotate-180" : ""}`} />
                     </button>

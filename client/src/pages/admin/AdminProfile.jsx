@@ -121,6 +121,7 @@ export default function AdminProfile() {
                             onChange={v => setProfileForm(f => ({ ...f, email: v }))}
                             placeholder="admin@example.com"
                             type="email"
+                            readOnly={true}
                         />
                     </div>
                     <div className="flex justify-end">
@@ -195,7 +196,7 @@ function MetaChip({ icon, label }) {
     );
 }
 
-function FormField({ label, icon, value, onChange, placeholder, type = "text" }) {
+function FormField({ label, icon, value, onChange, placeholder, type = "text", readOnly = false }) {
     return (
         <div className="space-y-1.5">
             <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{label}</label>
@@ -206,7 +207,11 @@ function FormField({ label, icon, value, onChange, placeholder, type = "text" })
                     value={value}
                     onChange={e => onChange(e.target.value)}
                     placeholder={placeholder}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 focus:bg-white transition-all"
+                    readOnly={readOnly}
+                    className={`w-full pl-10 pr-4 py-3 border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none transition-all ${readOnly
+                            ? 'bg-slate-100 text-slate-500 cursor-not-allowed opacity-80'
+                            : 'bg-slate-50 text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 focus:bg-white'
+                        }`}
                 />
             </div>
         </div>

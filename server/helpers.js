@@ -124,7 +124,6 @@ async function sendMail(to, subject, templateName, templateVars) {
         const nodemailer = require("nodemailer");
         const ejs = require("ejs");
         const path = require("path");
-        const dns = require("dns");
 
         // 1️⃣ Render HTML from EJS template
         const html = await ejs.renderFile(
@@ -158,23 +157,43 @@ async function sendMail(to, subject, templateName, templateVars) {
             user: smtpUser ? smtpUser.replace(/(.{2}).+(@.+)/, "$1***$2") : null,
         });
 
-        const transporter = nodemailer.createTransport({
+        // Primary config (port 587 STARTTLS)
+        const baseConfig = {
             host: smtpHost,
             port: smtpPort,
             secure: smtpSecure,
-            auth: {
-                user: smtpUser,
-                pass: smtpPass
-            },
-            lookup: (hostname, options, callback) => dns.lookup(hostname, { family: 4 }, callback),
-            connectionTimeout: 20000,
-            greetingTimeout: 20000,
-            socketTimeout: 20000,
+            auth: { user: smtpUser, pass: smtpPass },
+            connectionTimeout: 15000,
+            greetingTimeout: 15000,
+            socketTimeout: 15000,
             tls: {
                 rejectUnauthorized: false,
+                servername: smtpHost,          // required for Gmail SNI
             },
-            localAddress: "0.0.0.0",
-        });
+            // ⚠️ Do NOT set localAddress — macOS rejects binding to 0.0.0.0
+        };
+
+        let transporter = nodemailer.createTransport(baseConfig);
+
+        // Verify connectivity; if port 587 is blocked locally, fall back to 465
+        try {
+            await transporter.verify();
+        } catch (verifyErr) {
+            if (
+                verifyErr.code === "ETIMEDOUT" ||
+                verifyErr.code === "ECONNREFUSED" ||
+                verifyErr.code === "ESOCKET"
+            ) {
+                console.warn("Port 587 unreachable, retrying on port 465 (SSL)…");
+                transporter = nodemailer.createTransport({
+                    ...baseConfig,
+                    port: 465,
+                    secure: true,
+                });
+            } else {
+                throw verifyErr;
+            }
+        }
 
         // 3️⃣ Send email
         const info = await transporter.sendMail({

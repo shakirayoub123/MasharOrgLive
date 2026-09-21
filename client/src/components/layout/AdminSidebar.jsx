@@ -207,8 +207,9 @@ export default function AdminSidebar({ collapsed, mobileOpen, closeMobile }) {
                             { to: "/admin/upload-event", icon: <Plus size={15} />, label: "Create Event" },
                         ]}
                     />
-                    <Item to="/admin/event/requests" icon={<FileText size={20} />} label="Event Requests" collapsed={collapsed} />
-                    <Item to="/admin/contact/requests" icon={<MessageSquare size={20} />} label="Contact Requests" collapsed={collapsed} />
+                    <Item to="/admin/event-requests" icon={<FileText size={20} />} label="Event Requests" collapsed={collapsed} />
+                    <Item to="/admin/contact-requests" icon={<MessageSquare size={20} />} label="Alumni Contact Requests" collapsed={collapsed} />
+                    <Item to="/admin/public-inquiries" icon={<MessageSquare size={20} />} label="Public Inquiries" collapsed={collapsed} />
 
                 </nav>
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body style="font-family: Arial, sans-serif; background-color: #f4f6f9; padding: 20px;">
+    <div
+        style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; border-top: 5px solid #0f1c80;">
+        <h2 style="color: #0f1c80;">New Contact Inquiry: <%= name %>
+        </h2>
+        <p>A new inquiry was submitted via the "Let's Talk" form.</p>
+        <table style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 15px;">
+            <tr>
+                <th style="padding: 8px; border-bottom: 1px solid #ddd;">Name:</th>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">
+                    <%= name %>
+                </td>
+            </tr>
+            <tr>
+                <th style="padding: 8px; border-bottom: 1px solid #ddd;">Email:</th>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;"><a href="mailto:<%= email %>">
+                        <%= email %>
+                    </a></td>
+            </tr>
+            <tr>
+                <th style="padding: 8px; border-bottom: 1px solid #ddd;">Phone:</th>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">
+                    <%= phone || 'N/A' %>
+                </td>
+            </tr>
+            <tr>
+                <th style="padding: 8px; border-bottom: 1px solid #ddd;">Organization:</th>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">
+                    <%= organization || 'N/A' %>
+                </td>
+            </tr>
+            <tr>
+                <th style="padding: 8px; border-bottom: 1px solid #ddd;">Service:</th>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">
+                    <%= service || 'General Inquiry' %>
+                </td>
+            </tr>
+            <tr>
+                <th style="padding: 8px; border-bottom: 1px solid #ddd;">Message:</th>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">
+                    <%= message || 'No message provided' %>
+                </td>
+            </tr>
+        </table>
+        <p style="margin-top: 20px; font-size: 12px; color: #777;">You can manage this inquiry via the Mashar Admin
+            dashboard.</p>
+    </div>
+</body>
+
+</html>

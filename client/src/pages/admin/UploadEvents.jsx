@@ -99,6 +99,7 @@ export default function UploadEvents() {
         host: "",
         description: "",
         capacity: "",
+        audience: "alumni",
     });
 
     const [image, setImage] = useState(null);
@@ -136,6 +137,7 @@ export default function UploadEvents() {
                     host: e.host || "",
                     description: e.description || "",
                     capacity: e.capacity?.toString() || "",
+                    audience: e.audience || "alumni",
                 });
                 if (e.image) setPreview(resolveImage(e.image));
             } catch {
@@ -214,6 +216,7 @@ export default function UploadEvents() {
             fd.append("host", form.host);
             fd.append("description", form.description);
             fd.append("capacity", form.capacity);
+            fd.append("audience", form.audience);
             if (image) fd.append("image", image);
 
             if (isEdit) {
@@ -345,6 +348,31 @@ export default function UploadEvents() {
                                     onChange={(e) => setForm({ ...form, eventTime: e.target.value })}
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                                 />
+                            </div>
+                        </div>
+
+                        {/* ── Audience ── */}
+                        <div>
+                            <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">
+                                Audience <span className="text-red-500">*</span>
+                            </label>
+                            <div className="grid grid-cols-3 gap-2">
+                                {[
+                                    { id: "alumni", label: "Alumni Only", icon: "🎓", desc: "Alumni portal only" },
+                                    { id: "public", label: "Public Website", icon: "🌐", desc: "Public /events page" },
+                                    { id: "both", label: "Both", icon: "⚡", desc: "Alumni + public" },
+                                ].map(opt => (
+                                    <button key={opt.id} type="button"
+                                        onClick={() => setForm(f => ({ ...f, audience: opt.id }))}
+                                        className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all text-center ${form.audience === opt.id
+                                                ? "border-indigo-500 bg-indigo-50"
+                                                : "border-slate-200 bg-slate-50 hover:border-slate-300"
+                                            }`}>
+                                        <span className="text-xl">{opt.icon}</span>
+                                        <p className={`text-[11px] font-black ${form.audience === opt.id ? "text-indigo-700" : "text-slate-700"}`}>{opt.label}</p>
+                                        <p className="text-[9px] text-slate-400">{opt.desc}</p>
+                                    </button>
+                                ))}
                             </div>
                         </div>
 
