@@ -102,6 +102,6 @@ export function getAssetBaseUrl() {
 export function resolveAssetUrl(path) {
     if (!path) return null;
     if (path.startsWith("http") || path.startsWith("blob:")) return path;
-    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+    const normalizedPath = (path.startsWith("/") ? path : `/${path}`).replace(/\\/g, "/");
     return `${getAssetBaseUrl()}${normalizedPath}`;
 }

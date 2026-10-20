@@ -19,6 +19,7 @@ app.use(compression());
 app.use(helmet({
     contentSecurityPolicy: false, // Disabled to ensure inline scripts from React and external CDNs don't break
     crossOriginEmbedderPolicy: false, // Disabled to ensure embedded iframes (e.g. YouTube) work
+    crossOriginResourcePolicy: false, // Disabled to allow Vite dev server mapping of images
 }));
 
 // 2. Enforce HTTPS in production environments behind a load balancer/reverse proxy
