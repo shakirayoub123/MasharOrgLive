@@ -237,7 +237,7 @@ function ProgramOverview({ program, completed, onSelectLesson, onBack }) {
                     if (all.length) onSelectLesson(0, all);
                 }} className="px-10 py-3 rounded-xl text-sm font-black text-white transition-all hover:scale-105 active:scale-95"
                     style={{ background: ORANGE, boxShadow: `0 6px 20px rgba(243,137,0,.3)` }}>
-                    {completed.size > 0 ? "Continue Course →" : "Start Course →"}
+                    {completed.size > 0 ? "Continue Lesson →" : "Start Lesson →"}
                 </button>
             </div>
         </div>
