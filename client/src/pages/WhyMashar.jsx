@@ -1,7 +1,7 @@
 // App.js
 
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { scrollToHash } from "../utils/scrollToHash";
 import { motion, useAnimation } from "framer-motion";
 
@@ -28,6 +28,7 @@ import GlobalSection from "../components/logos2.jsx";
 
 const WhyMashar = () => {
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         scrollToHash(location.hash, 120);
@@ -841,11 +842,20 @@ const WhyMashar = () => {
                     </p>
 
                     {/* CTA */}
-                    <div className="relative inline-flex items-center">
+                    <div className="relative flex flex-wrap justify-center items-center gap-4">
                         <ArrowButton
                             text="Book a Discovery Call"
                             onClick={openCalendly}
                             textSize="16px"
+                        />
+                        <ArrowButton
+                            text="Program Schedule"
+                            onClick={() => {
+                                navigate("/calendar");
+                                window.scrollTo(0, 0);
+                            }}
+                            textSize="16px"
+                            className="!bg-[#f39300] hover:!bg-[#d97f00]"
                         />
                     </div>
 

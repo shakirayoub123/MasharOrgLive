@@ -19,6 +19,7 @@ import Articles from "../components/Articles.jsx";
 import Videos from "../components/videos.jsx";
 import Books from "../components/Books.jsx";
 import Events from "../components/Events.jsx";
+import MasharCalendar from "../pages/MasharCalendar.jsx";
 import NotFound from "../pages/NotFound.jsx";
 
 // ── Auth Pages ──
@@ -91,6 +92,8 @@ const browserRoutes = createBrowserRouter([
       { path: "videos", element: <Videos /> },
       { path: "books", element: <Books /> },
       { path: "events", element: <Events /> },
+      { path: "calendar", element: <MasharCalendar /> },
+      { path: "program-calendar", element: <MasharCalendar /> },
     ],
   },
 

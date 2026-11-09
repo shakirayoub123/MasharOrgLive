@@ -326,214 +326,206 @@ const Home = () => {
             {showPopup && (
                 <NewsletterPopup isOpen={showPopup} onClose={handleClosePopup} />
             )}
-            {/* hero section */}
+            {/* ══ HERO SECTION ══ */}
+            <section className="relative bg-white pt-2 sm:pt-4 md:pt-6 lg:pt-8 pb-4 overflow-hidden">
+                <div className="max-w-[1380px] mx-auto px-6 md:px-10 lg:px-16">
+                    {/* Top Hero Row */}
+                    <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-8 lg:gap-12 items-center">
+                        {/* LEFT CONTENT */}
+                        <div className="text-center lg:text-left">
+                            <h1 className="font-spartan font-bold tracking-tight leading-[1.15] text-[32px] sm:text-[40px] md:text-[46px] lg:text-[50px] text-[#222b60]">
+                                <span>Leadership Development</span>
+                                <br />
+                                <span className="sm:whitespace-nowrap">That Is Globally Accredited.</span>
+                                <br />
+                                <span className="text-[#f39300]">Culturally Grounded.</span>
+                            </h1>
 
-            <section className="flex overflow-hidden flex-col 924:flex-row items-center justify-center gap-10 lg:gap-16 px-6 md:px-12 lg:px-20 py-12 lg:py-20 bg-white">
-                {/* LEFT CONTENT */}
-                <div className="w-full 924:max-w-[560px] sm:text-left text-center space-y-6 r   4:mb-0">
-                    <div className="absolute right-2 md:-right-8 top-[90%] md:top-48  lg:-mt-150 opacity-65">
-                        <img
-                            src={squareAnimation}
-                            alt="Goals Animation"
-                            className="w-28 sm:w-32 md:w-36 h-auto object-contain rotate-[67.4deg]"
-                        />
+                            <p className="mt-4 md:mt-5 font-poppins text-[15px] sm:text-[16px] leading-[1.65] text-gray-600 max-w-[540px] mx-auto lg:mx-0">
+                                Internationally accredited education, leadership programs, and organizational assessments for the realities of our region.
+                            </p>
+
+                            <div className="mt-6 md:mt-7 flex flex-wrap items-center justify-center lg:justify-start gap-3.5">
+                                <button
+                                    onClick={() => { navigate("/explorePrograms"); window.scrollTo(0, 0); }}
+                                    className="flex items-center gap-2 bg-[#f39300] hover:bg-[#d97f00] transition-colors duration-200 text-white font-poppins font-semibold text-[14px] sm:text-[15px] px-6 sm:px-7 py-3 rounded-full shadow-sm whitespace-nowrap"
+                                >
+                                    Explore Our Programs
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                                </button>
+                                <button
+                                    onClick={openCalendly}
+                                    className="flex items-center gap-2 bg-white border-2 border-[#1e2554] hover:bg-[#1e2554] hover:text-white transition-colors duration-200 text-[#1e2554] font-poppins font-semibold text-[14px] sm:text-[15px] px-6 sm:px-7 py-3 rounded-full whitespace-nowrap"
+                                >
+                                    Talk to a Leadership Advisor
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* RIGHT VISUAL MOSAIC */}
+                        <div className="relative w-full max-w-[540px] mx-auto lg:mx-0 lg:ml-auto">
+                            {/* CIRCULAR BADGE on left edge */}
+                            <div className="absolute -left-6 sm:-left-8 top-[110px] sm:top-[125px] w-18 h-18 sm:w-22 sm:h-22 flex items-center justify-center z-20 pointer-events-none">
+                                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#0f1c80] border-[5px] sm:border-[6px] border-white shadow-xl flex items-center justify-center">
+                                    {/* Rotating Text Inside Blue Circle */}
+                                    <svg
+                                        className="absolute w-[90%] h-[90%] animate-spin-slow"
+                                        viewBox="0 0 100 100"
+                                    >
+                                        <defs>
+                                            <path
+                                                id="innerCirclePath"
+                                                d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"
+                                            />
+                                        </defs>
+                                        <text
+                                            fill="white"
+                                            fontSize="7.2"
+                                            fontWeight="500"
+                                            letterSpacing="1.8"
+                                        >
+                                            <textPath href="#innerCirclePath" startOffset="0%">
+                                                LEAD WITH PURPOSE • LEAD WITH PURPOSE •
+                                            </textPath>
+                                        </text>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {/* RIGHT BLUE LABELS overlapping right portrait edge */}
+                            <div className="absolute top-[80px] sm:top-[95px] -right-5 sm:-right-8 flex flex-col gap-2 z-20">
+                                {[
+                                    "ICF\nAccredited\nExcellence",
+                                    "Human\nCentered\nApproach",
+                                    "Proven\nRegional\nImpact",
+                                ].map((text, i) => (
+                                    <div
+                                        key={i}
+                                        className="bg-[#0f1c80] text-white text-[10px] sm:text-[11px] font-poppins font-normal text-center px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-[14px] sm:rounded-[16px] shadow-lg w-[82px] sm:w-[92px] leading-tight whitespace-pre-line"
+                                    >
+                                        {text}
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="grid grid-cols-[1fr_1.1fr] gap-3 sm:gap-3.5 h-[250px] sm:h-[290px] lg:h-[300px]">
+                                {/* Left sub-column */}
+                                <div className="grid grid-rows-[1.4fr_1fr] gap-3 sm:gap-3.5 min-h-0">
+                                    {/* 2K+ Orange Block */}
+                                    <div className="bg-[#f39300] rounded-2xl flex flex-col items-center justify-center text-white px-4 py-3 shadow-sm text-center">
+                                        <span className="font-poppins font-bold leading-none text-[32px] sm:text-[40px]">2K+</span>
+                                        <span className="font-poppins font-semibold mt-1 text-[11px] sm:text-[12px] opacity-90">Certified Coaches</span>
+                                        <span className="font-poppins font-normal mt-1.5 text-[11px] sm:text-[13px] leading-tight opacity-95">Empowering Growth Journeys</span>
+                                    </div>
+
+                                    {/* Future-Ready Leaders Orange Block */}
+                                    <div className="bg-[#f39300] rounded-2xl flex items-center justify-between px-4 sm:px-5 gap-2 text-white shadow-sm">
+                                        <p className="font-poppins font-semibold text-white leading-tight text-[12px] sm:text-[14px]">
+                                            future ready<br />Leaders
+                                        </p>
+                                        <img
+                                            src={heroNetworkImg}
+                                            alt="Growth chart"
+                                            className="w-8 h-8 sm:w-10 sm:h-10 object-contain shrink-0"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Right portrait slider */}
+                                <div className="rounded-2xl overflow-hidden border-2 border-[#f39300] bg-white min-h-0 shadow-sm">
+                                    <Slider {...settingsHero}>
+                                        {images.map((src, index) => (
+                                            <div key={index}>
+                                                <img
+                                                    src={src}
+                                                    alt={`Coach ${index + 1}`}
+                                                    className="object-cover object-top w-full h-[250px] sm:h-[290px] lg:h-[300px]"
+                                                />
+                                            </div>
+                                        ))}
+                                    </Slider>
+                                </div>
+                            </div>
+
+                            {/* Bottom wide team photo */}
+                            <div className="mt-3 sm:mt-3.5 rounded-2xl overflow-hidden h-[105px] sm:h-[135px] lg:h-[145px] shadow-sm">
+                                <img
+                                    src={heroImg}
+                                    alt="Diverse leadership team"
+                                    className="object-cover object-center w-full h-full"
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <h1 className="text-5xl md:text-5xl lg:text-6xl font-medium font-spartan leading-tight">
-                        Lead with <span className="text-[#0f1c80]">Purpose</span>
-                        <br />
-                        Be <span className="text-[#f39300]">future ready </span>
-                    </h1>
 
-                    <p className="font-poppins font-medium text-[16px] leading-[24px] tracking-[0.5px] text-[#0f1c80] mb-8">
-                        Where human insight meets modern leadership
-                    </p>
-
-                    {/* ICON LIST */}
-                    <div className="space-y-2 text-left inline-block font-poppins text-[13px]">
-                        <div className="flex items-center gap-3">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                className="text-[#0F1C80]"
+                    {/* 4 PROGRAM CATEGORY CARDS */}
+                    <div className="mt-8 lg:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+                        {[
+                            {
+                                label: "Leadership Development",
+                                icon: (
+                                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f39300" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                )
+                            },
+                            {
+                                label: "Coaching Certification",
+                                icon: (
+                                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f39300" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="8" r="6" />
+                                        <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
+                                    </svg>
+                                )
+                            },
+                            {
+                                label: "Mentoring & Supervision",
+                                icon: (
+                                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f39300" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    </svg>
+                                )
+                            },
+                            {
+                                label: "Team Assessments",
+                                icon: (
+                                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f39300" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="2" y="3" width="6" height="6" rx="1" />
+                                        <rect x="16" y="3" width="6" height="6" rx="1" />
+                                        <rect x="9" y="15" width="6" height="6" rx="1" />
+                                        <path d="M5 9v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9" />
+                                        <path d="M12 11v4" />
+                                    </svg>
+                                )
+                            },
+                        ].map((item, i) => (
+                            <button
+                                key={i}
+                                onClick={() => { navigate("/explorePrograms"); window.scrollTo(0, 0); }}
+                                className="group bg-white border border-gray-200 hover:border-[#f39300] rounded-2xl px-4 py-3.5 flex items-center justify-between gap-3 shadow-[0_2px_6px_rgba(0,0,0,0.03)] hover:shadow-md transition-all duration-200 text-left"
                             >
-                                <path
-                                    fill="currentColor"
-                                    fillRule="evenodd"
-                                    d="M1 12a11 11 0 1 0 22 0a11 11 0 0 0-22 0m3.58 2.45s-.8-.21-1.34-.37A9 9 0 0 1 3 12l.58-1.28l1.2-.37l-1.2-1.49A9.14 9.14 0 0 1 12.13 3a9.2 9.2 0 0 1 5.19 1.6l-2.36 1.3l-3.79-1.15l-1.46 2.57l1.38-1.24l.71 1.1l-1.68 1.17l-1.56.3l.06.94s-.45.46-.45.66c0 .19.56.56.56.56l1.24-.96l1.2.86l.31-1.6l1.05 3.3l-.8.4l-.92-.44l-.28-.41l-.93.3l-.58.12l-.37.64l-.61.74l-.02.94l.93.85l.65-.07l.67-.15l.43.85l.5.98l-.25.75l.69 1.8l.88-.1l.79-1.1l.93-3.35l-.8-1.59l.7-.8l.9.93l.62-.32l1.35-.97l.63.46l.6 1.1l.94-1.13l.78.16l.68 1.31s.27 0 .36-.13A9.12 9.12 0 0 1 12.14 21a9.17 9.17 0 0 1-6.87-3.07l1.11-2.08l-1.56-.59l-.24-.8z"
-                                    clipRule="evenodd"
-                                />
-                                <path
-                                    fill="currentColor"
-                                    fillRule="evenodd"
-                                    d="M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18m11-9a11 11 0 1 1-22 0a11 11 0 0 1 22 0"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                            <span className="">Globally recognized</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 16 16"
-                                className="text-[#0F1C80]"
-                            >
-                                <path
-                                    fill="currentColor"
-                                    d="M15.09 12.79a1 1 0 0 0-.086-1.638L15 5.33L14 6v5.15a1 1 0 0 0-.092 1.629l-.378.502a2.48 2.48 0 0 0-.53 1.498v1.222h.815a.88.88 0 0 0 .853-.664l.331-1.336v2h1v-1.21a2.5 2.5 0 0 0-.534-1.505zM8 0L0 4l8 5l8-5z"
-                                />
-                                <path
-                                    fill="currentColor"
-                                    d="M8 10L3 6.67v1.71C3 9.29 5.94 12 8 12s5-2.71 5-3.62V6.67z"
-                                />
-                            </svg>
-                            <span className=" ">Culturally Relevant</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                className="text-[#0F1C80]"
-                            >
-                                <path
-                                    fill="currentColor"
-                                    d="M12.5 13.3c-.2-.5-.2-.9-.1-1.3H3V4.5l6 4l6-4v1.7c.6-.3 1.1-.3 1.4-.3c.1-.1.3-.2.5-.3v-3c.1-.9-.6-1.6-1.5-1.6H2.6C1.7 1 1 1.7 1 2.6v9.8c0 .9.7 1.6 1.6 1.6h10.3c-.2-.2-.3-.4-.4-.7M15 3L9 7L3 3zm7.6 6.9c-.2-.6-.7-.7-1-1c-.2-.3-.2-.9-.7-1.2c-.5-.4-1-.2-1.4-.3s-.7-.6-1.3-.6s-.9.4-1.3.6c-.4.1-.9-.1-1.4.3c-.5.3-.4.8-.7 1.2c-.3.3-.8.5-1 1c-.2.6.2 1 .2 1.4s-.4.8-.2 1.4s.7.7 1 1c.2.3.2.9.7 1.2c.5.4 1 .2 1.4.3s.7.6 1.3.6s.9-.4 1.3-.6c.4-.1.9.1 1.4-.3s.5-.9.7-1.2c.3-.3.8-.5 1-1c.2-.6-.2-1-.2-1.4s.4-.8.2-1.4m-4.4 4.5c-1.7 0-3-1.4-3-3s1.4-3 3-3s3 1.4 3 3s-1.3 3-3 3m1.5-3.1c0 .8-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5s1.5.7 1.5 1.5m-.2 5.8l-.5 2.7l-.6 3.1l-2-1.9l-2.4 1.1l1-5.7c.4.2.9.3 1.4.3c.3.2.7.4 1 .5c.2.1.5.1.8.1c.5.1.9 0 1.3-.2m3.2 2.4l-2-.7l.4-2.2l.6-.3l.1-.1z"
-                                />
-                            </svg>
-                            <span className=" ">ICF Accredited Excellence</span>
-                        </div>
-                    </div>
-
-                    {/* BUTTON */}
-
-                    <div
-                        className="flex justify-center sm:justify-start mt-4"
-                        onClick={() => {
-                            navigate("/our-signature");
-                            window.scrollTo(0, 0);
-                        }}
-                    >
-                        <ArrowButton text="Start Your Journey" textSize="16px" />
+                                <span className="shrink-0 p-1 group-hover:scale-105 transition-transform">{item.icon}</span>
+                                <span className="font-poppins font-semibold text-[13px] sm:text-[14px] leading-snug text-[#222b60] flex-1">{item.label}</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f39300" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 group-hover:translate-x-1 transition-transform">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        ))}
                     </div>
                 </div>
 
-                {/*<img*/}
-                {/*    src={CornorGroup}*/}
-                {/*    alt="corner decoration"*/}
-                {/*    className="absolute right-0 top-1/2 -translate-y-1/2 w-[80px] h-[200px] pointer-events-none z-0"*/}
-                {/*/>*/}
-                {/* RIGHT IMAGE GRID */}
-                <div className="w-full 924:max-w-[520px] max-w-[13rem] 410:max-w-[18rem] 500:max-w-none">
-                    <div className="relative w-full max-w-sm mx-auto">
-                        {/* GRID LAYOUT */}
-                        <div className="grid grid-cols-[0.8fr_1fr] gap-2 items-stretch">
-                            {/* LEFT ORANGE BLOCKS */}
-                            <div className="flex flex-col gap-2 h-full">
-                                {/* Top Orange Block */}
-                                <div className="bg-[#f39300] rounded-xl px-12 py-9 text-white flex-1 flex flex-col justify-center">
-                                    <h3 className="text-xl font-bold">2K+</h3>
-                                    <p className="text-[7px]  font-400">Certified Coaches</p>
-                                    <p className="text-[12px] mt-1 leading-none">
-                                        Empowering Growth Journeys
-                                    </p>
-                                </div>
-
-                                {/* Bottom Orange Block */}
-                                <div className="bg-[#f39300] rounded-xl pl-8  pr-3 py-4 text-white flex items-center gap-2 flex-1">
-                                    <div className="flex-1">
-                                        <h4 className="text-[12px] font-400 leading-tight">
-                                            future ready
-                                        </h4>
-                                        <p className="text-[12px] font-400 leading-tight">
-                                            Leaders
-                                        </p>
-                                    </div>
-                                    <img
-                                        src={heroNetworkImg}
-                                        alt="arrow"
-                                        className="w-9 h-9 object-contain"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* RIGHT IMAGE */}
-                            <div className="rounded-xl border-2 border-[#f39300] overflow-hidden h-[180px] sm:h-[254px]">
-                                <Slider {...settingsHero}>
-                                    {images.map((src, index) => (
-                                        <div key={index}>
-                                            <img
-                                                src={src}
-                                                alt={`Coach ${index + 1}`}
-                                                className="object-cover w-full h-[180px] sm:h-[254px]"
-                                            />
-                                        </div>
-                                    ))}
-                                </Slider>
-                            </div>
-                        </div>
-
-                        {/* CIRCULAR BADGE */}
-                        {/* CIRCULAR BADGE */}
-                        <div className="absolute -left-10 top-24 w-20 h-20 flex items-center justify-center">
-                            <div className="relative w-full h-full rounded-full bg-[#0f1c80] border-[7px] border-white flex items-center justify-center">
-                                {/* Rotating Text Inside Blue Circle */}
-                                <svg
-                                    className="absolute w-[90%] h-[90%] animate-spin-slow"
-                                    viewBox="0 0 100 100"
-                                >
-                                    <defs>
-                                        <path
-                                            id="innerCirclePath"
-                                            d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"
-                                        />
-                                    </defs>
-                                    <text
-                                        fill="white"
-                                        fontSize="7"
-                                        fontWeight="bold"
-                                        letterSpacing="2"
-                                    >
-                                        <textPath href="#innerCirclePath" startOffset="0%">
-                                            LEAD WITH PURPOSE • LEAD WITH PURPOSE •
-                                        </textPath>
-                                    </text>
-                                </svg>
-                            </div>
-                        </div>
-
-                        {/* BOTTOM IMAGE */}
-                        <div className="mt-2 rounded-xl overflow-hidden h-[130px] sm:h-[144px]">
-                            <img
-                                src={heroImg}
-                                alt="Team meeting"
-                                className="object-cover w-full h-full"
-                            />
-                        </div>
-
-                        {/* RIGHT BLUE LABELS */}
-                        <div className="absolute top-[90px] right-[-45px] flex flex-col gap-2">
-                            {[
-                                "ICF Accredited Excellence",
-                                "Human Centered Approach",
-                                "Proven Regional Impact",
-                            ].map((text, i) => (
-                                <div
-                                    key={i}
-                                    className="bg-[#0f1c80] text-white text-[10px] text-center px-3 py-2 rounded-[12px] shadow w-20"
-                                >
-                                    {text}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                {/* Subtle Bottom Orange Stripe Wave */}
+                <div className="relative w-full overflow-hidden leading-none mt-6 sm:mt-8">
+                    <svg className="w-full h-8 sm:h-12 text-[#f39300]" viewBox="0 0 1440 60" fill="none" preserveAspectRatio="none">
+                        <path d="M0,20 C320,60 540,5 920,40 C1140,55 1320,25 1440,35 L1440,60 L0,60 Z" fill="currentColor" fillOpacity="0.12" />
+                        <path d="M0,35 C280,65 620,10 980,45 C1200,60 1340,30 1440,40" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                    </svg>
                 </div>
             </section>
-
 
             {/* evolve section */}
             <section className="px-6 md:px-10 lg:px-16 py-16 bg-white flex flex-col md:flex-row items-center justify-center gap-12 max-w-7xl mx-auto">

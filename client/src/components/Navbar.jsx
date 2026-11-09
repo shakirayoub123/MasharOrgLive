@@ -114,11 +114,11 @@ const NAV_ITEMS = [
                 heading: "More Formats",
                 links: [
                     { label: "Workshops", sub: "Intensive deep-dive sessions", to: "/events", icon: "🛠️" },
-                    { label: "Reunions", sub: "Annual global gatherings", to: "/events", icon: "🌍" },
+                    { label: "Program Schedule", sub: "2026–2027 Calendar", to: "/calendar", icon: "🗓️" },
                 ],
             },
         ],
-        featured: { title: "Upcoming Events", desc: "Browse and register for Mashar live programmes, webinars, and summits.", to: "/events", cta: "View Calendar" },
+        featured: { title: "Training Calendar", desc: "Browse 2026–2027 public training programs and schedules.", to: "/calendar", cta: "View Calendar" },
     },
     {
         label: "Let's Talk",
@@ -221,10 +221,10 @@ const Navbar = () => {
         <div className="w-full font-poppins bg-white sticky top-0 z-50 border-b border-gray-100 shadow-sm">
 
             {/* ── Desktop bar ── */}
-            <div className="w-full max-w-[1300px] mx-auto flex justify-between items-center px-6 md:px-8 lg:px-10">
+            <div className="w-full max-w-[1380px] mx-auto flex justify-between items-center px-6 md:px-10 lg:px-16">
 
                 {/* Logo */}
-                <NavLink to="/" onClick={closeAll} className="flex items-center flex-shrink-0">
+                <NavLink to="/" onClick={closeAll} className="flex items-center flex-shrink-0 -ml-2 lg:-ml-3">
                     <img src={logoMashar} alt="Mashar Logo"
                         className="w-28 md:w-[140px] lg:w-[160px] h-auto object-contain -mt-2 md:-mt-4" />
                 </NavLink>
