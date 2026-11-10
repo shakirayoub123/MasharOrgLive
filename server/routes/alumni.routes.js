@@ -109,6 +109,8 @@ router.post("/notifications/read-all", asyncHandler(notificationController.markA
 router.get("/programs", asyncHandler(programsCtrl.getAlumniPrograms));
 router.get("/programs/progress", asyncHandler(programsCtrl.getAlumniProgress));
 router.post("/programs/progress", asyncHandler(programsCtrl.toggleAlumniProgress));
+router.post("/programs/:programId/request-access", asyncHandler(programsCtrl.requestProgramAccess));
+router.get("/programs/my-access-requests", asyncHandler(programsCtrl.getMyAccessRequests));
 
 router.get("/engage/my-submissions", asyncHandler(engagementCtrl.mySubmissions));
 router.post("/engage/:type", asyncHandler(engagementCtrl.submit));

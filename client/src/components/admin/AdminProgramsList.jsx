@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
     GraduationCap, FolderOpen, FileText, Trash2, Pencil,
     Check, X, Plus, ChevronDown, ChevronRight, Loader2, AlertCircle,
-    BookOpen, Layers, AlignLeft, Image, Film,
+    BookOpen, Layers, AlignLeft, Image, Film, Globe, Lock,
 } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -247,9 +247,19 @@ function ProgramCard({ program, onDeleteProgram, onDeleteModule, onRenameModule,
                                 {program.icon}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-black text-slate-800 truncate group-hover:text-[#0F1C80] transition-colors">
-                                    {program.label}
-                                </p>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <p className="text-sm font-black text-slate-800 truncate group-hover:text-[#0F1C80] transition-colors">
+                                        {program.label}
+                                    </p>
+                                    <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0 ${
+                                        program.visibility === "private"
+                                            ? "bg-amber-50 text-amber-700 border border-amber-200"
+                                            : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                    }`}>
+                                        {program.visibility === "private" ? <Lock size={10} /> : <Globe size={10} />}
+                                        {program.visibility === "private" ? "Private" : "Public"}
+                                    </span>
+                                </div>
                                 <p className="text-[11px] text-slate-400 mt-0.5">
                                     {modules.length} module{modules.length !== 1 ? "s" : ""} · {totalSections} section{totalSections !== 1 ? "s" : ""} · {totalLessons} lesson{totalLessons !== 1 ? "s" : ""}
                                 </p>

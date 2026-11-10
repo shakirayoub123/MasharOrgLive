@@ -1,5 +1,8 @@
 const Program = require("../../models/Program");
 const { LessonProgress } = require("../../models/Program");
+const ProgramAccessRequest = require("../../models/ProgramAccessRequest");
+const Notification = require("../../models/Notification");
+const Alumni = require("../../models/Alumni");
 const path = require("path");
 const fs = require("fs");
 
@@ -21,7 +24,24 @@ function buildFileUrl(req, filename) {
  */
 exports.getAllPrograms = async (req, res) => {
     try {
-        const programs = await Program.find().sort({ createdAt: 1 });
+        const rawPrograms = await Program.find().sort({ createdAt: 1 }).lean();
+        const programs = rawPrograms.map(p => {
+            const isPriv = p.visibility === "private" || p.isPublic === false;
+            const modules = (p.modules || []).map(m => {
+                const modPriv = m.visibility === "private" || m.isPublic === false;
+                return {
+                    ...m,
+                    visibility: modPriv ? "private" : "public",
+                    isPublic: !modPriv,
+                };
+            });
+            return {
+                ...p,
+                visibility: isPriv ? "private" : "public",
+                isPublic: !isPriv,
+                modules,
+            };
+        });
         res.json({ success: true, data: programs });
     } catch (err) {
         console.error("getAllPrograms:", err);
@@ -31,16 +51,33 @@ exports.getAllPrograms = async (req, res) => {
 
 /**
  * POST /api/admin/programs
- * Body: { icon, label }
+ * Body: { icon, label, visibility }
  */
 exports.createProgram = async (req, res) => {
     try {
-        const { icon = "📁", label } = req.body;
+        const { icon = "📁", label, visibility = "public" } = req.body;
         if (!label?.trim()) {
             return res.status(400).json({ success: false, message: "Program label is required." });
         }
-        const program = await Program.create({ icon: icon.trim(), label: label.trim() });
-        res.status(201).json({ success: true, data: program });
+        const isPriv = visibility === "private";
+        const program = await Program.create({
+            icon: icon.trim(),
+            label: label.trim(),
+            visibility: isPriv ? "private" : "public",
+            isPublic: !isPriv,
+        });
+
+        // Ensure collection holds visibility directly regardless of Mongoose strict caching
+        await Program.collection.updateOne(
+            { _id: program._id },
+            { $set: { visibility: isPriv ? "private" : "public", isPublic: !isPriv } }
+        );
+
+        const data = program.toObject ? program.toObject() : { ...program };
+        data.visibility = isPriv ? "private" : "public";
+        data.isPublic = !isPriv;
+
+        res.status(201).json({ success: true, data });
     } catch (err) {
         console.error("createProgram:", err);
         res.status(500).json({ success: false, message: "Server error" });
@@ -49,19 +86,41 @@ exports.createProgram = async (req, res) => {
 
 /**
  * PATCH /api/admin/programs/:programId
- * Body: { icon?, label? }
+ * Body: { icon?, label?, visibility?, isPublic? }
  */
 exports.updateProgram = async (req, res) => {
     try {
-        const { icon, label } = req.body;
+        const { icon, label, visibility, isPublic } = req.body;
         const program = await Program.findById(req.params.programId);
         if (!program) return res.status(404).json({ success: false, message: "Program not found." });
 
         if (icon !== undefined) program.icon = icon.trim();
         if (label !== undefined) program.label = label.trim();
+
+        let newVis = program.visibility || "public";
+        let newPub = program.isPublic !== undefined ? program.isPublic : true;
+        if (visibility !== undefined) {
+            newVis = visibility === "private" ? "private" : "public";
+            newPub = newVis !== "private";
+        } else if (isPublic !== undefined) {
+            newPub = Boolean(isPublic);
+            newVis = newPub ? "public" : "private";
+        }
+
+        program.visibility = newVis;
+        program.isPublic = newPub;
         await program.save();
 
-        res.json({ success: true, data: program });
+        await Program.collection.updateOne(
+            { _id: program._id },
+            { $set: { visibility: newVis, isPublic: newPub } }
+        );
+
+        const data = program.toObject ? program.toObject() : { ...program };
+        data.visibility = newVis;
+        data.isPublic = newPub;
+
+        res.json({ success: true, data });
     } catch (err) {
         console.error("updateProgram:", err);
         res.status(500).json({ success: false, message: "Server error" });
@@ -104,11 +163,11 @@ exports.deleteProgram = async (req, res) => {
 
 /**
  * POST /api/admin/programs/:programId/modules
- * Body: { label }
+ * Body: { label, visibility }
  */
 exports.createModule = async (req, res) => {
     try {
-        const { label } = req.body;
+        const { label, visibility = "public" } = req.body;
         if (!label?.trim()) {
             return res.status(400).json({ success: false, message: "Module label is required." });
         }
@@ -116,11 +175,28 @@ exports.createModule = async (req, res) => {
         const program = await Program.findById(req.params.programId);
         if (!program) return res.status(404).json({ success: false, message: "Program not found." });
 
-        program.modules.push({ label: label.trim(), sections: [] });
+        const isPriv = visibility === "private";
+        program.modules.push({
+            label: label.trim(),
+            visibility: isPriv ? "private" : "public",
+            isPublic: !isPriv,
+            sections: []
+        });
         await program.save();
 
         const newModule = program.modules[program.modules.length - 1];
-        res.status(201).json({ success: true, data: newModule });
+
+        // Ensure collection holds visibility directly regardless of caching
+        await Program.collection.updateOne(
+            { _id: program._id, "modules._id": newModule._id },
+            { $set: { "modules.$.visibility": isPriv ? "private" : "public", "modules.$.isPublic": !isPriv } }
+        );
+
+        const data = newModule.toObject ? newModule.toObject() : { ...newModule };
+        data.visibility = isPriv ? "private" : "public";
+        data.isPublic = !isPriv;
+
+        res.status(201).json({ success: true, data });
     } catch (err) {
         console.error("createModule:", err);
         res.status(500).json({ success: false, message: "Server error" });
@@ -129,11 +205,11 @@ exports.createModule = async (req, res) => {
 
 /**
  * PATCH /api/admin/programs/:programId/modules/:moduleId
- * Body: { label }
+ * Body: { label, visibility, isPublic }
  */
 exports.updateModule = async (req, res) => {
     try {
-        const { label } = req.body;
+        const { label, visibility, isPublic } = req.body;
         const program = await Program.findById(req.params.programId);
         if (!program) return res.status(404).json({ success: false, message: "Program not found." });
 
@@ -141,9 +217,37 @@ exports.updateModule = async (req, res) => {
         if (!mod) return res.status(404).json({ success: false, message: "Module not found." });
 
         if (label !== undefined) mod.label = label.trim();
+
+        let newVis = mod.visibility || "public";
+        let newPub = mod.isPublic !== undefined ? mod.isPublic : true;
+        if (visibility !== undefined) {
+            newVis = visibility === "private" ? "private" : "public";
+            newPub = newVis !== "private";
+        } else if (isPublic !== undefined) {
+            newPub = Boolean(isPublic);
+            newVis = newPub ? "public" : "private";
+        }
+
+        mod.visibility = newVis;
+        mod.isPublic = newPub;
         await program.save();
 
-        res.json({ success: true, data: mod });
+        const setFields = {
+            "modules.$.visibility": newVis,
+            "modules.$.isPublic": newPub,
+        };
+        if (label !== undefined) setFields["modules.$.label"] = label.trim();
+
+        await Program.collection.updateOne(
+            { _id: program._id, "modules._id": mod._id },
+            { $set: setFields }
+        );
+
+        const data = mod.toObject ? mod.toObject() : { ...mod };
+        data.visibility = newVis;
+        data.isPublic = newPub;
+
+        res.json({ success: true, data });
     } catch (err) {
         console.error("updateModule:", err);
         res.status(500).json({ success: false, message: "Server error" });
@@ -610,14 +714,251 @@ exports.deleteResource = async (req, res) => {
 
 /**
  * GET /api/alumni/programs
- * Returns programs with modules, sections, and lessons for alumni to view.
+ * Returns all programs for alumni.
+ * If a program is private:
+ * - Alumni can see its card in the portal.
+ * - If approved, lessons and modules are fully accessible.
+ * - If not approved (pending, rejected, or none), modules are locked and accessStatus is returned.
  */
 exports.getAlumniPrograms = async (req, res) => {
     try {
-        const programs = await Program.find().sort({ createdAt: 1 });
-        res.json({ success: true, data: programs });
+        const alumniId = req.user?._id || req.user?.id;
+        const allPrograms = await Program.find().sort({ createdAt: 1 }).lean();
+
+        // Fetch access requests for this alumni
+        let requestsMap = {};
+        if (alumniId) {
+            const requests = await ProgramAccessRequest.find({ alumniId }).lean();
+            requests.forEach(r => {
+                requestsMap[String(r.programId)] = r.status;
+            });
+        }
+
+        const data = allPrograms.map(prog => {
+            const isPrivate = prog.visibility === "private";
+            const reqStatus = requestsMap[String(prog._id)] || "none";
+            const isApproved = !isPrivate || reqStatus === "approved";
+
+            if (!isApproved) {
+                // Program is private and not yet approved:
+                // Provide high-level structure but lock out lesson details/files
+                const sanitizedModules = (prog.modules || []).map(m => ({
+                    _id: m._id,
+                    id: m._id,
+                    label: m.label,
+                    visibility: m.visibility || "public",
+                    isLocked: true,
+                    sections: (m.sections || []).map(s => ({
+                        _id: s._id,
+                        id: s._id,
+                        label: s.label,
+                        lessons: (s.lessons || []).map(l => ({
+                            _id: l._id,
+                            id: l._id,
+                            label: l.label,
+                            type: l.type,
+                            isLocked: true,
+                        }))
+                    }))
+                }));
+
+                return {
+                    ...prog,
+                    modules: sanitizedModules,
+                    visibility: "private",
+                    isPrivate: true,
+                    isLocked: true,
+                    accessStatus: reqStatus, // "none" | "pending" | "rejected"
+                };
+            }
+
+            // Program level is public or approved.
+            // Check individual module visibility:
+            const processedModules = (prog.modules || []).map(m => {
+                const modPrivate = m.visibility === "private" || m.isPublic === false;
+                const isModLocked = modPrivate && reqStatus !== "approved";
+                if (isModLocked) {
+                    return {
+                        _id: m._id,
+                        id: m._id,
+                        label: m.label,
+                        visibility: "private",
+                        isPrivate: true,
+                        isLocked: true,
+                        sections: (m.sections || []).map(s => ({
+                            _id: s._id,
+                            id: s._id,
+                            label: s.label,
+                            lessons: (s.lessons || []).map(l => ({
+                                _id: l._id,
+                                id: l._id,
+                                label: l.label,
+                                type: l.type,
+                                isLocked: true,
+                            }))
+                        }))
+                    };
+                }
+                return {
+                    ...m,
+                    visibility: modPrivate ? "private" : "public",
+                    isPrivate: modPrivate,
+                    isLocked: false,
+                };
+            });
+
+            return {
+                ...prog,
+                modules: processedModules,
+                visibility: prog.visibility || "public",
+                isPrivate,
+                isLocked: false,
+                accessStatus: reqStatus === "approved" ? "approved" : "none",
+            };
+        });
+
+        res.json({ success: true, data });
     } catch (err) {
         console.error("getAlumniPrograms:", err);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+/**
+ * POST /api/alumni/programs/:programId/request-access
+ * Submit a request to access a private program.
+ */
+exports.requestProgramAccess = async (req, res) => {
+    try {
+        const alumniId = req.user?._id || req.user?.id;
+        if (!alumniId) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+        const { programId } = req.params;
+        const program = await Program.findById(programId);
+        if (!program) return res.status(404).json({ success: false, message: "Program not found." });
+
+        if (program.visibility !== "private") {
+            return res.json({ success: true, message: "This program is already public and accessible." });
+        }
+
+        let request = await ProgramAccessRequest.findOne({ alumniId, programId });
+        if (request) {
+            if (request.status === "approved") {
+                return res.json({ success: true, message: "You already have access to this program.", data: request });
+            }
+            request.status = "pending";
+            await request.save();
+        } else {
+            request = await ProgramAccessRequest.create({ alumniId, programId, status: "pending" });
+        }
+
+        // Notify admin
+        try {
+            const alumniName = req.user.full_name || "An alumni";
+            await Notification.create({
+                message: `${alumniName} requested access to private program "${program.label}"`,
+                action_link: "/admin/programs/upload",
+                channel: "admin",
+                notifiable_id: alumniId,
+                notifiable_type: "Alumni",
+            });
+        } catch (notifErr) {
+            console.error("Failed to create admin notification:", notifErr);
+        }
+
+        res.json({ success: true, message: "Access request submitted. Awaiting admin approval.", data: request });
+    } catch (err) {
+        console.error("requestProgramAccess:", err);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+/**
+ * GET /api/alumni/programs/my-access-requests
+ */
+exports.getMyAccessRequests = async (req, res) => {
+    try {
+        const alumniId = req.user?._id || req.user?.id;
+        if (!alumniId) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+        const requests = await ProgramAccessRequest.find({ alumniId })
+            .populate("programId", "label icon visibility")
+            .sort({ createdAt: -1 });
+
+        res.json({ success: true, data: requests });
+    } catch (err) {
+        console.error("getMyAccessRequests:", err);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+/**
+ * GET /api/admin/programs/access-requests
+ * Query: ?programId=...&status=...
+ */
+exports.getProgramAccessRequests = async (req, res) => {
+    try {
+        const query = {};
+        if (req.query.programId) query.programId = req.query.programId;
+        if (req.query.status) query.status = req.query.status;
+
+        const requests = await ProgramAccessRequest.find(query)
+            .populate("alumniId", "full_name email course phone completion_year")
+            .populate("programId", "label icon visibility")
+            .sort({ createdAt: -1 });
+
+        res.json({ success: true, data: requests });
+    } catch (err) {
+        console.error("getProgramAccessRequests:", err);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+/**
+ * PATCH /api/admin/programs/access-requests/:requestId
+ * Body: { status: 'approved' | 'rejected' | 'pending' }
+ */
+exports.updateProgramAccessRequestStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!["approved", "rejected", "pending"].includes(status)) {
+            return res.status(400).json({ success: false, message: "Invalid status" });
+        }
+
+        const request = await ProgramAccessRequest.findById(req.params.requestId)
+            .populate("alumniId", "full_name email")
+            .populate("programId", "label");
+
+        if (!request) return res.status(404).json({ success: false, message: "Request not found." });
+
+        request.status = status;
+        await request.save();
+
+        // Notify alumni
+        try {
+            if (request.alumniId) {
+                const progName = request.programId?.label || "the program";
+                const msg = status === "approved"
+                    ? `Great news! Your request to access "${progName}" has been approved.`
+                    : status === "rejected"
+                    ? `Your request to access "${progName}" was declined.`
+                    : `Your request for "${progName}" is pending review.`;
+
+                await Notification.create({
+                    message: msg,
+                    action_link: "/alumni/programs",
+                    channel: "alumni",
+                    notifiable_id: request.alumniId._id || request.alumniId,
+                    notifiable_type: "Alumni",
+                });
+            }
+        } catch (notifErr) {
+            console.error("Failed to create alumni notification:", notifErr);
+        }
+
+        res.json({ success: true, data: request, message: `Access request ${status}.` });
+    } catch (err) {
+        console.error("updateProgramAccessRequestStatus:", err);
         res.status(500).json({ success: false, message: "Server error" });
     }
 };

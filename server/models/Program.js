@@ -41,23 +41,31 @@ const SectionSchema = new mongoose.Schema(
 // ─── Module Schema (embedded in program) ──────────────────────────────────────
 const ModuleSchema = new mongoose.Schema(
     {
-        label:    { type: String, required: true, trim: true },
-        sections: [SectionSchema],
+        label:      { type: String, required: true, trim: true },
+        visibility: { type: String, enum: ["public", "private"], default: "public" },
+        isPublic:   { type: Boolean, default: true },
+        sections:   [SectionSchema],
         // Keep old files array for backward compatibility (optional)
-        files:    { type: Array, default: [] },
+        files:      { type: Array, default: [] },
     },
-    { timestamps: true }
+    { timestamps: true, strict: false }
 );
 
 // ─── Program Schema ───────────────────────────────────────────────────────────
 const ProgramSchema = new mongoose.Schema(
     {
-        icon:    { type: String, default: "📁" },
-        label:   { type: String, required: true, trim: true },
-        modules: [ModuleSchema],
+        icon:       { type: String, default: "📁" },
+        label:      { type: String, required: true, trim: true },
+        visibility: { type: String, enum: ["public", "private"], default: "public" },
+        isPublic:   { type: Boolean, default: true },
+        modules:    [ModuleSchema],
     },
-    { timestamps: true }
+    { timestamps: true, strict: false }
 );
+
+if (mongoose.models && mongoose.models.Program) {
+    delete mongoose.models.Program;
+}
 
 module.exports = mongoose.model("Program", ProgramSchema);
 

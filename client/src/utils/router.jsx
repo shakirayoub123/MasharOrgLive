@@ -147,6 +147,7 @@ const browserRoutes = createBrowserRouter([
       { path: "discussion", element: <AdminDiscussion /> },
       { path: "programs", element: <AdminProgramsList /> },
       { path: "programs/upload", element: <AdminProgramsManager /> },
+      { path: "programs/manage", element: <AdminProgramsManager /> },
 
       // Engagement
       { path: "engage", element: <AdminEngagementSubmissions /> },

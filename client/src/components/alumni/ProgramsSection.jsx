@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import API from "../../utils/api.js";
 import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
+import { Lock, Unlock, Clock, AlertCircle, CheckCircle2, ShieldAlert } from "lucide-react";
 
 const NAVY = "#0F1C80", ORANGE = "#F38900";
 
@@ -306,8 +308,56 @@ function ProgramOverview({ program, completed, onSelectLesson, onBack }) {
     </div>);
 }
 
+/* ── Request Access Modal ─────────────────────────────────────────────────────── */
+function RequestAccessModal({ program, onClose, onRequest }) {
+    if (!program) return null;
+    const isPending = program.accessStatus === "pending";
+    const isRejected = program.accessStatus === "rejected";
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
+            <div className="relative z-10 w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden p-6 text-center space-y-4 animate-in fade-in zoom-in-95 duration-200">
+                <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-3xl shadow-sm"
+                    style={{ background: isPending ? "#FEF3C7" : "#EEF0FF", border: `1px solid ${isPending ? "#FDE68A" : "#DDE0FF"}` }}>
+                    {isPending ? "⏳" : "🔒"}
+                </div>
+                <div>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider mb-2 ${
+                        isPending ? "bg-amber-100 text-amber-800" : isRejected ? "bg-rose-100 text-rose-800" : "bg-indigo-100 text-indigo-800"
+                    }`}>
+                        {isPending ? "Request Pending Approval" : isRejected ? "Access Declined" : "Private Program"}
+                    </span>
+                    <h3 className="text-lg font-black text-[#0D1240]">{program.label}</h3>
+                </div>
+                <p className="text-xs text-gray-500 leading-relaxed px-2">
+                    {isPending
+                        ? "Your access request has been submitted to the Mashar administration team and is currently awaiting approval. You will receive a notification once access is granted."
+                        : isRejected
+                        ? "Your previous access request was declined. If your circumstances have changed or you have enrolled recently, you may submit a request again."
+                        : "This program is private and requires administrator approval before you can access its modules, curriculum, and lesson materials."}
+                </p>
+                <div className="pt-2 flex gap-3">
+                    <button onClick={onClose}
+                        className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-gray-600 hover:bg-gray-50 transition-colors">
+                        {isPending ? "Close" : "Cancel"}
+                    </button>
+                    {!isPending && (
+                        <button
+                            onClick={() => onRequest(program)}
+                            className="flex-1 px-4 py-2.5 rounded-xl text-xs font-black text-white transition-all shadow-md hover:brightness-105"
+                            style={{ background: ORANGE }}>
+                            {isRejected ? "Request Again" : "Request Access"}
+                        </button>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 /* ── Program Picker ─────────────────────────────────────────────────────────── */
-function ProgramPicker({ programs, completed, onSelect }) {
+function ProgramPicker({ programs, completed, onSelect, onRequestAccess }) {
     const totalLessons = programs.reduce((a, p) => a + countLessons(p), 0);
     const totalModules = programs.reduce((a, p) => a + (p.modules || []).length, 0);
     const totalSections = programs.reduce((a, p) =>
@@ -385,48 +435,93 @@ function ProgramPicker({ programs, completed, onSelect }) {
         {/* Program Cards — clean, no left border */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {programs.map((prog, pi) => {
+                const isLocked = prog.isLocked;
+                const isPending = prog.accessStatus === "pending";
+                const isRejected = prog.accessStatus === "rejected";
                 const total = countLessons(prog);
                 const progDone = getAllLessons(prog).filter(l => completed.has(l._id || l.id)).length;
                 const progPct = total === 0 ? 0 : Math.round((progDone / total) * 100);
 
-                return (<button key={prog._id || pi} onClick={() => onSelect(prog)}
+                return (<button key={prog._id || pi}
+                    onClick={() => isLocked ? onRequestAccess(prog) : onSelect(prog)}
                     style={{
                         ...cardStyle, display: "block", textAlign: "left",
                         transition: "transform .2s,box-shadow .2s",
-                        animation: "cardIn .3s ease both", animationDelay: `${pi * 0.07}s`
+                        animation: "cardIn .3s ease both", animationDelay: `${pi * 0.07}s`,
+                        opacity: isLocked ? 0.95 : 1,
                     }}
                     onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(15,28,128,.1)"; }}
                     onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 1px 4px rgba(15,28,128,.05)"; }}>
                     <div className="px-5 py-5">
                         <div className="flex items-start gap-4 mb-4">
-                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl border shrink-0"
-                                style={{ background: "#EEF0FF", borderColor: "#DDE0FF" }}>{prog.icon}</div>
+                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl border shrink-0 relative"
+                                style={{ background: isLocked ? "#FFF8ED" : "#EEF0FF", borderColor: isLocked ? "#FDE68A" : "#DDE0FF" }}>
+                                {prog.icon}
+                                {isLocked && (
+                                    <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-sm">
+                                        <Lock size={10} />
+                                    </div>
+                                )}
+                            </div>
                             <div className="flex-1 min-w-0">
-                                <p className="font-black text-[#0D1240] text-sm leading-snug mb-1">{prog.label}</p>
+                                <div className="flex items-center gap-2 flex-wrap mb-1">
+                                    <p className="font-black text-[#0D1240] text-sm leading-snug">{prog.label}</p>
+                                    {isLocked && (
+                                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0 ${
+                                            isPending ? "bg-amber-50 text-amber-700 border border-amber-200" : isRejected ? "bg-rose-50 text-rose-700 border border-rose-200" : "bg-slate-100 text-slate-700 border border-slate-200"
+                                        }`}>
+                                            {isPending ? "⏳ Pending" : isRejected ? "❌ Declined" : "🔒 Private"}
+                                        </span>
+                                    )}
+                                </div>
                                 <p className="text-[10px] text-gray-400">{(prog.modules || []).length} modules · {total} lessons</p>
                             </div>
                         </div>
 
-                        {/* Per-card progress bar */}
-                        <div className="mb-3">
-                            <div className="flex items-center justify-between mb-1">
-                                <span className="text-[10px] font-bold text-gray-400">{progDone}/{total} lessons done</span>
-                                <span className="text-[10px] font-black" style={{ color: ORANGE }}>{progPct}%</span>
+                        {/* Per-card progress bar (only for unlocked programs) */}
+                        {!isLocked ? (
+                            <div className="mb-3">
+                                <div className="flex items-center justify-between mb-1">
+                                    <span className="text-[10px] font-bold text-gray-400">{progDone}/{total} lessons done</span>
+                                    <span className="text-[10px] font-black" style={{ color: ORANGE }}>{progPct}%</span>
+                                </div>
+                                <div className="h-1.5 rounded-full bg-[#FFE4B0] overflow-hidden">
+                                    <div className="h-full rounded-full transition-all duration-500"
+                                        style={{ width: `${progPct}%`, background: `linear-gradient(90deg,${ORANGE},#d67600)` }} />
+                                </div>
                             </div>
-                            <div className="h-1.5 rounded-full bg-[#FFE4B0] overflow-hidden">
-                                <div className="h-full rounded-full transition-all duration-500"
-                                    style={{ width: `${progPct}%`, background: `linear-gradient(90deg,${ORANGE},#d67600)` }} />
+                        ) : (
+                            <div className="mb-3 px-3 py-2 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-2 text-[11px] text-slate-500">
+                                <Lock size={12} className="text-amber-500 shrink-0" />
+                                <span className="truncate">Requires approval to access lesson materials</span>
                             </div>
-                        </div>
+                        )}
 
                         <div className="flex items-center justify-between">
                             <span className="text-[10px] font-black px-2.5 py-1 rounded-full"
                                 style={{ background: "#EEF0FF", color: NAVY, border: "1px solid #DDE0FF" }}>
                                 {(prog.modules || []).length} Modules
                             </span>
-                            <span className="text-xs font-black" style={{ color: ORANGE }}>
-                                {progDone > 0 ? "Continue →" : "Start →"}
-                            </span>
+                            {isLocked ? (
+                                isPending ? (
+                                    <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                                        ⏳ Pending Approval
+                                    </span>
+                                ) : isRejected ? (
+                                    <span className="text-xs font-black px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                                        🔒 Request Again →
+                                    </span>
+                                ) : (
+                                    <span className="text-xs font-black px-3 py-1 rounded-full text-white transition-all shadow-sm"
+                                        style={{ background: NAVY }}>
+                                        🔒 Request Access →
+                                    </span>
+                                )
+                            ) : (
+                                <span className="text-xs font-black" style={{ color: ORANGE }}>
+                                    {progDone > 0 ? "Continue →" : "Start →"}
+                                </span>
+                            )}
                         </div>
                     </div>
                 </button>);
@@ -443,11 +538,16 @@ export default function ProgramsSection() {
     const [activeProgram, setProgram] = useState(null);
     const [activeLesson, setLesson] = useState(null);
     const [completed, setCompleted] = useState(new Set());
+    const [modalProgram, setModalProgram] = useState(null);
     const contentRef = useRef(null);
 
     useEffect(() => {
         API.get("/alumni/programs")
-            .then(r => { const d = r.data.data || []; setPrograms(d); if (d.length === 1) setProgram(d[0]); })
+            .then(r => {
+                const d = r.data.data || [];
+                setPrograms(d);
+                if (d.length === 1 && !d[0].isLocked) setProgram(d[0]);
+            })
             .catch(() => setPrograms([]))
             .finally(() => setLoading(false));
     }, []);
@@ -458,6 +558,18 @@ export default function ProgramsSection() {
             setCompleted(new Set((r.data.data || []).map(x => x.lessonId)));
         }).catch(() => { });
     }, [user]);
+
+    async function handleRequestAccess(prog) {
+        const pid = prog._id || prog.id;
+        try {
+            const r = await API.post(`/alumni/programs/${pid}/request-access`);
+            toast.success(r.data?.message || "Access request submitted to admin!");
+            setPrograms(prev => prev.map(p => (p._id || p.id) === pid ? { ...p, accessStatus: "pending" } : p));
+            setModalProgram(p => p ? { ...p, accessStatus: "pending" } : null);
+        } catch (err) {
+            toast.error(err?.response?.data?.message || "Failed to submit request.");
+        }
+    }
 
     function handleSelectLesson(idx, all) {
         setLesson({ lesson: all[idx], allLessons: all, lessonIdx: idx });
@@ -484,6 +596,14 @@ export default function ProgramsSection() {
             .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
         `}</style>
         <div className="avroot w-full max-w-full overflow-x-hidden" ref={contentRef}>
+            {modalProgram && (
+                <RequestAccessModal
+                    program={modalProgram}
+                    onClose={() => setModalProgram(null)}
+                    onRequest={handleRequestAccess}
+                />
+            )}
+
             {loading ? (
                 <div className="flex items-center justify-center py-24">
                     <div className="w-10 h-10 rounded-full border-4 border-[#EEF0FF] border-t-[#0F1C80] animate-spin" />
@@ -505,7 +625,12 @@ export default function ProgramsSection() {
                 <ProgramOverview program={activeProgram} completed={completed}
                     onSelectLesson={handleSelectLesson} onBack={() => setProgram(null)} />
             ) : (
-                <ProgramPicker programs={programs} completed={completed} onSelect={p => { setProgram(p); setLesson(null); }} />
+                <ProgramPicker
+                    programs={programs}
+                    completed={completed}
+                    onSelect={p => { setProgram(p); setLesson(null); }}
+                    onRequestAccess={p => setModalProgram(p)}
+                />
             )}
         </div>
     </>);

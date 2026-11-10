@@ -4,7 +4,7 @@ import {
     Upload, Plus, Check, X, Loader2, ChevronRight,
     ChevronDown, FileText, Image, BookOpen, List,
     GraduationCap, FolderOpen, Layers, Eye, Trash2,
-    ArrowLeft, Film, AlignLeft, Pencil,
+    ArrowLeft, Film, AlignLeft, Pencil, Globe, Lock,
 } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -317,8 +317,39 @@ function ModuleEditor({ program, module, api, onBack, onModuleUpdate }) {
     const [newSecLabel, setNewSecLabel] = useState("");
     const [addingSection, setAdding] = useState(false);
     const [creating, setCreating] = useState(false);
+    const [modLabel, setModLabel] = useState(module.label || "");
+    const [editingLabel, setEditingLabel] = useState(false);
+    const [modVisibility, setModVisibility] = useState(module.visibility || "public");
+    const [updatingVis, setUpdatingVis] = useState(false);
     const pid = program._id || program.id;
     const mid = module._id || module.id;
+
+    async function toggleModuleVisibility() {
+        const nextVis = modVisibility === "private" ? "public" : "private";
+        setUpdatingVis(true);
+        try {
+            await api.patch(`/admin/programs/${pid}/modules/${mid}`, { visibility: nextVis });
+            setModVisibility(nextVis);
+            onModuleUpdate({ ...module, visibility: nextVis, isPublic: nextVis === "public", sections });
+            toast.success(`Module set to ${nextVis}!`);
+        } catch (err) {
+            toast.error(err?.response?.data?.message || "Failed to update module visibility.");
+        } finally {
+            setUpdatingVis(false);
+        }
+    }
+
+    async function saveModuleLabel() {
+        if (!modLabel.trim()) return;
+        try {
+            await api.patch(`/admin/programs/${pid}/modules/${mid}`, { label: modLabel.trim() });
+            setEditingLabel(false);
+            onModuleUpdate({ ...module, label: modLabel.trim(), visibility: modVisibility, sections });
+            toast.success("Module name updated!");
+        } catch (err) {
+            toast.error(err?.response?.data?.message || "Failed to update module name.");
+        }
+    }
 
     async function createSection() {
         if (!newSecLabel.trim()) return;
@@ -367,8 +398,61 @@ function ModuleEditor({ program, module, api, onBack, onModuleUpdate }) {
                         {program.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-black uppercase tracking-widest mb-0.5" style={{ color: ORANGE }}>{program.label}</p>
-                        <h2 className="font-black text-[#0D1240] text-base leading-snug">{module.label}</h2>
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: ORANGE }}>{program.label}</p>
+                            <span className="text-gray-300">•</span>
+                            <button
+                                type="button"
+                                onClick={toggleModuleVisibility}
+                                disabled={updatingVis}
+                                title={`Click to switch module to ${modVisibility === "private" ? "Public" : "Private"}`}
+                                className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 transition-all ${
+                                    modVisibility === "private"
+                                        ? "bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100"
+                                        : "bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100"
+                                }`}
+                            >
+                                {modVisibility === "private" ? <Lock size={10} /> : <Globe size={10} />}
+                                {modVisibility === "private" ? "Private Module" : "Public Module"}
+                            </button>
+                        </div>
+                        {editingLabel ? (
+                            <div className="flex items-center gap-2 mt-1">
+                                <input
+                                    value={modLabel}
+                                    onChange={e => setModLabel(e.target.value)}
+                                    autoFocus
+                                    className="px-2.5 py-1 text-sm font-black text-[#0D1240] border border-[#DDE0FF] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0F1C80]/20"
+                                    onKeyDown={e => e.key === "Enter" && saveModuleLabel()}
+                                />
+                                <button
+                                    onClick={saveModuleLabel}
+                                    className="p-1.5 rounded-lg text-white"
+                                    style={{ background: ORANGE }}
+                                    title="Save name"
+                                >
+                                    <Check size={13} />
+                                </button>
+                                <button
+                                    onClick={() => { setModLabel(module.label); setEditingLabel(false); }}
+                                    className="p-1.5 rounded-lg border border-gray-200 text-gray-400 hover:bg-gray-50"
+                                    title="Cancel"
+                                >
+                                    <X size={13} />
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-2 group">
+                                <h2 className="font-black text-[#0D1240] text-base leading-snug">{module.label}</h2>
+                                <button
+                                    onClick={() => setEditingLabel(true)}
+                                    className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-gray-600 p-0.5 rounded"
+                                    title="Rename module"
+                                >
+                                    <Pencil size={12} />
+                                </button>
+                            </div>
+                        )}
                         <p className="text-xs text-gray-400 mt-0.5">{sections.length} section{sections.length !== 1 ? "s" : ""} · {sections.reduce((a, s) => a + (s.lessons?.length || 0), 0)} lessons</p>
                     </div>
                     <div className="text-2xl">📚</div>
@@ -421,11 +505,169 @@ function ModuleEditor({ program, module, api, onBack, onModuleUpdate }) {
     );
 }
 
+// ─── PROGRAM ACCESS REQUESTS MODAL ───────────────────────────────────────────
+function ProgramAccessRequestsModal({ requests, onClose, onUpdateStatus, selectedProgId, programs }) {
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [progFilter, setProgFilter] = useState(selectedProgId || "all");
+    const [actionId, setActionId] = useState(null);
+
+    const filtered = requests.filter(r => {
+        const matchesStatus = statusFilter === "all" || r.status === statusFilter;
+        const rProgId = r.programId?._id || r.programId?.id || r.programId;
+        const matchesProg = progFilter === "all" || String(rProgId) === String(progFilter);
+        return matchesStatus && matchesProg;
+    });
+
+    const pendingCount = requests.filter(r => r.status === "pending").length;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
+            <div className="relative z-10 w-full max-w-2xl bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+                {/* Modal Header */}
+                <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 font-bold">
+                            <Lock size={18} />
+                        </div>
+                        <div>
+                            <h2 className="text-base font-black text-slate-800">Private Program Access Requests</h2>
+                            <p className="text-xs text-slate-400">
+                                {pendingCount} pending approval{pendingCount !== 1 ? "s" : ""}
+                            </p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-colors">
+                        <X size={18} />
+                    </button>
+                </div>
+
+                {/* Filter bar */}
+                <div className="px-6 py-3 border-b border-slate-100 bg-white flex items-center justify-between gap-3 flex-wrap text-xs">
+                    <div className="flex gap-1.5 p-1 bg-slate-100 rounded-xl">
+                        {[
+                            { id: "all", label: `All (${requests.length})` },
+                            { id: "pending", label: `Pending (${pendingCount})` },
+                            { id: "approved", label: "Approved" },
+                            { id: "rejected", label: "Rejected" },
+                        ].map(t => (
+                            <button
+                                key={t.id}
+                                onClick={() => setStatusFilter(t.id)}
+                                className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                                    statusFilter === t.id
+                                        ? "bg-white text-[#0F1C80] shadow-sm"
+                                        : "text-slate-500 hover:text-slate-800"
+                                }`}
+                            >
+                                {t.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {programs && programs.length > 0 && (
+                        <select
+                            value={progFilter}
+                            onChange={e => setProgFilter(e.target.value)}
+                            className="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 focus:outline-none"
+                        >
+                            <option value="all">All Programs</option>
+                            {programs.map(p => (
+                                <option key={p._id || p.id} value={p._id || p.id}>
+                                    {p.label}
+                                </option>
+                            ))}
+                        </select>
+                    )}
+                </div>
+
+                {/* Requests list */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-3">
+                    {filtered.length === 0 ? (
+                        <div className="py-12 text-center text-slate-400">
+                            <p className="font-bold text-sm">No access requests found</p>
+                            <p className="text-xs mt-1">Alumni requests for private programs will appear here.</p>
+                        </div>
+                    ) : (
+                        filtered.map(req => {
+                            const reqId = req._id || req.id;
+                            const alumni = req.alumniId || {};
+                            const prog = req.programId || {};
+                            const isActioning = actionId === reqId;
+
+                            return (
+                                <div key={reqId} className="p-4 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition-all flex items-center justify-between gap-4">
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                            <p className="font-bold text-sm text-slate-800">{alumni.full_name || "Alumni User"}</p>
+                                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase ${
+                                                req.status === "approved"
+                                                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                                    : req.status === "rejected"
+                                                    ? "bg-rose-50 text-rose-700 border border-rose-200"
+                                                    : "bg-amber-50 text-amber-700 border border-amber-200"
+                                            }`}>
+                                                {req.status}
+                                            </span>
+                                        </div>
+                                        <p className="text-xs text-slate-500 truncate">{alumni.email || "No email"}</p>
+                                        <div className="flex items-center gap-2 mt-2 text-[11px] text-slate-400 flex-wrap">
+                                            <span className="font-bold text-[#0F1C80] flex items-center gap-1">
+                                                <span>{prog.icon || "📁"}</span>
+                                                <span>{prog.label || "Program"}</span>
+                                            </span>
+                                            <span>•</span>
+                                            <span>Requested: {new Date(req.createdAt).toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Action buttons */}
+                                    <div className="flex items-center gap-2 shrink-0">
+                                        {req.status !== "approved" && (
+                                            <button
+                                                disabled={isActioning}
+                                                onClick={async () => {
+                                                    setActionId(reqId);
+                                                    await onUpdateStatus(reqId, "approved");
+                                                    setActionId(null);
+                                                }}
+                                                className="px-3.5 py-1.5 rounded-xl text-xs font-black text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-sm flex items-center gap-1"
+                                            >
+                                                {isActioning ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />}
+                                                Approve
+                                            </button>
+                                        )}
+                                        {req.status !== "rejected" && (
+                                            <button
+                                                disabled={isActioning}
+                                                onClick={async () => {
+                                                    setActionId(reqId);
+                                                    await onUpdateStatus(reqId, "rejected");
+                                                    setActionId(null);
+                                                }}
+                                                className="px-3 py-1.5 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition-all border border-rose-200 flex items-center gap-1"
+                                            >
+                                                <X size={12} />
+                                                Decline
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 // ─── PROGRAMS LIST VIEW ───────────────────────────────────────────────────────
-function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete }) {
+function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete, accessRequests, onOpenRequestsModal }) {
     const [showNewProg, setShowNewProg] = useState(false);
     const [newProgIcon, setNewProgIcon] = useState("📁");
     const [newProgLabel, setNewProgLabel] = useState("");
+    const [newProgVisibility, setNewProgVisibility] = useState("public");
     const [creating, setCreating] = useState(false);
     const [expandedProg, setExpandedProg] = useState({});
     const [showNewMod, setShowNewMod] = useState({});
@@ -435,12 +677,36 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete }) 
         if (!newProgLabel.trim()) return;
         setCreating(true);
         try {
-            const r = await api.post("/admin/programs", { icon: newProgIcon, label: newProgLabel.trim() });
+            const r = await api.post("/admin/programs", {
+                icon: newProgIcon,
+                label: newProgLabel.trim(),
+                visibility: newProgVisibility,
+            });
             onCreate({ ...r.data.data, modules: [] });
             toast.success("Program created!");
         } catch (err) {
             toast.error(err?.response?.data?.message || "Failed to create program.");
-        } finally { setNewProgLabel(""); setShowNewProg(false); setCreating(false); }
+        } finally {
+            setNewProgLabel("");
+            setNewProgIcon("📁");
+            setNewProgVisibility("public");
+            setShowNewProg(false);
+            setCreating(false);
+        }
+    }
+
+    async function toggleVisibility(e, prog) {
+        e.stopPropagation();
+        const pid = prog._id || prog.id;
+        const currentVis = prog.visibility === "private" ? "private" : "public";
+        const nextVis = currentVis === "private" ? "public" : "private";
+        try {
+            await api.patch(`/admin/programs/${pid}`, { visibility: nextVis });
+            onUpdate({ ...prog, visibility: nextVis, isPublic: nextVis === "public" });
+            toast.success(`Program switched to ${nextVis}!`);
+        } catch (err) {
+            toast.error(err?.response?.data?.message || "Failed to update visibility.");
+        }
     }
 
     async function deleteProgram(e, prog) {
@@ -510,6 +776,11 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete }) 
                 const pid = prog._id || prog.id;
                 const isExpanded = expandedProg[pid];
                 const modules = prog.modules || [];
+                const progRequests = (accessRequests || []).filter(r => {
+                    const rPid = r.programId?._id || r.programId?.id || r.programId;
+                    return String(rPid) === String(pid);
+                });
+                const progPendingCount = progRequests.filter(r => r.status === "pending").length;
 
                 return (
                     <div key={pid} style={cardStyle}>
@@ -521,7 +792,42 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete }) 
                                 {prog.icon}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="font-black text-[#0D1240] text-sm leading-snug">{prog.label}</p>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <p className="font-black text-[#0D1240] text-sm leading-snug">{prog.label}</p>
+                                    <button
+                                        type="button"
+                                        onClick={e => toggleVisibility(e, prog)}
+                                        title={`Click to switch to ${prog.visibility === "private" ? "Public" : "Private"}`}
+                                        className={`text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 transition-all ${
+                                            prog.visibility === "private"
+                                                ? "bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100"
+                                                : "bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100"
+                                        }`}
+                                    >
+                                        {prog.visibility === "private" ? <Lock size={10} /> : <Globe size={10} />}
+                                        {prog.visibility === "private" ? "Private" : "Public"}
+                                    </button>
+                                    {prog.visibility === "private" && (
+                                        <button
+                                            type="button"
+                                            onClick={e => {
+                                                e.stopPropagation();
+                                                onOpenRequestsModal(pid);
+                                            }}
+                                            className="text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 transition-all bg-white border border-slate-200 text-slate-700 hover:border-amber-400 hover:bg-amber-50"
+                                            title="View access requests for this program"
+                                        >
+                                            <span>Requests</span>
+                                            {progPendingCount > 0 ? (
+                                                <span className="px-1.5 py-0.2 rounded-full text-[8px] font-black text-white" style={{ background: ORANGE }}>
+                                                    {progPendingCount}
+                                                </span>
+                                            ) : (
+                                                <span className="text-slate-400 font-normal">({progRequests.length})</span>
+                                            )}
+                                        </button>
+                                    )}
+                                </div>
                                 <p className="text-[10px] text-gray-400 mt-0.5">{modules.length} module{modules.length !== 1 ? "s" : ""}</p>
                             </div>
                             <span className="text-[9px] font-black px-2 py-1 rounded-full"
@@ -606,7 +912,36 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete }) 
             {showNewProg ? (
                 <div style={cardStyle}>
                     <div className="px-5 py-5 space-y-3">
-                        <p className="text-[10px] font-black text-[#0F1C80] uppercase tracking-widest">New Program</p>
+                        <div className="flex items-center justify-between">
+                            <p className="text-[10px] font-black text-[#0F1C80] uppercase tracking-widest">New Program</p>
+                            {/* Public / Private toggle buttons */}
+                            <div className="inline-flex p-0.5 bg-[#F1F3FF] rounded-xl border border-[#DDE0FF]">
+                                <button
+                                    type="button"
+                                    onClick={() => setNewProgVisibility("public")}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                                        newProgVisibility === "public"
+                                            ? "bg-white text-emerald-700 shadow-sm border border-emerald-200"
+                                            : "text-slate-500 hover:text-slate-800"
+                                    }`}
+                                >
+                                    <Globe size={13} className={newProgVisibility === "public" ? "text-emerald-600" : ""} />
+                                    Public
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setNewProgVisibility("private")}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                                        newProgVisibility === "private"
+                                            ? "bg-white text-amber-700 shadow-sm border border-amber-200"
+                                            : "text-slate-500 hover:text-slate-800"
+                                    }`}
+                                >
+                                    <Lock size={13} className={newProgVisibility === "private" ? "text-amber-600" : ""} />
+                                    Private
+                                </button>
+                            </div>
+                        </div>
                         <div className="flex flex-wrap gap-1.5">
                             {ICONS.map(ic => (
                                 <button key={ic} onClick={() => setNewProgIcon(ic)}
@@ -628,11 +963,24 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete }) 
                                 style={{ background: ORANGE, opacity: creating ? 0.6 : 1 }}>
                                 {creating ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />} Create
                             </button>
-                            <button onClick={() => { setShowNewProg(false); setNewProgLabel(""); }}
+                            <button onClick={() => { setShowNewProg(false); setNewProgLabel(""); setNewProgVisibility("public"); }}
                                 className="px-3 py-2.5 rounded-xl border border-[#DDE0FF] text-gray-400 hover:bg-gray-50">
                                 <X size={14} />
                             </button>
                         </div>
+                        <p className="text-[11px] text-gray-400 flex items-center gap-1.5 pt-0.5">
+                            {newProgVisibility === "public" ? (
+                                <>
+                                    <Globe size={12} className="text-emerald-600 shrink-0" />
+                                    <span>Public: Visible to alumni in the Alumni Portal</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Lock size={12} className="text-amber-600 shrink-0" />
+                                    <span>Private: Hidden from alumni (saved as private / internal)</span>
+                                </>
+                            )}
+                        </p>
                     </div>
                 </div>
             ) : (
@@ -654,13 +1002,34 @@ export default function AdminProgramsManager() {
     const [programs, setPrograms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingModule, setEditing] = useState(null); // { program, module }
+    const [accessRequests, setAccessRequests] = useState([]);
+    const [showRequestsModal, setShowRequestsModal] = useState(false);
+    const [selectedProgFilter, setSelectedProgFilter] = useState(null);
+
+    function loadAccessRequests() {
+        api.get("/admin/programs/access-requests")
+            .then(r => setAccessRequests(r.data.data || []))
+            .catch(() => {});
+    }
 
     useEffect(() => {
         api.get("/admin/programs")
             .then(r => setPrograms((r.data.data || []).map((p, i) => ({ ...p }))))
             .catch(() => setPrograms([]))
             .finally(() => setLoading(false));
+
+        loadAccessRequests();
     }, []);
+
+    async function handleUpdateRequestStatus(requestId, status) {
+        try {
+            const r = await api.patch(`/admin/programs/access-requests/${requestId}`, { status });
+            toast.success(r.data.message || `Request ${status}!`);
+            setAccessRequests(prev => prev.map(req => (req._id || req.id) === requestId ? { ...req, status } : req));
+        } catch (err) {
+            toast.error(err?.response?.data?.message || "Failed to update request.");
+        }
+    }
 
     function handleProgramCreate(newProg, prog, mod) {
         // If called with prog+mod, open module editor
@@ -691,6 +1060,7 @@ export default function AdminProgramsManager() {
     const totalModules = programs.reduce((a, p) => a + (p.modules?.length || 0), 0);
     const totalSections = programs.reduce((a, p) => a + (p.modules || []).reduce((b, m) => b + (m.sections?.length || 0), 0), 0);
     const totalLessons = programs.reduce((a, p) => a + (p.modules || []).reduce((b, m) => b + (m.sections || []).reduce((c, s) => c + (s.lessons?.length || 0), 0), 0), 0);
+    const pendingRequestsCount = accessRequests.filter(r => r.status === "pending").length;
 
     return (
         <>
@@ -704,6 +1074,15 @@ export default function AdminProgramsManager() {
             `}</style>
 
             <div className="pmroot w-full max-w-full px-2 pb-12">
+                {showRequestsModal && (
+                    <ProgramAccessRequestsModal
+                        requests={accessRequests}
+                        selectedProgId={selectedProgFilter}
+                        programs={programs}
+                        onClose={() => { setShowRequestsModal(false); setSelectedProgFilter(null); }}
+                        onUpdateStatus={handleUpdateRequestStatus}
+                    />
+                )}
 
                 {/* Banner */}
                 <div className="relative rounded-2xl overflow-hidden mb-6"
@@ -751,16 +1130,33 @@ export default function AdminProgramsManager() {
                     </div>
                 </div>
 
-                {/* Steps indicator */}
+                {/* Steps indicator and Quick Access Requests button */}
                 {!editingModule && (
-                    <div className="flex items-center gap-3 mb-5 flex-wrap">
-                        <StepBadge n="1" label="Create Program" active={true} />
-                        <ChevronRight size={12} className="text-gray-300" />
-                        <StepBadge n="2" label="Add Modules" active={true} />
-                        <ChevronRight size={12} className="text-gray-300" />
-                        <StepBadge n="3" label="Edit → Sections" active={false} />
-                        <ChevronRight size={12} className="text-gray-300" />
-                        <StepBadge n="4" label="Add Lessons" active={false} />
+                    <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
+                        <div className="flex items-center gap-3 flex-wrap">
+                            <StepBadge n="1" label="Create Program" active={true} />
+                            <ChevronRight size={12} className="text-gray-300" />
+                            <StepBadge n="2" label="Add Modules" active={true} />
+                            <ChevronRight size={12} className="text-gray-300" />
+                            <StepBadge n="3" label="Edit → Sections" active={false} />
+                            <ChevronRight size={12} className="text-gray-300" />
+                            <StepBadge n="4" label="Add Lessons" active={false} />
+                        </div>
+                        <button
+                            onClick={() => { setSelectedProgFilter(null); setShowRequestsModal(true); }}
+                            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all bg-white border border-[#DDE0FF] hover:border-[#0F1C80] shadow-sm"
+                            style={{ color: NAVY }}
+                        >
+                            <Lock size={12} className={pendingRequestsCount > 0 ? "text-amber-500" : ""} />
+                            <span>Access Requests</span>
+                            {pendingRequestsCount > 0 ? (
+                                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black text-white" style={{ background: ORANGE }}>
+                                    {pendingRequestsCount}
+                                </span>
+                            ) : (
+                                <span className="text-gray-400 font-normal">({accessRequests.length})</span>
+                            )}
+                        </button>
                     </div>
                 )}
 
@@ -778,6 +1174,8 @@ export default function AdminProgramsManager() {
                         programs={programs}
                         loading={loading}
                         api={api}
+                        accessRequests={accessRequests}
+                        onOpenRequestsModal={pid => { setSelectedProgFilter(pid); setShowRequestsModal(true); }}
                         onUpdate={handleProgramUpdate}
                         onCreate={handleProgramCreate}
                         onDelete={handleProgramDelete}

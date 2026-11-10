@@ -149,6 +149,10 @@ router.delete("/books/:id", deleteBook);
 router.get("/programs", programsCtrl.getAllPrograms);
 router.post("/programs", programsCtrl.createProgram);
 
+// Program Access Requests (MUST come before :programId routes)
+router.get("/programs/access-requests", programsCtrl.getProgramAccessRequests);
+router.patch("/programs/access-requests/:requestId", programsCtrl.updateProgramAccessRequestStatus);
+
 // Lessons (pdf / image — file upload) — MUST come before :programId routes
 router.post("/programs/lessons/upload-combined", progUpload.any(), (req, res, next) => {
     console.log("DEBUG: Lesson Upload Combined Hit", { body: req.body, files: req.files?.map(f => f.fieldname) });
