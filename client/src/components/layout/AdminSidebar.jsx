@@ -19,6 +19,7 @@ import {
     Upload,
     Heart,
     Mail,
+    Handshake,
 } from "lucide-react";
 
 export default function AdminSidebar({ collapsed, mobileOpen, closeMobile }) {
@@ -210,6 +211,7 @@ export default function AdminSidebar({ collapsed, mobileOpen, closeMobile }) {
                     <Item to="/admin/event-requests" icon={<FileText size={20} />} label="Event Requests" collapsed={collapsed} />
                     <Item to="/admin/contact-requests" icon={<MessageSquare size={20} />} label="Alumni Contact Requests" collapsed={collapsed} />
                     <Item to="/admin/public-inquiries" icon={<MessageSquare size={20} />} label="Public Inquiries" collapsed={collapsed} />
+                    <Item to="/admin/partner-requests" icon={<Handshake size={20} />} label="Partner Requests" collapsed={collapsed} />
 
                 </nav>
 

@@ -24,10 +24,17 @@ const NAV_ITEMS = [
                     { label: "ICF Accreditation", sub: "Globally certified coaching", to: "/whyMashar#mission", icon: "🏅" },
                     { label: "EMCC Mentoring", sub: "European accreditation", to: "/whyMashar#mission", icon: "🎖️" },
                     { label: "Global Tools", sub: "Persona, BBL & more", to: "/whyMashar#mission", icon: "🔬" },
+                    { label: "Program Calendar", sub: "2026–2027 Schedule", to: "/calendar", icon: "🗓️" },
                 ],
             },
         ],
-        featured: { title: "Built for Transformation", desc: "Where human insight meets modern leadership excellence.", to: "/whyMashar", cta: "Our Story" },
+        featured: {
+            title: "Built for Transformation",
+            desc: "Where human insight meets modern leadership excellence.",
+            to: "/whyMashar",
+            cta: "Our Story",
+            quickAction: { label: "🗓️ View Calendar", to: "/calendar" }
+        },
     },
     {
         label: "Our Signature",
@@ -47,6 +54,7 @@ const NAV_ITEMS = [
                     { label: "Learning Philosophy", sub: "Inner life of leaders", to: "/ourSignature#philosophy", icon: "💡" },
                     { label: "Tools that Unlock Insight", sub: "Psychometric tools", to: "/ourSignature#tools", icon: "🔑" },
                     { label: "Signature Programs", sub: "Flagship experiences", to: "/ourSignature#programs", icon: "🎯" },
+                    { label: "Become A Partner / Join Our Team", sub: "Partner or join our faculty", to: "/become-partner", icon: "🤝" },
                 ],
             },
         ],
@@ -358,13 +366,23 @@ const Navbar = () => {
                                                 <p className="text-[13.5px] font-bold leading-snug mb-2">{item.featured.title}</p>
                                                 <p className="text-[11px] text-white/60 leading-relaxed">{item.featured.desc}</p>
                                             </div>
-                                            <button
-                                                onClick={() => go(item.featured.to)}
-                                                className="group mt-4 flex items-center gap-1.5 text-[12px] font-bold text-[#f39300] hover:text-white transition-colors duration-200"
-                                            >
-                                                {item.featured.cta}
-                                                <ChevronRight size={12} className="transition-transform duration-200 group-hover:translate-x-1" />
-                                            </button>
+                                            <div className="mt-4 space-y-2">
+                                                <button
+                                                    onClick={() => go(item.featured.to)}
+                                                    className="group flex items-center gap-1.5 text-[12px] font-bold text-[#f39300] hover:text-white transition-colors duration-200"
+                                                >
+                                                    {item.featured.cta}
+                                                    <ChevronRight size={12} className="transition-transform duration-200 group-hover:translate-x-1" />
+                                                </button>
+                                                {item.featured.quickAction && (
+                                                    <button
+                                                        onClick={() => go(item.featured.quickAction.to)}
+                                                        className="w-full py-1.5 px-2.5 rounded-lg text-[11px] font-bold bg-[#f39300] hover:bg-[#d97f00] text-white transition-all flex items-center justify-center gap-1 shadow-sm"
+                                                    >
+                                                        <span>{item.featured.quickAction.label}</span>
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

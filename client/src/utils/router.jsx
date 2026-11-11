@@ -20,6 +20,7 @@ import Videos from "../components/videos.jsx";
 import Books from "../components/Books.jsx";
 import Events from "../components/Events.jsx";
 import MasharCalendar from "../pages/MasharCalendar.jsx";
+import BecomePartner from "../pages/BecomePartner.jsx";
 import NotFound from "../pages/NotFound.jsx";
 
 // ── Auth Pages ──
@@ -71,6 +72,7 @@ import AdminEngagementSubmissions from "../components/admin/AdminEngagementSubmi
 import AdminEventRequests from "../components/admin/AdminEventRequests.jsx";
 import AdminContactRequests from "../components/admin/AdminContactRequests.jsx";
 import AdminPublicInquiries from "../pages/admin/AdminPublicInquiries.jsx";
+import AdminPartnerRequests from "../pages/admin/AdminPartnerRequests.jsx";
 
 // ─────────────────────────────────────────────
 const browserRoutes = createBrowserRouter([
@@ -94,6 +96,11 @@ const browserRoutes = createBrowserRouter([
       { path: "events", element: <Events /> },
       { path: "calendar", element: <MasharCalendar /> },
       { path: "program-calendar", element: <MasharCalendar /> },
+      { path: "become-partner", element: <BecomePartner /> },
+      { path: "become-a-partner", element: <BecomePartner /> },
+      { path: "join-our-team", element: <BecomePartner /> },
+      { path: "join-team", element: <BecomePartner /> },
+      { path: "partner", element: <BecomePartner /> },
     ],
   },
 
@@ -154,6 +161,7 @@ const browserRoutes = createBrowserRouter([
       { path: "event-requests", element: <AdminEventRequests /> },
       { path: "contact-requests", element: <AdminContactRequests /> },
       { path: "public-inquiries", element: <AdminPublicInquiries /> },
+      { path: "partner-requests", element: <AdminPartnerRequests /> },
       { path: "subscribers", element: <AdminSubscribers /> },
       { path: "discovery", element: <AdminDiscovery /> },
 

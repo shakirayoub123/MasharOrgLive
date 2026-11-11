@@ -73,6 +73,7 @@ const Footer = () => {
                                 { label: "Programs", to: "/explorePrograms" },
                                 { label: "Leadership Hub", to: "/leadership-hub" },
                                 { label: "Let's Talk", to: "/lets-talk" },
+                                { label: "Become A Partner / Join Our Team", to: "/become-partner" },
                             ].map((item, i) => (
                                 <li key={i}>
                                     <Link

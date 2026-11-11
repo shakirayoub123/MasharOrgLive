@@ -217,4 +217,12 @@ router.get("/public-inquiries", publicContactCtrl.getAll);
 router.patch("/public-inquiries/:id/status", publicContactCtrl.updateStatus);
 router.delete("/public-inquiries/:id", publicContactCtrl.deleteSubmission);
 
+// ✅ Partner & Team Network Requests
+const partnerRequestsCtrl = require("../controllers/admin/PartnerRequests.controller");
+router.get("/partner-requests", partnerRequestsCtrl.getAll);
+router.get("/partner-requests/:id", partnerRequestsCtrl.getById);
+router.patch("/partner-requests/:id/status", partnerRequestsCtrl.updateStatus);
+router.patch("/partner-requests/:id/notes", partnerRequestsCtrl.updateNotes);
+router.delete("/partner-requests/:id", partnerRequestsCtrl.deleteRequest);
+
 module.exports = router;

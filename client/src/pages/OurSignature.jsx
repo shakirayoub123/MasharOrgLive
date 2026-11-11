@@ -1120,12 +1120,19 @@ export default function OurSignature() {
                         aligned with your suggests.
                     </p>
 
-                    {/* Button */}
-                    <ArrowButton
-                        text="Book a Discovery Call"
-                        className="px-8 py-4 text-[12px] sm:text-[16px]"
-                        onClick={openCalendly}
-                    />
+                    {/* Buttons */}
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 flex-wrap">
+                        <ArrowButton
+                            text="Book a Discovery Call"
+                            className="px-8 py-4 text-[12px] sm:text-[16px]"
+                            onClick={openCalendly}
+                        />
+                        <ArrowButton
+                            text="Become A Partner / Join Our Team"
+                            className="px-8 py-4 text-[12px] sm:text-[16px] !bg-secondary hover:!bg-[#D97706]"
+                            onClick={() => navigate("/become-partner")}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

@@ -672,6 +672,7 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete, ac
     const [expandedProg, setExpandedProg] = useState({});
     const [showNewMod, setShowNewMod] = useState({});
     const [newModLabels, setNewModLabels] = useState({});
+    const [newModVisibilities, setNewModVisibilities] = useState({});
 
     async function createProgram() {
         if (!newProgLabel.trim()) return;
@@ -709,6 +710,27 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete, ac
         }
     }
 
+    async function toggleModuleVisibility(e, prog, mod) {
+        e.stopPropagation();
+        const pid = prog._id || prog.id;
+        const mid = mod._id || mod.id;
+        const currentVis = mod.visibility === "private" ? "private" : "public";
+        const nextVis = currentVis === "private" ? "public" : "private";
+        try {
+            await api.patch(`/admin/programs/${pid}/modules/${mid}`, { visibility: nextVis });
+            const updatedModules = (prog.modules || []).map(m => {
+                if ((m._id || m.id) === mid) {
+                    return { ...m, visibility: nextVis, isPublic: nextVis === "public" };
+                }
+                return m;
+            });
+            onUpdate({ ...prog, modules: updatedModules });
+            toast.success(`Module switched to ${nextVis}!`);
+        } catch (err) {
+            toast.error(err?.response?.data?.message || "Failed to update module visibility.");
+        }
+    }
+
     async function deleteProgram(e, prog) {
         e.stopPropagation();
         if (!window.confirm(`Delete program "${prog.label}"? This will remove all modules, sections and lessons inside it.`)) return;
@@ -741,8 +763,9 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete, ac
         const pid = prog._id || prog.id;
         const label = newModLabels[pid]?.trim();
         if (!label) return;
+        const vis = newModVisibilities[pid] || "public";
         try {
-            const r = await api.post(`/admin/programs/${pid}/modules`, { label });
+            const r = await api.post(`/admin/programs/${pid}/modules`, { label, visibility: vis });
             const newMod = { ...r.data.data, sections: [] };
             onUpdate({ ...prog, modules: [...(prog.modules || []), newMod] });
             toast.success("Module created!");
@@ -750,6 +773,7 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete, ac
             toast.error(err?.response?.data?.message || "Failed to create module.");
         } finally {
             setNewModLabels(p => ({ ...p, [pid]: "" }));
+            setNewModVisibilities(p => ({ ...p, [pid]: "public" }));
             setShowNewMod(p => ({ ...p, [pid]: false }));
         }
     }
@@ -858,7 +882,22 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete, ac
                                             <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0"
                                                 style={{ background: "#DDE0FF", color: NAVY }}>{mi + 1}</div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-bold text-[#0D1240] truncate">{mod.label}</p>
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <p className="text-sm font-bold text-[#0D1240] truncate">{mod.label}</p>
+                                                    <button
+                                                        type="button"
+                                                        onClick={e => toggleModuleVisibility(e, prog, mod)}
+                                                        title={`Click to switch module to ${mod.visibility === "private" ? "Public" : "Private"}`}
+                                                        className={`text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 transition-all ${
+                                                            mod.visibility === "private"
+                                                                ? "bg-amber-100 text-amber-800 border border-amber-300 hover:bg-amber-200"
+                                                                : "bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200"
+                                                        }`}
+                                                    >
+                                                        {mod.visibility === "private" ? <Lock size={9} /> : <Globe size={9} />}
+                                                        {mod.visibility === "private" ? "Private" : "Public"}
+                                                    </button>
+                                                </div>
                                                 <p className="text-[10px] text-gray-400">
                                                     {(mod.sections || []).length} sections · {(mod.sections || []).reduce((a, s) => a + (s.lessons?.length || 0), 0)} lessons
                                                 </p>
@@ -877,21 +916,50 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete, ac
 
                                 {/* Add module */}
                                 {showNewMod[pid] ? (
-                                    <div className="flex gap-2 mt-2">
-                                        <input value={newModLabels[pid] || ""} autoFocus
-                                            onChange={e => setNewModLabels(p => ({ ...p, [pid]: e.target.value }))}
-                                            placeholder="Module name…"
-                                            className="flex-1 px-3 py-2 rounded-xl border border-[#DDE0FF] text-sm text-[#0D1240] bg-white focus:outline-none focus:ring-2 focus:ring-[#0F1C80]/20"
-                                            onKeyDown={e => e.key === "Enter" && createModule(prog)} />
-                                        <button onClick={() => createModule(prog)}
-                                            className="px-4 py-2 rounded-xl text-sm font-black text-white"
-                                            style={{ background: ORANGE }}>
-                                            <Check size={14} />
-                                        </button>
-                                        <button onClick={() => setShowNewMod(p => ({ ...p, [pid]: false }))}
-                                            className="px-3 py-2 rounded-xl border border-[#DDE0FF] text-gray-400 hover:bg-gray-50">
-                                            <X size={14} />
-                                        </button>
+                                    <div className="p-3 rounded-xl border border-[#DDE0FF] bg-white space-y-2.5 mt-2">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">New Module</span>
+                                            <div className="inline-flex p-0.5 bg-[#F1F3FF] rounded-lg border border-[#DDE0FF]">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setNewModVisibilities(p => ({ ...p, [pid]: "public" }))}
+                                                    className={`flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded transition-all ${
+                                                        (newModVisibilities[pid] || "public") === "public"
+                                                            ? "bg-white text-emerald-700 shadow-sm"
+                                                            : "text-slate-500 hover:text-slate-800"
+                                                    }`}
+                                                >
+                                                    <Globe size={10} /> Public
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setNewModVisibilities(p => ({ ...p, [pid]: "private" }))}
+                                                    className={`flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded transition-all ${
+                                                        newModVisibilities[pid] === "private"
+                                                            ? "bg-white text-amber-700 shadow-sm"
+                                                            : "text-slate-500 hover:text-slate-800"
+                                                    }`}
+                                                >
+                                                    <Lock size={10} /> Private
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <input value={newModLabels[pid] || ""} autoFocus
+                                                onChange={e => setNewModLabels(p => ({ ...p, [pid]: e.target.value }))}
+                                                placeholder="Module name…"
+                                                className="flex-1 px-3 py-2 rounded-xl border border-[#DDE0FF] text-sm text-[#0D1240] bg-white focus:outline-none focus:ring-2 focus:ring-[#0F1C80]/20"
+                                                onKeyDown={e => e.key === "Enter" && createModule(prog)} />
+                                            <button onClick={() => createModule(prog)}
+                                                className="px-4 py-2 rounded-xl text-sm font-black text-white"
+                                                style={{ background: ORANGE }}>
+                                                <Check size={14} />
+                                            </button>
+                                            <button onClick={() => setShowNewMod(p => ({ ...p, [pid]: false }))}
+                                                className="px-3 py-2 rounded-xl border border-[#DDE0FF] text-gray-400 hover:bg-gray-50">
+                                                <X size={14} />
+                                            </button>
+                                        </div>
                                     </div>
                                 ) : (
                                     <button onClick={() => setShowNewMod(p => ({ ...p, [pid]: true }))}
