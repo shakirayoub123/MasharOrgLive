@@ -1,93 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const Event = require("../models/Event");
-const PublicEventRegistration = require("../models/PublicEventRegistration");
-
-/* ────────────────────────────────────────────────────────────────
-   GET /api/public/events
-   Returns only public/both events (no auth)
-──────────────────────────────────────────────────────────────── */
-router.get("/events", async (req, res) => {
-    try {
-        const events = await Event.find({
-            audience: { $in: ["public", "both"] }
-        })
-            .sort({ eventDate: 1 })
-            .lean();
-
-        // Get public registrations and map by event ID
-        const publicRegs = await PublicEventRegistration.find().lean();
-        const publicCountMap = {};
-        publicRegs.forEach(reg => {
-            const evId = reg.event.toString();
-            publicCountMap[evId] = (publicCountMap[evId] || 0) + 1;
-        });
-
-        // Add correct totalRegistered count to each event
-        const enhancedEvents = events.map(ev => {
-            const alumniCount = ev.registeredAlumni ? ev.registeredAlumni.length : 0;
-            const pubCount = publicCountMap[ev._id.toString()] || 0;
-            return {
-                ...ev,
-                totalRegistered: alumniCount + pubCount,
-                registeredAlumni: undefined // remove it from public response
-            };
-        });
-
-        res.json({ success: true, events: enhancedEvents });
-    } catch (err) {
-        console.error("Public events error:", err);
-        res.status(500).json({ success: false, message: "Failed to load events." });
-    }
-});
-
-/* ────────────────────────────────────────────────────────────────
-   POST /api/public/events/:id/register
-   Public user registers for an event (no auth required)
-──────────────────────────────────────────────────────────────── */
-router.post("/events/:id/register", async (req, res) => {
-    try {
-        const { name, email, organisation, note } = req.body;
-
-        if (!name || !email) {
-            return res.status(400).json({ success: false, message: "Name and email are required." });
-        }
-
-        const event = await Event.findById(req.params.id).select("-registeredAlumni");
-        if (!event) {
-            return res.status(404).json({ success: false, message: "Event not found." });
-        }
-
-        if (!["public", "both"].includes(event.audience)) {
-            return res.status(403).json({ success: false, message: "This event is not open for public registration." });
-        }
-
-        // Check capacity against combined registrations
-        const publicCount = await PublicEventRegistration.countDocuments({ event: req.params.id });
-        const alumniCount = event.registeredAlumni?.length || 0;
-        if (publicCount + alumniCount >= event.capacity) {
-            return res.status(400).json({ success: false, message: "This event has reached full capacity." });
-        }
-
-        // Create registration (unique index handles duplicate email)
-        await PublicEventRegistration.create({
-            event: req.params.id,
-            name: name.trim(),
-            email: email.trim().toLowerCase(),
-            organisation: organisation?.trim() || "",
-            note: note?.trim() || "",
-        });
-
-        return res.status(201).json({ success: true, message: "You have been registered successfully!" });
-
-    } catch (err) {
-        if (err.code === 11000) {
-            return res.status(409).json({ success: false, message: "You are already registered for this event." });
-        }
-        console.error("Public registration error:", err);
-        res.status(500).json({ success: false, message: "Registration failed. Please try again." });
-    }
-});
 
 /* ────────────────────────────────────────────────────────────────
    POST /api/public/partner/request
@@ -119,7 +31,7 @@ router.post("/partner/request", async (req, res) => {
             return res.status(400).json({ success: false, message: "Please fill in all required contact fields." });
         }
 
-        const resolvedType = partnershipType || (inquiryType === "join-team" ? (roleInterest || "Team Member") : "Consulting Partner");
+        const resolvedType = partnershipType || (inquiryType === "join-team" ? (roleInterest || "Team Member") : inquiryType === "mentor" ? (roleInterest || "Executive Mentor") : "Consulting Partner");
 
         const request = await PartnerRequest.create({
             inquiryType,

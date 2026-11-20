@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const partnerRequestSchema = new mongoose.Schema(
     {
-        inquiryType: { type: String, enum: ["partner", "join-team", "both"], default: "partner" },
+        inquiryType: { type: String, enum: ["partner", "join-team", "mentor", "both"], default: "partner" },
         firstName: { type: String, required: true, trim: true },
         lastName: { type: String, required: true, trim: true },
         email: { type: String, required: true, trim: true, lowercase: true },

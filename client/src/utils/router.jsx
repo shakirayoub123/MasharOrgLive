@@ -18,9 +18,9 @@ import CollapseExpandCard from "../pages/test";
 import Articles from "../components/Articles.jsx";
 import Videos from "../components/videos.jsx";
 import Books from "../components/Books.jsx";
-import Events from "../components/Events.jsx";
-import MasharCalendar from "../pages/MasharCalendar.jsx";
 import BecomePartner from "../pages/BecomePartner.jsx";
+import JoinOurTeam from "../pages/JoinOurTeam.jsx";
+import BecomeMentor from "../pages/BecomeMentor.jsx";
 import NotFound from "../pages/NotFound.jsx";
 
 // ── Auth Pages ──
@@ -93,14 +93,14 @@ const browserRoutes = createBrowserRouter([
       { path: "articles", element: <Articles /> },
       { path: "videos", element: <Videos /> },
       { path: "books", element: <Books /> },
-      { path: "events", element: <Events /> },
-      { path: "calendar", element: <MasharCalendar /> },
-      { path: "program-calendar", element: <MasharCalendar /> },
       { path: "become-partner", element: <BecomePartner /> },
       { path: "become-a-partner", element: <BecomePartner /> },
-      { path: "join-our-team", element: <BecomePartner /> },
-      { path: "join-team", element: <BecomePartner /> },
       { path: "partner", element: <BecomePartner /> },
+      { path: "join-our-team", element: <JoinOurTeam /> },
+      { path: "join-team", element: <JoinOurTeam /> },
+      { path: "become-a-mentor", element: <BecomeMentor /> },
+      { path: "become-mentor", element: <BecomeMentor /> },
+      { path: "mentor", element: <BecomeMentor /> },
     ],
   },
 

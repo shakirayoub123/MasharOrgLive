@@ -13,18 +13,17 @@ const NAV_ITEMS = [
             {
                 heading: "Our Story",
                 links: [
-                    { label: "Roots Run Deep", sub: "Our origin & philosophy", to: "/whyMashar#roots", icon: "🌿" },
-                    { label: "Our Founder", sub: "Meet Raja Al Gurg", to: "/whyMashar#team", icon: "👤" },
-                    { label: "Our Team", sub: "The minds behind Mashar", to: "/whyMashar#team", icon: "🤝" },
+                    { label: "Roots Run Deep", sub: "Our origin & philosophy", to: "/whyMashar#roots" },
+                    { label: "Our Founder", sub: "Meet Raja Al Gurg", to: "/whyMashar#team" },
+                    { label: "Our Team", sub: "The minds behind Mashar", to: "/whyMashar#team" },
                 ],
             },
             {
                 heading: "Credentials",
                 links: [
-                    { label: "ICF Accreditation", sub: "Globally certified coaching", to: "/whyMashar#mission", icon: "🏅" },
-                    { label: "EMCC Mentoring", sub: "European accreditation", to: "/whyMashar#mission", icon: "🎖️" },
-                    { label: "Global Tools", sub: "Persona, BBL & more", to: "/whyMashar#mission", icon: "🔬" },
-                    { label: "Program Calendar", sub: "2026–2027 Schedule", to: "/calendar", icon: "🗓️" },
+                    { label: "ICF Accreditation", sub: "Globally certified coaching", to: "/whyMashar#mission" },
+                    { label: "EMCC Mentoring", sub: "European accreditation", to: "/whyMashar#mission" },
+                    { label: "Global Tools", sub: "Persona, BBL & more", to: "/whyMashar#mission" },
                 ],
             },
         ],
@@ -33,7 +32,6 @@ const NAV_ITEMS = [
             desc: "Where human insight meets modern leadership excellence.",
             to: "/whyMashar",
             cta: "Our Story",
-            quickAction: { label: "🗓️ View Calendar", to: "/calendar" }
         },
     },
     {
@@ -43,18 +41,17 @@ const NAV_ITEMS = [
             {
                 heading: "Methodology",
                 links: [
-                    { label: "The Mashar Method", sub: "Our unique approach", to: "/ourSignature#method", icon: "⚡" },
-                    { label: "How We Work", sub: "Step-by-step process", to: "/ourSignature#how", icon: "🔄" },
-                    { label: "5-Step Growth Plan", sub: "Your transformation path", to: "/ourSignature#approach", icon: "📈" },
+                    { label: "The Mashar Method", sub: "Our unique approach", to: "/ourSignature#method" },
+                    { label: "How We Work", sub: "Step-by-step process", to: "/ourSignature#how" },
+                    { label: "5-Step Growth Plan", sub: "Your transformation path", to: "/ourSignature#approach" },
                 ],
             },
             {
                 heading: "Philosophy",
                 links: [
-                    { label: "Learning Philosophy", sub: "Inner life of leaders", to: "/ourSignature#philosophy", icon: "💡" },
-                    { label: "Tools that Unlock Insight", sub: "Psychometric tools", to: "/ourSignature#tools", icon: "🔑" },
-                    { label: "Signature Programs", sub: "Flagship experiences", to: "/ourSignature#programs", icon: "🎯" },
-                    { label: "Become A Partner / Join Our Team", sub: "Partner or join our faculty", to: "/become-partner", icon: "🤝" },
+                    { label: "Learning Philosophy", sub: "Inner life of leaders", to: "/ourSignature#philosophy" },
+                    { label: "Tools that Unlock Insight", sub: "Psychometric tools", to: "/ourSignature#tools" },
+                    { label: "Signature Programs", sub: "Flagship experiences", to: "/ourSignature#programs" },
                 ],
             },
         ],
@@ -67,17 +64,17 @@ const NAV_ITEMS = [
             {
                 heading: "Training Programs",
                 links: [
-                    { label: "Leader as a Coach", sub: "ICF accredited · 3-day", to: "/explorePrograms", tab: "training", icon: "🏆" },
-                    { label: "Personal Leadership", sub: "20-hour blended journey", to: "/explorePrograms", tab: "training", icon: "🌟" },
-                    { label: "Present, Speak, Influence", sub: "5-day mastery program", to: "/explorePrograms", tab: "training", icon: "🎤" },
+                    { label: "Leader as a Coach", sub: "ICF accredited · 3-day", to: "/explorePrograms", tab: "training" },
+                    { label: "Personal Leadership", sub: "20-hour blended journey", to: "/explorePrograms", tab: "training" },
+                    { label: "Present, Speak, Influence", sub: "5-day mastery program", to: "/explorePrograms", tab: "training" },
                 ],
             },
             {
                 heading: "Specialised Programs",
                 links: [
-                    { label: "Psychological Safety", sub: "Neuroscience-based", to: "/explorePrograms", tab: "training", icon: "🧠" },
-                    { label: "Coaching Programs", sub: "1-on-1 & group coaching", to: "/explorePrograms", tab: "coaching", icon: "❤️" },
-                    { label: "Custom Solutions", sub: "Tailored for your organisation", to: "/explorePrograms", tab: "custom", icon: "⚙️" },
+                    { label: "Psychological Safety", sub: "Neuroscience-based", to: "/explorePrograms", tab: "training" },
+                    { label: "Coaching Programs", sub: "1-on-1 & group coaching", to: "/explorePrograms", tab: "coaching" },
+                    { label: "Custom Solutions", sub: "Tailored for your organisation", to: "/explorePrograms", tab: "custom" },
                 ],
             },
         ],
@@ -90,43 +87,20 @@ const NAV_ITEMS = [
             {
                 heading: "Resources",
                 links: [
-                    { label: "Articles & Insights", sub: "Thought leadership", to: "/leadership-hub#articles", icon: "📖" },
-                    { label: "Videos & Webinars", sub: "Expert conversations", to: "/leadership-hub#videos", icon: "🎥" },
-                    { label: "Books", sub: "Curated reading list", to: "/leadership-hub#books", icon: "📚" },
+                    { label: "Articles & Insights", sub: "Thought leadership", to: "/leadership-hub#articles" },
+                    { label: "Videos & Webinars", sub: "Expert conversations", to: "/leadership-hub#videos" },
+                    { label: "Books", sub: "Curated reading list", to: "/leadership-hub#books" },
                 ],
             },
             {
                 heading: "Community",
                 links: [
-                    { label: "Alumni Network", sub: "Join our community", to: "/alumni-login", icon: "🌐" },
-                    { label: "Events & Seminars", sub: "Browse & register online", to: "/events", icon: "📅" },
-                    { label: "Newsletter", sub: "Stay in the loop", to: "/lets-talk#contact", icon: "✉️" },
+                    { label: "Alumni Network", sub: "Join our community", to: "/alumni-login" },
+                    { label: "Newsletter", sub: "Stay in the loop", to: "/lets-talk#contact" },
                 ],
             },
         ],
         featured: { title: "Grow Your Leadership", desc: "Curated content for forward-thinking leaders.", to: "/leadership-hub", cta: "Explore Hub" },
-    },
-    {
-        label: "Events",
-        to: "/events",
-        columns: [
-            {
-                heading: "Browse by Type",
-                links: [
-                    { label: "Alumni Talks", sub: "Insights from Mashar Alumni", to: "/events", icon: "🗣️" },
-                    { label: "Networking", sub: "Connect with the community", to: "/events", icon: "🤝" },
-                    { label: "Webinars", sub: "Online learning & seminars", to: "/events", icon: "🎙️" },
-                ],
-            },
-            {
-                heading: "More Formats",
-                links: [
-                    { label: "Workshops", sub: "Intensive deep-dive sessions", to: "/events", icon: "🛠️" },
-                    { label: "Program Schedule", sub: "2026–2027 Calendar", to: "/calendar", icon: "🗓️" },
-                ],
-            },
-        ],
-        featured: { title: "Training Calendar", desc: "Browse 2026–2027 public training programs and schedules.", to: "/calendar", cta: "View Calendar" },
     },
     {
         label: "Let's Talk",
@@ -135,17 +109,17 @@ const NAV_ITEMS = [
             {
                 heading: "Get in Touch",
                 links: [
-                    { label: "Book a Discovery Call", sub: "15-min intro session", to: "/lets-talk#contact", icon: "📞" },
-                    { label: "Request a Proposal", sub: "Custom workshops", to: "/lets-talk#contact", icon: "📋" },
-                    { label: "General Enquiry", sub: "We'd love to hear from you", to: "/lets-talk#contact", icon: "💬" },
+                    { label: "Book a Discovery Call", sub: "15-min intro session", to: "/lets-talk#contact" },
+                    { label: "Request a Proposal", sub: "Custom workshops", to: "/lets-talk#contact" },
+                    { label: "General Enquiry", sub: "We'd love to hear from you", to: "/lets-talk#contact" },
                 ],
             },
             {
-                heading: "Quick Answers",
+                heading: "Partner & Careers",
                 links: [
-                    { label: "Common Questions", sub: "FAQ at a glance", to: "/lets-talk#faq", icon: "❓" },
-                    { label: "Pricing & Packages", sub: "Transparent overview", to: "/lets-talk#contact", icon: "💰" },
-                    { label: "Our Locations", sub: "Dubai · UAE · Region", to: "/lets-talk#map", icon: "📍" },
+                    { label: "Become a Partner", sub: "Curricula licensing & B2B", to: "/become-partner" },
+                    { label: "Join Our Team", sub: "Faculty bench & core roles", to: "/join-our-team" },
+                    { label: "Become a Mentor", sub: "Executive mentorship network", to: "/become-a-mentor" },
                 ],
             },
         ],
@@ -329,26 +303,23 @@ const Navbar = () => {
                                                     <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#f39300] mb-3 px-2">
                                                         {col.heading}
                                                     </p>
-                                                    <ul className="space-y-0.5">
+                                                    <ul className="space-y-1">
                                                         {col.links.map((link) => (
                                                             <li key={link.label}>
                                                                 <button
                                                                     onClick={() => go(link.to, link.tab)}
-                                                                    className="group w-full text-left flex items-center gap-3 px-2.5 py-2.5 rounded-xl transition-all duration-200 hover:bg-[#f5f7ff]"
+                                                                    className="group w-full text-left flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 hover:bg-[#f5f7ff]"
                                                                 >
-                                                                    <span className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-[#e8ecff] flex items-center justify-center text-[15px] flex-shrink-0 transition-colors duration-200">
-                                                                        {link.icon}
-                                                                    </span>
-                                                                    <span className="flex-1 min-w-0">
-                                                                        <span className="block text-[13px] font-semibold text-gray-700 group-hover:text-[#0f1c80] transition-colors duration-200 leading-tight">
+                                                                    <span className="flex-1 min-w-0 pr-2">
+                                                                        <span className="block text-[13.5px] font-semibold text-gray-800 group-hover:text-[#0f1c80] transition-colors duration-200 leading-tight">
                                                                             {link.label}
                                                                         </span>
-                                                                        <span className="block text-[11px] text-gray-400 leading-snug mt-[1px]">
+                                                                        <span className="block text-[11px] text-gray-400 group-hover:text-gray-500 leading-snug mt-0.5 transition-colors">
                                                                             {link.sub}
                                                                         </span>
                                                                     </span>
                                                                     <ChevronRight
-                                                                        size={12}
+                                                                        size={13}
                                                                         className="opacity-0 group-hover:opacity-100 text-[#f39300] flex-shrink-0 transition-all duration-200 -translate-x-1 group-hover:translate-x-0"
                                                                     />
                                                                 </button>
@@ -444,15 +415,15 @@ const Navbar = () => {
                                     overflow: "hidden",
                                 }}
                             >
-                                <div className="pb-3 grid grid-cols-2 gap-1">
+                                <div className="pb-3 grid grid-cols-1 sm:grid-cols-2 gap-1 px-1">
                                     {item.columns.flatMap(c => c.links).map((link) => (
                                         <button
                                             key={link.label}
                                             onClick={() => go(link.to, link.tab)}
-                                            className="text-left flex items-center gap-2 p-2 text-[12.5px] text-gray-600 hover:text-[#0f1c80] rounded-xl hover:bg-[#f5f7ff] transition-all duration-150"
+                                            className="text-left flex items-center justify-between p-2.5 text-[13px] text-gray-700 hover:text-[#0f1c80] rounded-xl hover:bg-[#f5f7ff] transition-all duration-150"
                                         >
-                                            <span className="text-base">{link.icon}</span>
-                                            <span className="leading-tight">{link.label}</span>
+                                            <span className="leading-tight font-medium">{link.label}</span>
+                                            <ChevronRight size={13} className="text-gray-400" />
                                         </button>
                                     ))}
                                 </div>

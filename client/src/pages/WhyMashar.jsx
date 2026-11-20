@@ -127,18 +127,6 @@ const WhyMashar = () => {
                     <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-semibold tracking-[0.5px] font-spartan mb-3">
                         WHY MASHAR
                     </h1>
-                    <div className="flex items-center justify-center gap-3">
-                        <button
-                            onClick={() => {
-                                navigate("/calendar");
-                                window.scrollTo(0, 0);
-                            }}
-                            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm font-semibold backdrop-blur-md border border-white/30 transition-all shadow-md hover:scale-105 active:scale-95"
-                        >
-                            <span>🗓️ 2026–2027 Program Calendar</span>
-                            <span className="text-[#f39300]">→</span>
-                        </button>
-                    </div>
                 </div>
             </header>
 
@@ -859,15 +847,6 @@ const WhyMashar = () => {
                             text="Book a Discovery Call"
                             onClick={openCalendly}
                             textSize="16px"
-                        />
-                        <ArrowButton
-                            text="Program Schedule"
-                            onClick={() => {
-                                navigate("/calendar");
-                                window.scrollTo(0, 0);
-                            }}
-                            textSize="16px"
-                            className="!bg-[#f39300] hover:!bg-[#d97f00]"
                         />
                     </div>
 

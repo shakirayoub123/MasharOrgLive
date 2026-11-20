@@ -253,6 +253,8 @@ export default function AdminPartnerRequests() {
                         <option value="Consulting Partner">Consulting & Advisory Partner</option>
                         <option value="Strategic Alliance">Academic & Strategic Alliance</option>
                         <option value="Coach Network">Associate Coach & Facilitator</option>
+                        <option value="Mentor Track">Executive & Certified Mentor</option>
+                        <option value="Faculty">Faculty & Team Member</option>
                     </select>
                 </div>
             </div>

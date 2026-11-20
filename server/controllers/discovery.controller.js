@@ -18,11 +18,16 @@ exports.submitForm = async (req, res) => {
             const actionLink = (req.headers.origin || "https://www.mashar.org") + "/admin/discovery";
             await sendMail(
                 "elise@mashar.org",
-                "New Discovery Request Submitted",
-                "news_announcement",
+                `New Discovery Request: ${name} (${company || "Individual"})`,
+                "discovery_admin_alert",
                 {
-                    name: "Elise",
-                    message: `A new discovery request was submitted by <strong>${name}</strong> (${email}) from <strong>${company}</strong>.<br><br><strong>Topic:</strong> ${helpTopic}<br><strong>Challenge:</strong> ${challenge}`,
+                    recipientName: "Elise",
+                    name,
+                    email,
+                    company,
+                    helpTopic,
+                    challenge,
+                    receiveUpdates,
                     actionLink
                 }
             );

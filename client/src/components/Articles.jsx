@@ -25,7 +25,6 @@ const sections = [
     { label: "ARTICLES", path: "/articles" },
     { label: "BOOKS", path: "/books" },
     { label: "VIDEOS", path: "/videos" },
-    { label: "EVENTS", path: "/events" },
 ];
 
 const articles = [

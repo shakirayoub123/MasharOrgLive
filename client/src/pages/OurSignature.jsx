@@ -1120,18 +1120,83 @@ export default function OurSignature() {
                         aligned with your suggests.
                     </p>
 
-                    {/* Buttons */}
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 flex-wrap">
-                        <ArrowButton
-                            text="Book a Discovery Call"
-                            className="px-8 py-4 text-[12px] sm:text-[16px]"
-                            onClick={openCalendly}
-                        />
-                        <ArrowButton
-                            text="Become A Partner / Join Our Team"
-                            className="px-8 py-4 text-[12px] sm:text-[16px] !bg-secondary hover:!bg-[#D97706]"
-                            onClick={() => navigate("/become-partner")}
-                        />
+                    {/* Dual Track Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-6 w-full text-left">
+                        {/* Card 1: For Organizations & Leaders */}
+                        <div className="bg-[#f9fafb] hover:bg-white border border-gray-100 hover:border-[#0f1c80]/20 rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-xl transition-all duration-300 group">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0f1c80]/10 text-[#0f1c80] text-[11px] sm:text-[12px] font-semibold mb-4">
+                                    <span>🏛️</span>
+                                    <span>For Organizations & Leaders</span>
+                                </div>
+                                <h3 className="text-xl sm:text-2xl font-bold font-spartan text-[#1e2554] mb-2 leading-snug">
+                                    Transform Your Leadership
+                                </h3>
+                                <p className="font-poppins text-gray-600 text-[13.5px] sm:text-[14px] leading-relaxed mb-6">
+                                    Bespoke leadership pathways, executive coaching, and team psychometrics tailored to your organization’s unique culture and strategic goals.
+                                </p>
+                            </div>
+                            <div className="pt-2">
+                                <ArrowButton
+                                    text="Book a Discovery Call"
+                                    className="!px-6 !py-3 text-[13.5px] sm:text-[15px]"
+                                    onClick={openCalendly}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Card 2: For Coaches & Partners */}
+                        <div className="bg-[#f9fafb] hover:bg-white border border-gray-100 hover:border-[#f39300]/20 rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-xl transition-all duration-300 group">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f39300]/10 text-[#d97f00] text-[11px] sm:text-[12px] font-semibold mb-4">
+                                    <span>🤝</span>
+                                    <span>For Faculty & Partners</span>
+                                </div>
+                                <h3 className="text-xl sm:text-2xl font-bold font-spartan text-[#1e2554] mb-2 leading-snug">
+                                    Collaborate With Mashar
+                                </h3>
+                                <p className="font-poppins text-gray-600 text-[13.5px] sm:text-[14px] leading-relaxed mb-6">
+                                    License our ICF-accredited curricula as an enterprise partner, or apply to join our elite network of certified bilingual coaching faculty.
+                                </p>
+                            </div>
+                            <div className="space-y-3 pt-2">
+                                <div className="flex flex-wrap items-center gap-3">
+                                    <button
+                                        onClick={() => {
+                                            navigate("/join-our-team");
+                                            window.scrollTo(0, 0);
+                                        }}
+                                        className="flex items-center gap-2 bg-[#f39300] hover:bg-[#d97f00] text-white font-poppins font-semibold text-[13px] sm:text-[14px] px-5 py-2.5 rounded-full transition-all shadow-sm hover:scale-[1.02] active:scale-[0.98]"
+                                    >
+                                        <span>Join Our Team</span>
+                                        <span className="text-xs">↗</span>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            navigate("/become-partner");
+                                            window.scrollTo(0, 0);
+                                        }}
+                                        className="flex items-center gap-2 bg-white border-2 border-[#1e2554] hover:bg-[#1e2554] text-[#1e2554] hover:text-white font-poppins font-semibold text-[13px] sm:text-[14px] px-5 py-2.5 rounded-full transition-all shadow-sm hover:scale-[1.02] active:scale-[0.98]"
+                                    >
+                                        <span>Become a Partner</span>
+                                        <span className="text-xs">↗</span>
+                                    </button>
+                                </div>
+                                <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+                                    <span>Senior leadership advisor?</span>
+                                    <button
+                                        onClick={() => {
+                                            navigate("/become-a-mentor");
+                                            window.scrollTo(0, 0);
+                                        }}
+                                        className="font-bold text-[#0f1c80] hover:text-[#f39300] hover:underline transition-colors flex items-center gap-1"
+                                    >
+                                        <span>Become a Mentor</span>
+                                        <span>→</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

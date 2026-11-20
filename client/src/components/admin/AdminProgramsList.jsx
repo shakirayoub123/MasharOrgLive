@@ -97,7 +97,7 @@ function SectionRow({ section, sIdx }) {
                 <span className="flex-1 text-xs font-bold text-slate-700 truncate">{section.label}</span>
                 <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
                       style={{ background: "#EEF0FF", color: NAVY }}>
-                    {lessons.length} lesson{lessons.length !== 1 ? "s" : ""}
+                    {lessons.length} session{lessons.length !== 1 ? "s" : ""}
                 </span>
             </button>
             {open && lessons.length > 0 && (
@@ -126,7 +126,7 @@ function ModuleRow({ program, module: mod, onDeleteModule, onRenameModule }) {
         <>
             {confirmDel && (
                 <ConfirmModal
-                    message={`Delete module "${mod.label}" and all its ${sections.length} section(s) and ${totalLessons} lesson(s)?`}
+                    message={`Delete module "${mod.label}" and all its ${sections.length} section(s) and ${totalLessons} session(s)?`}
                     onConfirm={() => { onDeleteModule(progId, modId); setConfirmDel(false); }}
                     onCancel={() => setConfirmDel(false)}
                 />
@@ -155,7 +155,7 @@ function ModuleRow({ program, module: mod, onDeleteModule, onRenameModule }) {
 
                     <span className="text-[10px] font-black px-2 py-0.5 rounded-full shrink-0"
                           style={{ background: "#EEF0FF", color: NAVY, border: "1px solid #DDE0FF" }}>
-                        {sections.length} sec · {totalLessons} lessons
+                        {sections.length} sec · {totalLessons} sessions
                     </span>
 
                     {editingName ? (

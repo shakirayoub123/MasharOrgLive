@@ -12,6 +12,7 @@ import TestimonialsSlider from "../components/TestimonialsSlider";
 import squareAnimation from "../assets/squareAnimation.gif";
 import { useNavigate } from "react-router-dom";
 import SEO from "../components/SEO";
+import masharCalendarPdf from "../assets/MasharCalendar2026.pdf";
 
 // import frame2847 from "../assets/frame-1000002847.svg";
 // import frame2844 from "../assets/frame-1000002844.svg";
@@ -174,6 +175,59 @@ const stats = [
     { number: "15+", label: "Business Client Partner" },
 ];
 
+const credibilityPoints = [
+    {
+        title: "Globally Accredited Excellence",
+        description: "Accredited by the International Coaching Federation (ICF) and premier worldwide bodies.",
+        icon: (
+            <svg className="w-5 h-5 text-[#0f1c80]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+        ),
+        badge: "ICF Standards",
+    },
+    {
+        title: "Pioneers in Bilingual Coaching",
+        description: "Seamless dual-language delivery in Arabic & English, culturally rooted in the GCC region.",
+        icon: (
+            <svg className="w-5 h-5 text-[#f39300]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
+        ),
+        badge: "Arabic & English",
+    },
+    {
+        title: "Tailored & Culturally Grounded",
+        description: "Custom leadership pathways crafted to honor regional identity, heritage, and strategic vision.",
+        icon: (
+            <svg className="w-5 h-5 text-[#0f1c80]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+        ),
+        badge: "Regional Context",
+    },
+    {
+        title: "Over 20 Years of Regional Impact",
+        description: "Two decades empowering C-suite executives, directors, and emerging leaders across sectors.",
+        icon: (
+            <svg className="w-5 h-5 text-[#f39300]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        ),
+        badge: "Proven Legacy",
+    },
+    {
+        title: "Evidence-Based & Measurable",
+        description: "Human-centered methodologies with scientifically validated psychometrics and tangible ROI.",
+        icon: (
+            <svg className="w-5 h-5 text-[#0f1c80]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+        ),
+        badge: "Data-Backed",
+    },
+];
+
 const points = [
     "Accredited by ICF and top global bodies.",
     "Pioneers in bilingual coaching (Arabic & English).",
@@ -327,7 +381,7 @@ const Home = () => {
                 <NewsletterPopup isOpen={showPopup} onClose={handleClosePopup} />
             )}
             {/* ══ HERO SECTION ══ */}
-            <section className="relative bg-white pt-2 sm:pt-4 md:pt-6 lg:pt-8 pb-4 overflow-hidden">
+            <section className="relative bg-white pt-2 sm:pt-4 md:pt-6 lg:pt-8 pb-6 sm:pb-8 overflow-hidden">
                 <div className="max-w-[1380px] mx-auto px-6 md:px-10 lg:px-16">
                     {/* Top Hero Row */}
                     <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-8 lg:gap-12 items-center">
@@ -346,13 +400,16 @@ const Home = () => {
                             </p>
 
                             <div className="mt-6 md:mt-7 flex flex-wrap items-center justify-center lg:justify-start gap-3.5">
-                                <button
-                                    onClick={() => { navigate("/explorePrograms"); window.scrollTo(0, 0); }}
-                                    className="flex items-center gap-2 bg-[#f39300] hover:bg-[#d97f00] transition-colors duration-200 text-white font-poppins font-semibold text-[14px] sm:text-[15px] px-6 sm:px-7 py-3 rounded-full shadow-sm whitespace-nowrap"
+                                <a
+                                    href={masharCalendarPdf}
+                                    download="MasharCalendar2026.pdf"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 bg-[#f39300] hover:bg-[#d97f00] transition-colors duration-200 text-white font-poppins font-semibold text-[14px] sm:text-[15px] px-6 sm:px-7 py-3 rounded-full shadow-sm whitespace-nowrap cursor-pointer"
                                 >
-                                    Explore Our Programs
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-                                </button>
+                                    <span>Download 2026 Calendar</span>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                                </a>
                                 <button
                                     onClick={openCalendly}
                                     className="flex items-center gap-2 bg-white border-2 border-[#1e2554] hover:bg-[#1e2554] hover:text-white transition-colors duration-200 text-[#1e2554] font-poppins font-semibold text-[14px] sm:text-[15px] px-6 sm:px-7 py-3 rounded-full whitespace-nowrap"
@@ -394,7 +451,7 @@ const Home = () => {
                             </div>
 
                             {/* RIGHT BLUE LABELS overlapping right portrait edge */}
-                            <div className="absolute top-[80px] sm:top-[95px] -right-5 sm:-right-8 flex flex-col gap-2 z-20">
+                            <div className="absolute top-[125px] sm:top-[145px] lg:top-[150px] -translate-y-1/2 -right-8 sm:-right-12 lg:-right-14 flex flex-col gap-2 z-20">
                                 {[
                                     "ICF\nAccredited\nExcellence",
                                     "Human\nCentered\nApproach",
@@ -402,7 +459,7 @@ const Home = () => {
                                 ].map((text, i) => (
                                     <div
                                         key={i}
-                                        className="bg-[#0f1c80] text-white text-[10px] sm:text-[11px] font-poppins font-normal text-center px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-[14px] sm:rounded-[16px] shadow-lg w-[82px] sm:w-[92px] leading-tight whitespace-pre-line"
+                                        className="bg-[#0f1c80] text-white text-[10px] sm:text-[11px] font-poppins font-normal text-center px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-[14px] sm:rounded-[16px] shadow-lg w-[82px] sm:w-[94px] leading-tight whitespace-pre-line"
                                     >
                                         {text}
                                     </div>
@@ -516,14 +573,6 @@ const Home = () => {
                             </button>
                         ))}
                     </div>
-                </div>
-
-                {/* Subtle Bottom Orange Stripe Wave */}
-                <div className="relative w-full overflow-hidden leading-none mt-6 sm:mt-8">
-                    <svg className="w-full h-8 sm:h-12 text-[#f39300]" viewBox="0 0 1440 60" fill="none" preserveAspectRatio="none">
-                        <path d="M0,20 C320,60 540,5 920,40 C1140,55 1320,25 1440,35 L1440,60 L0,60 Z" fill="currentColor" fillOpacity="0.12" />
-                        <path d="M0,35 C280,65 620,10 980,45 C1200,60 1340,30 1440,40" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-                    </svg>
                 </div>
             </section>
 
@@ -1153,82 +1202,124 @@ transition-colors duration-300 group-hover:text-[#F39300]">
             </section>
 
             {/* purpose driven */}
+            <section className="relative mx-auto px-6 md:px-12 lg:px-16 max-w-7xl py-16 sm:py-20 lg:py-24 overflow-hidden">
+                {/* Background ambient decorative shapes */}
+                <div className="absolute top-1/2 left-0 -translate-y-1/2 w-72 h-72 bg-[#0f1c80]/5 rounded-full blur-3xl pointer-events-none -z-10" />
+                <div className="absolute top-1/3 right-0 w-80 h-80 bg-[#f39300]/5 rounded-full blur-3xl pointer-events-none -z-10" />
 
-            <section className="relative mx-auto px-6 md:px-12 lg:px-[130px] max-w-7xl py-20 lg:py-[120px] gap-12 items-center">
-                {/* Left Content */}
-                <h2 className="text-3xl md:text-[46px] font-medium font-spartan mb-12 leading-tight text-center">
-                    <span className="relative inline-block">
-                        Purpose-Driven.{" "}
-                        <span className="text-primary">Baked by</span>{" "}
-                        <span className="text-secondary">Experience</span>
+                {/* Section Header */}
+                <div className="text-center mb-12 sm:mb-16">
+                    <h2 className="text-3xl sm:text-4xl md:text-[46px] font-bold font-spartan leading-tight text-[#222b60]">
+                        <span className="relative inline-block">
+                            Purpose-Driven.{" "}
+                            <span className="text-[#0f1c80]">Backed by</span>{" "}
+                            <span className="text-[#f39300]">Experience</span>
+                            <img
+                                src={CurvedLine}
+                                alt="curve"
+                                className="absolute left-1/2 -translate-x-1/2 -bottom-5 w-[200px] sm:w-[240px] h-[12px] opacity-100 pointer-events-none"
+                            />
+                        </span>
+                    </h2>
+                    <p className="font-poppins text-gray-600 text-[15px] sm:text-[17px] max-w-2xl mx-auto mt-6 leading-relaxed">
+                        Here’s why Mashar is trusted by leaders, organizations, and teams who lead with heart, vision, and cultural intelligence.
+                    </p>
+                </div>
 
-                        <img
-                            src={CurvedLine}
-                            alt="curve"
-                            className="absolute left-1/2 -translate-x-1/2 -bottom-6 w-[229px] h-[12px] opacity-100"
-                        />
-                    </span>
-                </h2>
-                <p className="text-center font-poppins text-[16px] max-w-3xl mx-auto mb-12 text-sm md:text-base leading-6">
-                    Here’s why Mashar is trusted by those who lead with heart and vision.
-                </p>
-                <div className="grid md:grid-cols-2 max-w-6xl ">
-                    <div className="md:pt-[20px]">
-                        <ul className="leading-[30px] mb-8">
-                            {points.map((point, index) => (
-                                <li key={index} className="flex items-start gap-[16px]">
-                                    {/* ✅ Inline SVG icon */}
-                                    <span className=" text-black">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            width="32"
-                                            height="32"
-                                            fill="none"
-                                            className="stroke-current"
-                                        >
-                                            <path
-                                                d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"
-                                                stroke="currentColor"
-                                                strokeWidth="2.5"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            />
-                                        </svg>
-                                    </span>
+                {/* 2-Column Main Content */}
+                <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto">
+                    {/* Left: Credibility Cards List */}
+                    <div className="lg:col-span-7 flex flex-col gap-3.5">
+                        {credibilityPoints.map((item, index) => (
+                            <div
+                                key={index}
+                                className="group relative bg-white hover:bg-gradient-to-r hover:from-white hover:to-[#f8faff] border border-gray-100 hover:border-[#0f1c80]/20 rounded-2xl p-4 sm:p-4.5 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-md transition-all duration-300 flex items-start gap-4"
+                            >
+                                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gray-50 group-hover:bg-[#0f1c80]/10 flex items-center justify-center shrink-0 transition-colors duration-300 mt-0.5">
+                                    {item.icon}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
+                                        <h3 className="font-spartan font-bold text-[15px] sm:text-[16px] text-[#1e2554] group-hover:text-[#0f1c80] transition-colors">
+                                            {item.title}
+                                        </h3>
+                                        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 group-hover:bg-[#f39300]/10 group-hover:text-[#f39300] transition-colors">
+                                            {item.badge}
+                                        </span>
+                                    </div>
+                                    <p className="font-poppins text-[13px] sm:text-[14px] text-gray-600 leading-relaxed">
+                                        {item.description}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
 
-                                    <span className="font-poppins text-[15px] font-normal leading-[30px] tracking-[0.5px]">
-                                        {point}
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                        <div
-                            className=" sm:ml-[69px] group  tracking-wide "
-                            onClick={() => {
-                                navigate("/whyMashar");
-                                window.scrollTo(0, 0);
-                            }}
-                        >
-                            <ArrowButton text="Read Our Story" textSize="16px" />
+                        {/* CTA Buttons */}
+                        <div className="flex flex-wrap items-center gap-4 mt-4 pt-2">
+                            <div
+                                onClick={() => {
+                                    navigate("/whyMashar");
+                                    window.scrollTo(0, 0);
+                                }}
+                            >
+                                <ArrowButton text="Read Our Story" textSize="16px" />
+                            </div>
+                            <button
+                                onClick={openCalendly}
+                                className="flex items-center gap-2 bg-white border-2 border-[#1e2554] hover:bg-[#1e2554] hover:text-white transition-colors duration-200 text-[#1e2554] font-poppins font-semibold text-[14px] sm:text-[15px] px-6 py-3 rounded-full whitespace-nowrap cursor-pointer shadow-sm"
+                            >
+                                Talk to a Leadership Advisor
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                            </button>
                         </div>
                     </div>
 
-                    {/* Right Image */}
-                    <div className=" justify-end 773:flex hidden ">
-                        <img
-                            src={workshop}
-                            alt="Workshop"
-                            className="rounded-[24px]  max-w-xs 924:max-w-sm "
-                        />
+                    {/* Right: Rich Visual Composition with Floating Social Proof Badges */}
+                    <div className="lg:col-span-5 relative flex justify-center mt-6 lg:mt-0">
+                        <div className="relative w-full max-w-[420px] sm:max-w-[460px] lg:max-w-none">
+                            {/* Decorative background border/glow */}
+                            <div className="absolute -inset-3 sm:-inset-4 bg-gradient-to-tr from-[#f39300]/20 via-[#0f1c80]/10 to-transparent rounded-[32px] -z-10 blur-lg" />
+                            <div className="absolute -top-3 -right-3 w-24 h-24 border-2 border-[#f39300]/30 rounded-3xl -z-10 hidden sm:block" />
+
+                            {/* Main Image */}
+                            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-gray-100">
+                                <img
+                                    src={workshop}
+                                    alt="Mashar Leadership Workshop"
+                                    className="w-full h-[380px] sm:h-[460px] lg:h-[490px] object-cover object-center transform hover:scale-105 transition-transform duration-700"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                            </div>
+
+                            {/* Floating Badge 1: Top Left */}
+                            <div className="absolute -top-4 -left-4 sm:-top-5 sm:-left-6 bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-3.5 shadow-xl border border-gray-100/80 flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-[#f39300]/15 flex items-center justify-center text-[#f39300] font-bold text-lg">
+                                    ★
+                                </div>
+                                <div>
+                                    <p className="text-[14px] font-bold text-[#0f1c80] leading-none">20+ Years</p>
+                                    <p className="text-[11px] text-gray-500 font-poppins mt-1">Transforming Leaders</p>
+                                </div>
+                            </div>
+
+                            {/* Floating Badge 2: Bottom Right */}
+                            <div className="absolute -bottom-4 -right-3 sm:-bottom-5 sm:-right-4 bg-[#0f1c80] text-white rounded-2xl p-3 sm:p-3.5 shadow-xl border border-white/20 flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-[#f39300] font-bold text-lg">
+                                    ✓
+                                </div>
+                                <div>
+                                    <p className="text-[13px] sm:text-[14px] font-bold leading-none">ICF Accredited</p>
+                                    <p className="text-[11px] text-white/80 font-poppins mt-1">Global Gold Standard</p>
+                                </div>
+                            </div>
+
+                            {/* Floating Badge 3: Pill Chip Middle Left */}
+                            <div className="absolute bottom-20 -left-4 sm:-left-6 bg-white/95 backdrop-blur-md rounded-full px-3.5 py-2 shadow-lg border border-gray-100 hidden sm:flex items-center gap-2">
+                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <span className="text-[12px] font-semibold text-gray-800">100% Bilingual Programs</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div className="absolute -bottom-0 top-[9px] left-[-250px]">
-                    <img
-                        src={LeftCornorGroup}
-                        alt="Circle 1"
-                        className="w-[30px] sm:w-[110px]"
-                    />
                 </div>
             </section>
 

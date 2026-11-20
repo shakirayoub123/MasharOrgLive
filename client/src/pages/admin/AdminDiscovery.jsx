@@ -1,8 +1,158 @@
 import { useState, useEffect, useCallback } from "react";
-import { Trash2, Search, AlertTriangle, FileText, RefreshCw } from "lucide-react";
+import {
+    Trash2, Search, AlertTriangle, FileText, RefreshCw,
+    Eye, Mail, Building2, Sparkles, Calendar, Check, Copy, X
+} from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
+
+// ── View Details Modal ──
+function DetailsModal({ interaction, onClose, onDelete }) {
+    const [copied, setCopied] = useState(false);
+
+    if (!interaction) return null;
+
+    const copyEmail = () => {
+        navigator.clipboard.writeText(interaction.email);
+        setCopied(true);
+        toast.success("Email copied to clipboard!");
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
+            <div className="relative bg-white rounded-2xl shadow-2xl border border-slate-100 w-full max-w-xl overflow-hidden">
+                {/* Header */}
+                <div className="px-6 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-indigo-50/40 flex items-center justify-between">
+                    <div>
+                        <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.15em] bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100">
+                            Discovery Request Details
+                        </span>
+                        <h3 className="text-xl font-bold text-slate-800 mt-1">
+                            {interaction.name}
+                        </h3>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-400 hover:text-slate-700 flex items-center justify-center transition-all"
+                    >
+                        <X size={16} />
+                    </button>
+                </div>
+
+                {/* Body */}
+                <div className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                    {/* Contact & Company */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-100">
+                            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <Mail size={13} className="text-indigo-500" /> Email Address
+                            </p>
+                            <div className="flex items-center justify-between gap-2">
+                                <a href={`mailto:${interaction.email}`} className="text-xs sm:text-sm font-semibold text-indigo-600 hover:underline break-all">
+                                    {interaction.email}
+                                </a>
+                                <button
+                                    onClick={copyEmail}
+                                    className="p-1 text-slate-400 hover:text-slate-600 rounded hover:bg-white transition-all shrink-0"
+                                    title="Copy email"
+                                >
+                                    {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-100">
+                            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <Building2 size={13} className="text-indigo-500" /> Organization / Company
+                            </p>
+                            <p className="text-xs sm:text-sm font-semibold text-slate-800 break-words" dir="auto">
+                                {interaction.company || "N/A (Individual)"}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Help Topic & Date */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-100">
+                            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <Sparkles size={13} className="text-amber-500" /> Topic of Interest
+                            </p>
+                            <p className="text-xs sm:text-sm font-semibold text-slate-800">
+                                {interaction.helpTopic || "General Coaching & Leadership"}
+                            </p>
+                        </div>
+
+                        <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-100">
+                            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <Calendar size={13} className="text-slate-400" /> Submission Date
+                            </p>
+                            <p className="text-xs sm:text-sm font-semibold text-slate-800">
+                                {new Date(interaction.createdAt).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                })}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Biggest Challenge */}
+                    <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70">
+                        <p className="text-[11px] font-bold text-amber-800 uppercase tracking-wider mb-2">
+                            Biggest Challenge / Message:
+                        </p>
+                        <p className="text-sm text-slate-900 leading-relaxed whitespace-pre-wrap break-words font-medium" dir="auto">
+                            {interaction.challenge || "No description provided."}
+                        </p>
+                    </div>
+
+                    {/* Newsletter Preference */}
+                    <div className="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+                        <span className="text-slate-600 font-medium">Newsletter & Leadership Updates:</span>
+                        <span className={`font-bold px-2.5 py-0.5 rounded-full ${interaction.receiveUpdates ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-600"}`}>
+                            {interaction.receiveUpdates ? "Yes, Subscribed" : "No"}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-3">
+                    <button
+                        onClick={() => {
+                            onClose();
+                            onDelete(interaction);
+                        }}
+                        className="text-xs font-semibold text-red-500 hover:text-red-700 hover:underline flex items-center gap-1.5"
+                    >
+                        <Trash2 size={13} />
+                        Delete Request
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={onClose}
+                            className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-all"
+                        >
+                            Close
+                        </button>
+                        <a
+                            href={`mailto:${interaction.email}?subject=Mashar%20Discovery%20Conversation&body=Hi%20${encodeURIComponent(interaction.name)},%0A%0AThank%20you%20for%20reaching%20out%20to%20Mashar.`}
+                            className="flex items-center gap-1.5 px-4 py-2 bg-[#0F1C80] hover:bg-[#15237F] text-white text-xs font-bold rounded-xl transition-all shadow-sm"
+                        >
+                            <Mail size={13} />
+                            Reply via Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
 
 // ── Delete Modal ──
 function DeleteModal({ interaction, onConfirm, onCancel, loading }) {
@@ -80,6 +230,7 @@ export default function AdminDiscovery() {
     const [search, setSearch] = useState("");
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [deleteLoading, setDeleteLoading] = useState(false);
+    const [selectedInteraction, setSelectedInteraction] = useState(null);
 
     // Fetch interactions
     const fetchInteractions = useCallback(async () => {
@@ -175,14 +326,14 @@ export default function AdminDiscovery() {
 
                     {/* Table Container */}
                     <div className="overflow-x-auto">
-                        <table className="w-full border-collapse text-left text-sm text-slate-500 table-fixed">
+                        <table className="w-full border-collapse text-left text-sm text-slate-500">
                             <thead className="bg-slate-50/75 border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase tracking-wider">
                                 <tr>
-                                    <th scope="col" className="px-4 py-4 w-1/6">Name / Email</th>
-                                    <th scope="col" className="px-4 py-4 w-1/6">Company</th>
-                                    <th scope="col" className="px-4 py-4 w-1/6">Help Topic</th>
-                                    <th scope="col" className="px-4 py-4 w-1/3">Challenge</th>
-                                    <th scope="col" className="px-4 py-4 w-[120px] text-right">Actions</th>
+                                    <th scope="col" className="px-5 py-4 w-[240px]">Name & Email</th>
+                                    <th scope="col" className="px-5 py-4 w-[160px]">Company</th>
+                                    <th scope="col" className="px-5 py-4 w-[160px]">Help Topic</th>
+                                    <th scope="col" className="px-5 py-4 min-w-[240px]">Challenge</th>
+                                    <th scope="col" className="px-5 py-4 w-[100px] text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 border-t border-slate-100">
@@ -190,44 +341,67 @@ export default function AdminDiscovery() {
                                     Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} />)
                                 ) : filteredInteractions.length > 0 ? (
                                     filteredInteractions.map((i) => (
-                                        <tr key={i._id} className="hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-4 py-4">
-                                                <p className="font-semibold text-slate-800 truncate" title={i.name}>{i.name}</p>
-                                                <p className="font-mono text-[11px] text-slate-500 truncate mt-0.5" title={i.email}>{i.email}</p>
+                                        <tr
+                                            key={i._id}
+                                            onClick={() => setSelectedInteraction(i)}
+                                            className="hover:bg-slate-50/80 transition-colors group cursor-pointer"
+                                        >
+                                            <td className="px-5 py-4 align-top">
+                                                <p className="font-bold text-slate-900 leading-snug break-words">
+                                                    {i.name}
+                                                </p>
+                                                <a
+                                                    href={`mailto:${i.email}`}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="font-mono text-xs text-indigo-600 hover:underline block mt-0.5 break-all"
+                                                >
+                                                    {i.email}
+                                                </a>
                                                 {i.receiveUpdates && (
-                                                    <span className="inline-block mt-1 px-1.5 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded">
+                                                    <span className="inline-block mt-1.5 px-2 py-0.5 bg-indigo-50 border border-indigo-100 text-indigo-600 text-[10px] font-bold rounded-full">
                                                         WANTS UPDATES
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="px-4 py-4">
+                                            <td className="px-5 py-4 align-top">
                                                 {i.company ? (
-                                                    <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600 truncate max-w-full" title={i.company}>
+                                                    <span className="inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 break-words" dir="auto">
                                                         {i.company}
                                                     </span>
                                                 ) : (
                                                     <span className="text-slate-300 italic text-xs">N/A</span>
                                                 )}
                                             </td>
-                                            <td className="px-4 py-4 text-xs font-medium text-slate-700 truncate" title={i.helpTopic}>
-                                                {i.helpTopic}
+                                            <td className="px-5 py-4 align-top">
+                                                <span className="text-xs font-semibold text-slate-700 block">
+                                                    {i.helpTopic || "General Coaching"}
+                                                </span>
                                             </td>
-                                            <td className="px-4 py-4">
-                                                <div className="text-xs text-slate-600 break-words leading-relaxed max-h-20 overflow-y-auto custom-scrollbar pr-2">
+                                            <td className="px-5 py-4 align-top">
+                                                <div className="text-xs text-slate-700 break-words leading-relaxed font-medium" dir="auto">
                                                     {i.challenge}
                                                 </div>
-                                                <div className="text-[10px] text-slate-300 font-medium uppercase tracking-wider mt-2">
+                                                <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-2">
                                                     {new Date(i.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-4 text-right align-top">
-                                                <button
-                                                    onClick={() => setDeleteTarget(i)}
-                                                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-100 hover:bg-red-50/30 transition-all focus:opacity-100"
-                                                    title="Delete Request"
-                                                >
-                                                    <Trash2 size={14} />
-                                                </button>
+                                            <td className="px-5 py-4 text-right align-top" onClick={(e) => e.stopPropagation()}>
+                                                <div className="flex items-center justify-end gap-1.5">
+                                                    <button
+                                                        onClick={() => setSelectedInteraction(i)}
+                                                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-all"
+                                                        title="View Full Details"
+                                                    >
+                                                        <Eye size={15} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setDeleteTarget(i)}
+                                                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all"
+                                                        title="Delete Request"
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))
@@ -250,6 +424,15 @@ export default function AdminDiscovery() {
                     </div>
                 </div>
             </div>
+
+            {/* View Details Modal */}
+            {selectedInteraction && (
+                <DetailsModal
+                    interaction={selectedInteraction}
+                    onClose={() => setSelectedInteraction(null)}
+                    onDelete={(target) => setDeleteTarget(target)}
+                />
+            )}
 
             {/* Delete Modal */}
             {deleteTarget && (

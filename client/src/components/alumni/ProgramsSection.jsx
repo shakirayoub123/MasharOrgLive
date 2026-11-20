@@ -38,7 +38,7 @@ function ProgressBar({ done, total }) {
     const pct = total === 0 ? 0 : Math.round((done / total) * 100);
     return (<div>
         <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-black" style={{ color: ORANGE }}>{done}/{total} Lessons</span>
+            <span className="text-xs font-black" style={{ color: ORANGE }}>{done}/{total} Sessions</span>
             <span className="text-xs font-black" style={{ color: ORANGE }}>{pct}%</span>
         </div>
         <div className="h-2 rounded-full bg-[#FFE4B0] overflow-hidden">
@@ -133,7 +133,7 @@ function LessonView({ lesson, allLessons, lessonIdx, completed, onComplete, onNa
                             </button>
                         )}
                     </div>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">About this Lesson</p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">About this Session</p>
                     <LessonContent lesson={lesson} />
                     <div className="h-px bg-[#EEF0FF] -mx-6 my-5" />
 
@@ -146,7 +146,7 @@ function LessonView({ lesson, allLessons, lessonIdx, completed, onComplete, onNa
                                     {TICON[next.type] || "📖"}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-[10px] font-bold text-gray-400 mb-0.5 group-hover:text-orange-400 transition-colors">Lesson {lessonIdx + 2}</p>
+                                    <p className="text-[10px] font-bold text-gray-400 mb-0.5 group-hover:text-orange-400 transition-colors">Session {lessonIdx + 2}</p>
                                     <p className="text-sm font-black text-[#0D1240] truncate">{next.label}</p>
                                 </div>
                                 <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-orange-500 border border-gray-100 group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-all">
@@ -160,7 +160,7 @@ function LessonView({ lesson, allLessons, lessonIdx, completed, onComplete, onNa
 
             <div style={{ ...cardStyle, position: "sticky", top: "1rem" }}>
                 <div className="px-4 py-3 border-b border-[#EEF0FF] flex items-center justify-between">
-                    <p className="font-black text-[#0D1240] text-sm">Lessons</p>
+                    <p className="font-black text-[#0D1240] text-sm">Sessions</p>
                     <span className="text-[10px] font-bold text-gray-400">{allLessons.length}</span>
                 </div>
                 <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
@@ -260,7 +260,7 @@ function ProgramOverview({ program, completed, onSelectLesson, onBack }) {
                             <div className="flex-1 min-w-0">
                                 <p className="font-black text-[#0D1240] text-sm">{mod.label}</p>
                                 <p className="text-[10px] text-gray-400 mt-0.5">
-                                    {(mod.sections || []).length} sections · {modLessons.length} lessons
+                                    {(mod.sections || []).length} {(mod.sections || []).length === 1 ? "section" : "sections"} · {modLessons.length} {modLessons.length === 1 ? "session" : "sessions"}
                                     {doneMod > 0 && ` · ${doneMod} done`}
                                 </p>
                             </div>
@@ -335,7 +335,7 @@ function RequestAccessModal({ program, onClose, onRequest }) {
                         ? "Your access request has been submitted to the Mashar administration team and is currently awaiting approval. You will receive a notification once access is granted."
                         : isRejected
                         ? "Your previous access request was declined. If your circumstances have changed or you have enrolled recently, you may submit a request again."
-                        : "This program is private and requires administrator approval before you can access its modules, curriculum, and lesson materials."}
+                        : "This program is private and requires administrator approval before you can access its modules, curriculum, and course materials."}
                 </p>
                 <div className="pt-2 flex gap-3">
                     <button onClick={onClose}
@@ -404,7 +404,7 @@ function ProgramPicker({ programs, completed, onSelect, onRequestAccess }) {
                             { val: programs.length, label: "Programs" },
                             { val: totalModules, label: "Modules" },
                             { val: totalSections, label: "Sections" },
-                            { val: totalLessons, label: "Lessons" },
+                            { val: totalLessons, label: "Sessions" },
                             { val: completed.size, label: "Completed" },
                         ].map((s, i, arr) => (
                             <div key={s.label} className="flex items-center gap-6">
@@ -474,7 +474,7 @@ function ProgramPicker({ programs, completed, onSelect, onRequestAccess }) {
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-[10px] text-gray-400">{(prog.modules || []).length} modules · {total} lessons</p>
+                                <p className="text-[10px] text-gray-400">{(prog.modules || []).length} modules · {total} sessions</p>
                             </div>
                         </div>
 
@@ -482,7 +482,7 @@ function ProgramPicker({ programs, completed, onSelect, onRequestAccess }) {
                         {!isLocked ? (
                             <div className="mb-3">
                                 <div className="flex items-center justify-between mb-1">
-                                    <span className="text-[10px] font-bold text-gray-400">{progDone}/{total} lessons done</span>
+                                    <span className="text-[10px] font-bold text-gray-400">{progDone}/{total} sessions completed</span>
                                     <span className="text-[10px] font-black" style={{ color: ORANGE }}>{progPct}%</span>
                                 </div>
                                 <div className="h-1.5 rounded-full bg-[#FFE4B0] overflow-hidden">
@@ -493,7 +493,7 @@ function ProgramPicker({ programs, completed, onSelect, onRequestAccess }) {
                         ) : (
                             <div className="mb-3 px-3 py-2 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-2 text-[11px] text-slate-500">
                                 <Lock size={12} className="text-amber-500 shrink-0" />
-                                <span className="truncate">Requires approval to access lesson materials</span>
+                                <span className="truncate">Requires approval to access course materials</span>
                             </div>
                         )}
 

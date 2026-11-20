@@ -36,15 +36,6 @@ const cardData = [
         icon: video,
         route: "/videos",
     },
-    {
-        id: "events",
-        title: "Events",
-        description:
-            "Join inspiring workshops, masterclasses, and thought-leadership conversations with Mashar's coaches and global partners. Connect with peers and experience real time transformation.",
-        button: "See Upcoming Events",
-        icon: video,
-        route: "/events",
-    },
 ];
 
 const LeadershipHub = () => {
@@ -110,7 +101,7 @@ const LeadershipHub = () => {
                     </div>
 
                     {/* Cards — each has its own id for hash navigation */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12 max-w-[1200px] mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[1300px] mx-auto">
                         {cardData.map((card, index) => (
                             <div
                                 id={card.id}
