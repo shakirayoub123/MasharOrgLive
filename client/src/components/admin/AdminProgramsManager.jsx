@@ -121,9 +121,9 @@ function SectionCard({ section, sIdx, moduleId, programId, api, onUpdate, onDele
 
             onUpdate({ ...section, lessons: updatedLessons });
             resetLesson();
-            toast.success(isEdit ? "Lesson updated!" : "Lesson added!");
+            toast.success(isEdit ? "Session updated!" : "Session added!");
         } catch (err) {
-            toast.error(err?.response?.data?.message || "Failed to save lesson.");
+            toast.error(err?.response?.data?.message || "Failed to save session.");
         } finally { setSaving(false); }
     }
 
@@ -147,7 +147,7 @@ function SectionCard({ section, sIdx, moduleId, programId, api, onUpdate, onDele
         const lesson = lessons[lIdx];
         const lid = lesson?._id || lesson?.id;
         if (!lid) {
-            // lesson not yet persisted, just remove from local state
+            // session not yet persisted, just remove from local state
             onUpdate({ ...section, lessons: lessons.filter((_, i) => i !== lIdx) });
             return;
         }
@@ -155,9 +155,9 @@ function SectionCard({ section, sIdx, moduleId, programId, api, onUpdate, onDele
         try {
             await api.delete(`/admin/programs/${programId}/modules/${moduleId}/sections/${sid}/lessons/${lid}`);
             onUpdate({ ...section, lessons: lessons.filter((_, i) => i !== lIdx) });
-            toast.success("Lesson removed.");
+            toast.success("Session removed.");
         } catch (err) {
-            toast.error(err?.response?.data?.message || "Failed to delete lesson.");
+            toast.error(err?.response?.data?.message || "Failed to delete session.");
         }
     }
 
@@ -175,7 +175,7 @@ function SectionCard({ section, sIdx, moduleId, programId, api, onUpdate, onDele
                 <p className="flex-1 text-sm font-black text-[#0D1240]">{section.label}</p>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
                     style={{ background: "#DDE0FF", color: NAVY }}>
-                    {lessons.length} lesson{lessons.length !== 1 ? "s" : ""}
+                    {lessons.length} session{lessons.length !== 1 ? "s" : ""}
                 </span>
                 <button onClick={e => { e.stopPropagation(); onDelete(); }}
                     className="w-6 h-6 rounded-lg flex items-center justify-center text-red-300 hover:bg-red-50 hover:text-red-500 transition-all ml-1">
@@ -210,25 +210,25 @@ function SectionCard({ section, sIdx, moduleId, programId, api, onUpdate, onDele
                             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button onClick={() => startEdit(lesson)}
                                     className="w-5 h-5 rounded flex items-center justify-center text-blue-400 hover:text-blue-600 transition-all"
-                                    title="Edit Lesson">
+                                    title="Edit Session">
                                     <Pencil size={11} />
                                 </button>
                                 <button onClick={() => deleteLesson(lIdx)}
                                     className="w-5 h-5 rounded flex items-center justify-center text-red-300 hover:text-red-500 transition-all"
-                                    title="Delete Lesson">
+                                    title="Delete Session">
                                     <X size={11} />
                                 </button>
                             </div>
                         </div>
                     ))}
 
-                    {/* Add/Edit lesson form */}
+                    {/* Add/Edit session form */}
                     {showAddLesson ? (
                         <div className="rounded-xl border border-[#DDE0FF] p-4 space-y-3 mt-2"
                             style={{ background: "#F5F6FF" }}>
                             <div className="flex items-center justify-between">
                                 <p className="text-[10px] font-black text-[#0F1C80] uppercase tracking-widest">
-                                    {editingLesson ? "Edit Lesson" : "New Lesson"}
+                                    {editingLesson ? "Edit Session" : "New Session"}
                                 </p>
                                 {editingLesson && (
                                     <span className="text-[8px] font-bold bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase">Editing</span>
@@ -236,13 +236,13 @@ function SectionCard({ section, sIdx, moduleId, programId, api, onUpdate, onDele
                             </div>
 
                             <input value={lessonLabel} onChange={e => setLessonLabel(e.target.value)}
-                                placeholder="Lesson title…"
+                                placeholder="Session title…"
                                 className="w-full px-3 py-2 rounded-xl border border-[#DDE0FF] text-sm text-[#0D1240] bg-white focus:outline-none focus:ring-2 focus:ring-[#0F1C80]/20 focus:border-[#0F1C80]" />
 
                             {/* Content inputs combined */}
                             <div className="space-y-3 pt-1 border-t border-[#DDE0FF]">
                                 <textarea value={lessonText} onChange={e => setLessonText(e.target.value)}
-                                    placeholder="Lesson content / description (optional)…"
+                                    placeholder="Session content / description (optional)…"
                                     rows={3}
                                     className="w-full px-3 py-2 rounded-xl border border-[#DDE0FF] text-sm text-[#0D1240] bg-white focus:outline-none focus:ring-2 focus:ring-[#0F1C80]/20 resize-none" />
 
@@ -288,7 +288,7 @@ function SectionCard({ section, sIdx, moduleId, programId, api, onUpdate, onDele
                                     className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-black text-white transition-all"
                                     style={{ background: saving ? `${ORANGE}88` : ORANGE, boxShadow: saving ? "none" : `0 4px 14px ${ORANGE}44` }}>
                                     {saving ? <Loader2 size={14} className="animate-spin" /> : editingLesson ? <Check size={14} /> : <Plus size={14} />}
-                                    {saving ? "Saving…" : editingLesson ? "Update Lesson" : "Add Lesson"}
+                                    {saving ? "Saving…" : editingLesson ? "Update Session" : "Add Session"}
                                 </button>
                                 <button onClick={resetLesson}
                                     className="px-4 rounded-xl border border-[#DDE0FF] text-gray-400 hover:bg-gray-50 transition-all">
@@ -302,7 +302,7 @@ function SectionCard({ section, sIdx, moduleId, programId, api, onUpdate, onDele
                             style={{ borderColor: "#DDE0FF", color: NAVY }}
                             onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.color = ORANGE; }}
                             onMouseLeave={e => { e.currentTarget.style.borderColor = "#DDE0FF"; e.currentTarget.style.color = NAVY; }}>
-                            <Plus size={13} /> Add Lesson
+                            <Plus size={13} /> Add Session
                         </button>
                     )}
                 </div>
@@ -453,7 +453,7 @@ function ModuleEditor({ program, module, api, onBack, onModuleUpdate }) {
                                 </button>
                             </div>
                         )}
-                        <p className="text-xs text-gray-400 mt-0.5">{sections.length} section{sections.length !== 1 ? "s" : ""} · {sections.reduce((a, s) => a + (s.lessons?.length || 0), 0)} lessons</p>
+                        <p className="text-xs text-gray-400 mt-0.5">{sections.length} section{sections.length !== 1 ? "s" : ""} · {sections.reduce((a, s) => a + (s.lessons?.length || 0), 0)} sessions</p>
                     </div>
                     <div className="text-2xl">📚</div>
                 </div>
@@ -733,7 +733,7 @@ function ProgramsList({ programs, loading, api, onUpdate, onCreate, onDelete, ac
 
     async function deleteProgram(e, prog) {
         e.stopPropagation();
-        if (!window.confirm(`Delete program "${prog.label}"? This will remove all modules, sections and lessons inside it.`)) return;
+        if (!window.confirm(`Delete program "${prog.label}"? This will remove all modules, sections and sessions inside it.`)) return;
         const pid = prog._id || prog.id;
         try {
             await api.delete(`/admin/programs/${pid}`);
@@ -1177,7 +1177,7 @@ export default function AdminProgramsManager() {
                                     { n: programs.length, l: "Programs" },
                                     { n: totalModules, l: "Modules" },
                                     { n: totalSections, l: "Sections" },
-                                    { n: totalLessons, l: "Lessons" },
+                                    { n: totalLessons, l: "Sessions" },
                                 ].map(({ n, l }) => (
                                     <div key={l}>
                                         <p className="text-xl font-black text-[#0F1C80] leading-none">{n}</p>
@@ -1189,7 +1189,7 @@ export default function AdminProgramsManager() {
                         <div className="hidden md:flex shrink-0 flex-col items-center text-center bg-white/70 backdrop-blur-sm rounded-2xl border border-[#DDE0FF] p-4 w-40">
                             <span className="text-2xl mb-1.5">🏗️</span>
                             <p className="text-xs font-black text-[#0D1240] mb-1 leading-tight">LMS Builder</p>
-                            <p className="text-[10px] text-gray-400 mb-3 leading-relaxed">Programs → Modules → Sections → Lessons</p>
+                            <p className="text-[10px] text-gray-400 mb-3 leading-relaxed">Programs → Modules → Sections → Sessions</p>
                             <div className="w-full py-2 rounded-xl text-xs font-black text-white text-center"
                                 style={{ background: NAVY }}>
                                 4 Level Deep
@@ -1208,7 +1208,7 @@ export default function AdminProgramsManager() {
                             <ChevronRight size={12} className="text-gray-300" />
                             <StepBadge n="3" label="Edit → Sections" active={false} />
                             <ChevronRight size={12} className="text-gray-300" />
-                            <StepBadge n="4" label="Add Lessons" active={false} />
+                            <StepBadge n="4" label="Add Sessions" active={false} />
                         </div>
                         <button
                             onClick={() => { setSelectedProgFilter(null); setShowRequestsModal(true); }}

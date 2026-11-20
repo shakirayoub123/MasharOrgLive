@@ -71,7 +71,7 @@ const STATS = [
 const ADVANTAGES = [
     { icon: Award, title: "Dual ICF & EMCC Backing", desc: "Deliver programs that meet the most exacting global standards and remove hesitation from enterprise procurement." },
     { icon: Brain, title: "Proprietary Behavioral Tools", desc: "Use TAWDI (team awareness) and GEDI (executive growth) to pinpoint development needs before costly engagements." },
-    { icon: Library, title: "Complete Faculty Kits", desc: "Lesson plans, slide decks, workbooks and case studies, ready for in-person or virtual delivery." },
+    { icon: Library, title: "Complete Faculty Kits", desc: "Session outlines, slide decks, workbooks and case studies, ready for in-person or virtual delivery." },
     { icon: UserCheck, title: "Dedicated Partner Manager", desc: "Direct support from co-selling proposals and RFPs to graduation ceremonies and credential issuance." },
 ];
 

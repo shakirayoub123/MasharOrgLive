@@ -190,7 +190,7 @@ function ModuleRow({ program, module: mod, onDeleteModule, onRenameModule }) {
                             <p className="text-xs text-slate-400 text-center py-3">
                                 No sections in this module yet. Go to{" "}
                                 <a href="/admin/programs/manage" className="font-bold hover:underline" style={{ color: ORANGE }}>Programs Manager →</a>
-                                {" "}to add sections and lessons.
+                                {" "}to add sections and sessions.
                             </p>
                         ) : (
                             sections.map((sec, si) => (
@@ -218,7 +218,7 @@ function ProgramCard({ program, onDeleteProgram, onDeleteModule, onRenameModule,
         <>
             {confirmDel && (
                 <ConfirmModal
-                    message={`Delete program "${program.label}" and all its modules, sections and lessons? This cannot be undone.`}
+                    message={`Delete program "${program.label}" and all its modules, sections and sessions? This cannot be undone.`}
                     onConfirm={() => { onDeleteProgram(progId); setConfirmDel(false); }}
                     onCancel={() => setConfirmDel(false)}
                 />
@@ -261,7 +261,7 @@ function ProgramCard({ program, onDeleteProgram, onDeleteModule, onRenameModule,
                                     </span>
                                 </div>
                                 <p className="text-[11px] text-slate-400 mt-0.5">
-                                    {modules.length} module{modules.length !== 1 ? "s" : ""} · {totalSections} section{totalSections !== 1 ? "s" : ""} · {totalLessons} lesson{totalLessons !== 1 ? "s" : ""}
+                                    {modules.length} module{modules.length !== 1 ? "s" : ""} · {totalSections} section{totalSections !== 1 ? "s" : ""} · {totalLessons} session{totalLessons !== 1 ? "s" : ""}
                                 </p>
                             </div>
                             <ChevronDown size={16} className={`text-slate-400 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
@@ -295,7 +295,7 @@ function ProgramCard({ program, onDeleteProgram, onDeleteModule, onRenameModule,
                                         className="font-bold hover:underline" style={{ color: ORANGE }}>
                                         Programs Manager
                                     </button>{" "}
-                                    to create modules, sections and lessons.
+                                    to create modules, sections and sessions.
                                 </p>
                             </div>
                         ) : (
@@ -386,14 +386,14 @@ export default function AdminProgramsList() {
                             </div>
                             <h1 className="font-black text-[#0D1240] text-2xl leading-tight mb-2">Programs Overview</h1>
                             <p className="text-sm text-gray-500 mb-4 max-w-md">
-                                View all programs, modules, sections and lessons at a glance. Manage content from the Programs Manager.
+                                View all programs, modules, sections and sessions at a glance. Manage content from the Programs Manager.
                             </p>
                             <div className="flex gap-5 flex-wrap">
                                 {[
                                     { n: programs.length, l: "Programs" },
                                     { n: totalModules,    l: "Modules" },
                                     { n: totalSections,   l: "Sections" },
-                                    { n: totalLessons,    l: "Lessons" },
+                                    { n: totalLessons,    l: "Sessions" },
                                 ].map(({ n, l }) => (
                                     <div key={l}>
                                         <p className="text-xl font-black leading-none" style={{ color: NAVY }}>{n}</p>

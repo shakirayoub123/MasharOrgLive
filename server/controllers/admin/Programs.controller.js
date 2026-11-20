@@ -386,7 +386,7 @@ exports.createLesson = async (req, res) => {
     try {
         const { label, type = "text", text = "", videoUrl = "" } = req.body;
         if (!label?.trim()) {
-            return res.status(400).json({ success: false, message: "Lesson label is required." });
+            return res.status(400).json({ success: false, message: "Session title is required." });
         }
 
         const program = await Program.findById(req.params.programId);
@@ -441,7 +441,7 @@ exports.uploadLessonFile = async (req, res) => {
         if (!sec) return res.status(404).json({ success: false, message: "Section not found." });
 
         const lessonData = {
-            label: label?.trim() || "Untitled Lesson",
+            label: label?.trim() || "Untitled Session",
             text: text || "",
             videoUrl: videoUrl || "",
         };
@@ -580,14 +580,14 @@ exports.deleteLesson = async (req, res) => {
         if (!sec) return res.status(404).json({ success: false, message: "Section not found." });
 
         const lesson = sec.lessons.id(req.params.lessonId);
-        if (!lesson) return res.status(404).json({ success: false, message: "Lesson not found." });
+        if (!lesson) return res.status(404).json({ success: false, message: "Session not found." });
 
         if (lesson.filename) _deleteFileFromDisk(lesson.filename);
 
         lesson.deleteOne();
         await program.save();
 
-        res.json({ success: true, message: "Lesson deleted." });
+        res.json({ success: true, message: "Session deleted." });
     } catch (err) {
         console.error("deleteLesson:", err);
         res.status(500).json({ success: false, message: "Server error" });
