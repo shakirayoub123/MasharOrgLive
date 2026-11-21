@@ -397,8 +397,8 @@ const Home = () => {
                                 <span className="text-[#f39300]">Culturally Grounded.</span>
                             </h1>
 
-                            <p className="mt-4 md:mt-5 font-poppins text-[15px] sm:text-[16px] leading-[1.65] text-gray-600 max-w-[540px] mx-auto lg:mx-0">
-                                Internationally accredited education, leadership programs, and organizational assessments for the realities of our region.
+                            <p className="mt-4 md:mt-5 font-poppins text-[15px] sm:text-[16px] leading-[1.65] text-gray-600 max-w-[560px] mx-auto lg:mx-0">
+                                Since 2013, Mashar has supported leaders and teams with accredited coach and mentor education, leadership programs, and team assessments, all offered in Arabic and English.
                             </p>
 
                             <div className="mt-6 md:mt-7 flex flex-wrap items-center justify-center lg:justify-start gap-3.5">
