@@ -197,7 +197,8 @@ const WhyMashar = () => {
             </section>
 
             {/* Vision & Mission Section */}
-            <section id="mission" className="bg-white md:py-[120px] text-center relative">
+            <section id="values" className="bg-white md:py-[120px] text-center relative">
+                <span id="mission" className="sr-only"></span>
                 <img
                     src={CornorGroup}
                     alt="corner decoration"
@@ -505,7 +506,7 @@ const WhyMashar = () => {
                     alt="corner decoration"
                     className="absolute right-0 top-1/2 -translate-y-1/2 w-[80px] h-[200px] pointer-events-none z-0"
                 />
-                <div className="container mx-auto max-w-5xl md:pb-[48px]  md:px-60 lg:px-0 p-9">
+                <div id="founder" className="container mx-auto max-w-5xl md:pb-[48px]  md:px-60 lg:px-0 p-9">
                     <div className="flex mt-10 flex-col 1140:flex-row items-center justify-center lg:items-start space-y-8 lg:space-y-0 lg:space-x-8 relative">
                         {/* Left Side - Founder Image */}
                         <div className="h-[420px] 1140:w-[380px] text-center mt-8 1140:text-left flex-shrink-0 1140:border-r-[1.4px]  border-[#181A6C] ">

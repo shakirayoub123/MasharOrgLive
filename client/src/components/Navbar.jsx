@@ -14,8 +14,8 @@ const NAV_ITEMS = [
                 heading: "Our Story",
                 links: [
                     { label: "Roots Run Deep", sub: "Our origin & philosophy", to: "/whyMashar#roots" },
-                    { label: "Our Founder", sub: "Meet Raja Al Gurg", to: "/whyMashar#team" },
-                    { label: "Our Team", sub: "The minds behind Mashar", to: "/whyMashar#team" },
+                    { label: "Rooted in Values", sub: "Our vision & mission", to: "/whyMashar#values" },
+                    { label: "Our Founder", sub: "Meet Raja'a Allaho", to: "/whyMashar#founder" },
                 ],
             },
             {
@@ -66,7 +66,7 @@ const NAV_ITEMS = [
                 links: [
                     { label: "Leader as a Coach", sub: "ICF accredited · 3-day", to: "/explorePrograms", tab: "training" },
                     { label: "Personal Leadership", sub: "20-hour blended journey", to: "/explorePrograms", tab: "training" },
-                    { label: "Present, Speak, Influence", sub: "5-day mastery program", to: "/explorePrograms", tab: "training" },
+                    { label: "Present. Speak. Influence", sub: "5-day mastery program", to: "/explorePrograms", tab: "training" },
                 ],
             },
             {
@@ -117,9 +117,8 @@ const NAV_ITEMS = [
             {
                 heading: "Partner & Careers",
                 links: [
-                    { label: "Become a Partner", sub: "Curricula licensing & B2B", to: "/become-partner" },
-                    { label: "Join Our Team", sub: "Faculty bench & core roles", to: "/join-our-team" },
-                    { label: "Become a Mentor", sub: "Executive mentorship network", to: "/become-a-mentor" },
+                    { label: "Become a Partner", sub: "Bring Mashar to new markets", to: "/become-partner" },
+                    { label: "Join Our Network", sub: "For professional coaches & mentors", to: "/join-our-network" },
                 ],
             },
         ],

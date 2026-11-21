@@ -37,6 +37,7 @@ import statsBg from "../assets/150.png";
 import ArrowButton from "../components/Arrowbutton";
 import GlobalSection from "../components/logos2";
 import DiscoveryModal from "../Models/DiscoveryModal.jsx";
+import CalendarViewModal from "../Models/CalendarViewModal.jsx";
 import CornorGroup from "../assets/CornorGroup.png";
 import LeftCornorGroup from "../assets/LeftCornorGroup.png";
 
@@ -250,6 +251,7 @@ const Home = () => {
     };
     const navigate = useNavigate(); // ✅ CORRECT PLACE
     const [openModal, setOpenModal] = useState(false);
+    const [openCalendarModal, setOpenCalendarModal] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [openIndex, setOpenIndex] = useState(0);
     const [slidesToShow, setSlidesToShow] = useState(3);
@@ -400,16 +402,17 @@ const Home = () => {
                             </p>
 
                             <div className="mt-6 md:mt-7 flex flex-wrap items-center justify-center lg:justify-start gap-3.5">
-                                <a
-                                    href={masharCalendarPdf}
-                                    download="MasharCalendar2026.pdf"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-2 bg-[#f39300] hover:bg-[#d97f00] transition-colors duration-200 text-white font-poppins font-semibold text-[14px] sm:text-[15px] px-6 sm:px-7 py-3 rounded-full shadow-sm whitespace-nowrap cursor-pointer"
+                                <button
+                                    type="button"
+                                    onClick={() => setOpenCalendarModal(true)}
+                                    className="flex items-center gap-2 bg-[#f39300] hover:bg-[#d97f00] transition-colors duration-200 text-white font-poppins font-semibold text-[14px] sm:text-[15px] px-6 sm:px-7 py-3 rounded-full shadow-sm whitespace-nowrap cursor-pointer hover:shadow-md"
                                 >
-                                    <span>Download 2026 Calendar</span>
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
-                                </a>
+                                    <span>View Training Calendar</span>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </button>
                                 <button
                                     onClick={openCalendly}
                                     className="flex items-center gap-2 bg-white border-2 border-[#1e2554] hover:bg-[#1e2554] hover:text-white transition-colors duration-200 text-[#1e2554] font-poppins font-semibold text-[14px] sm:text-[15px] px-6 sm:px-7 py-3 rounded-full whitespace-nowrap"
@@ -1663,8 +1666,14 @@ transition-colors duration-300 group-hover:text-[#F39300]">
                 </div>
             </section>
 
-            {/* MODAL */}
+            {/* MODALS */}
             <DiscoveryModal isOpen={openModal} onClose={() => setOpenModal(false)} />
+            <CalendarViewModal
+                isOpen={openCalendarModal}
+                onClose={() => setOpenCalendarModal(false)}
+                pdfUrl={masharCalendarPdf}
+                fileName="Mashar Training Program Calendar 2026-2027.pdf"
+            />
         </>
     );
 };

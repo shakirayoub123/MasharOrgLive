@@ -52,7 +52,7 @@ const ERSHAD_PILLARS = [
     {
         num: "04",
         title: "Reflective Community of Practice",
-        desc: "Our mentors benefit from regular masterclasses led by founder Raja Al Gurg, ongoing peer supervision, and shared regional research insights.",
+        desc: "Our mentors benefit from regular masterclasses led by founder Raja'a Allaho, ongoing peer supervision, and shared regional research insights.",
     },
 ];
 
@@ -195,7 +195,7 @@ export default function BecomeMentor() {
                         <div className="relative rounded-3xl overflow-hidden border-4 border-white shadow-2xl bg-gray-100">
                             <img
                                 src={founderImg}
-                                alt="Raja Al Gurg - Mashar Founder"
+                                alt="Raja'a Allaho - Mashar Founder"
                                 className="w-full h-[440px] sm:h-[480px] object-cover object-top"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

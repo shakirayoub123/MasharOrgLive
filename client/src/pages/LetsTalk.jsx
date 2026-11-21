@@ -196,14 +196,20 @@ export default function LetsTalk() {
                     <div className="mt-10 space-y-4 text-sm font-poppins">
                         {[
                             { icon: <MdLocationOn />, text: "Kuwait City, Kuwait" },
-                            { icon: <MdPhone />, text: "+965-123-765-09" },
-                            { icon: <MdMessage />, text: "info@mashar.org" },
+                            { icon: <MdPhone />, text: "+965 9903 4310", href: "tel:+96599034310" },
+                            { icon: <MdMessage />, text: "info@mashar.org", href: "mailto:info@mashar.org" },
                         ].map((item, i) => (
                             <div key={i} className="flex items-center gap-3">
                                 <span className="w-6 h-6 flex items-center justify-center rounded-full text-white bg-secondary hover:scale-110">
                                     {item.icon}
                                 </span>
-                                {item.text}
+                                {item.href ? (
+                                    <a href={item.href} className="hover:underline">
+                                        {item.text}
+                                    </a>
+                                ) : (
+                                    item.text
+                                )}
                             </div>
                         ))}
                         {/* Decorative orange orbit */}

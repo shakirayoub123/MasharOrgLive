@@ -98,6 +98,8 @@ const browserRoutes = createBrowserRouter([
       { path: "partner", element: <BecomePartner /> },
       { path: "join-our-team", element: <JoinOurTeam /> },
       { path: "join-team", element: <JoinOurTeam /> },
+      { path: "join-our-network", element: <JoinOurTeam /> },
+      { path: "join-network", element: <JoinOurTeam /> },
       { path: "become-a-mentor", element: <BecomeMentor /> },
       { path: "become-mentor", element: <BecomeMentor /> },
       { path: "mentor", element: <BecomeMentor /> },

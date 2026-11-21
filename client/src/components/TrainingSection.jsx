@@ -48,7 +48,7 @@ const TrainingSection = () => {
             button: "DOWNLOAD PROGRAM PDF",
         },
         {
-            title: "Present, Speak, Influence",
+            title: "Present. Speak. Influence",
             subtitle: "5-day communication mastery with immersive tech",
             icon: personaIcon,
             description:
