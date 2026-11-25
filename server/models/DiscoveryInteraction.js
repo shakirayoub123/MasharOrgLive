@@ -9,6 +9,9 @@ const DiscoveryInteractionSchema = new mongoose.Schema(
         email: {
             type: String,
             required: [true, "Email is required"],
+            trim: true,
+            lowercase: true,
+            match: [/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/, "Please enter a valid email address"],
         },
         company: {
             type: String,

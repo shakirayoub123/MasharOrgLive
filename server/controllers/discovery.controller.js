@@ -1,15 +1,26 @@
 const DiscoveryInteraction = require("../models/DiscoveryInteraction");
 const { sendMail } = require("../helpers");
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+
 exports.submitForm = async (req, res) => {
     try {
         const { name, email, company, helpTopic, challenge, receiveUpdates } = req.body;
+        const trimmedEmail = (email || "").trim().toLowerCase();
+
+        if (!EMAIL_REGEX.test(trimmedEmail)) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter a valid email address (e.g., name@example.com).",
+            });
+        }
+
         const newInteraction = new DiscoveryInteraction({
-            name,
-            email,
-            company,
+            name: (name || "").trim(),
+            email: trimmedEmail,
+            company: (company || "").trim(),
             helpTopic,
-            challenge,
+            challenge: (challenge || "").trim(),
             receiveUpdates,
         });
         await newInteraction.save();

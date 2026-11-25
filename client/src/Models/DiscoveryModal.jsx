@@ -3,6 +3,8 @@ import { X, ChevronDown } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+
 export default function DiscoveryModal({ isOpen, onClose }) {
     const [formData, setFormData] = useState({
         name: "",
@@ -13,6 +15,7 @@ export default function DiscoveryModal({ isOpen, onClose }) {
         receiveUpdates: false,
     });
     const [loading, setLoading] = useState(false);
+    const [emailError, setEmailError] = useState("");
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "auto";
@@ -23,6 +26,9 @@ export default function DiscoveryModal({ isOpen, onClose }) {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
+        if (name === "email" && emailError) {
+            setEmailError("");
+        }
         setFormData({
             ...formData,
             [name]: type === "checkbox" ? checked : value,
@@ -31,14 +37,34 @@ export default function DiscoveryModal({ isOpen, onClose }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const trimmedEmail = formData.email.trim();
+
+        if (!EMAIL_REGEX.test(trimmedEmail)) {
+            setEmailError("Please enter a valid email address (e.g., name@example.com).");
+            toast.error("Please enter a valid email address.");
+            return;
+        }
+
         setLoading(true);
         try {
-            await axios.post("/api/discovery", formData);
+            await axios.post("/api/discovery", {
+                ...formData,
+                email: trimmedEmail,
+            });
             toast.success("Thank you! Your discovery request has been submitted.");
+            setFormData({
+                name: "",
+                email: "",
+                company: "",
+                helpTopic: "",
+                challenge: "",
+                receiveUpdates: false,
+            });
+            setEmailError("");
             onClose();
         } catch (error) {
             console.error("Error submitting form", error);
-            toast.error("Something went wrong. Please try again.");
+            toast.error(error?.response?.data?.message || "Something went wrong. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -133,15 +159,24 @@ export default function DiscoveryModal({ isOpen, onClose }) {
                         />
 
                         {/* Email */}
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email Address*"
-                            required
-                            value={formData.email}
-                            onChange={handleChange}
-                            className="w-full h-[44px] sm:h-[48px] rounded-[12px] border-[1.5px] border-[#0F1C80] px-4 text-[14px]"
-                        />
+                        <div>
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Email Address*"
+                                required
+                                pattern="[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}"
+                                title="Please enter a valid email address (e.g., name@example.com)"
+                                value={formData.email}
+                                onChange={handleChange}
+                                className={`w-full h-[44px] sm:h-[48px] rounded-[12px] border-[1.5px] px-4 text-[14px] ${
+                                    emailError ? "border-red-500 focus:outline-red-500" : "border-[#0F1C80]"
+                                }`}
+                            />
+                            {emailError && (
+                                <p className="text-red-500 text-xs mt-1 pl-1">{emailError}</p>
+                            )}
+                        </div>
 
                         {/* Company (Optional) */}
                         <input

@@ -26,9 +26,8 @@ const Footer = () => {
         setSubmitted(false);
 
         try {
-            const { data } = await axios.post("/api/subscribers/subscribe", {
+            const { data } = await axios.post("/api/footer-newsletter/subscribe", {
                 email: trimmedEmail,
-                source: "Footer Newsletter",
             });
             setSubmitted(true);
             setStatusMessage(data?.message || "Subscribed successfully! Please check your email.");
