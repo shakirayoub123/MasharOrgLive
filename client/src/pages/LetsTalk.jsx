@@ -159,7 +159,7 @@ export default function LetsTalk() {
                     }}
                 />
 
-                <h1 className="relative z-10 text-3xl sm:text-4xl lg:text-[52px] font-semibold font-spartan tracking-wide">
+                <h1 className="relative z-10 text-4xl sm:text-5xl lg:text-[68px] font-semibold font-spartan tracking-wide">
                     LET’S TALK
                 </h1>
             </header>

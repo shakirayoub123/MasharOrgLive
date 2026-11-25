@@ -21,7 +21,7 @@ function DeleteModal({ subscriber, onConfirm, onCancel, loading }) {
                         <div>
                             <p className="text-sm font-bold text-slate-800">Unsubscribe user?</p>
                             <p className="text-sm text-slate-500 mt-1 leading-relaxed">
-                                <span className="font-semibold text-slate-700">"{subscriber?.name}"</span> (<span className="text-xs font-mono text-slate-600">{subscriber?.email}</span>) will be permanently unsubscribed and deleted from the newsletter list.
+                                <span className="font-semibold text-slate-700">"{subscriber?.name || "Footer Subscriber"}"</span> (<span className="text-xs font-mono text-slate-600">{subscriber?.email}</span>) will be permanently unsubscribed and deleted from the newsletter list.
                             </p>
                         </div>
                     </div>
@@ -127,8 +127,8 @@ export default function AdminSubscribers() {
     const filteredSubscribers = subscribers.filter((s) => {
         const query = search.toLowerCase();
         return (
-            s.name.toLowerCase().includes(query) ||
-            s.email.toLowerCase().includes(query) ||
+            (s.name || "").toLowerCase().includes(query) ||
+            (s.email || "").toLowerCase().includes(query) ||
             (s.company && s.company.toLowerCase().includes(query))
         );
     });
@@ -189,7 +189,9 @@ export default function AdminSubscribers() {
                                 ) : filteredSubscribers.length > 0 ? (
                                     filteredSubscribers.map((s) => (
                                         <tr key={s._id} className="hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-6 py-4 font-semibold text-slate-800">{s.name}</td>
+                                            <td className="px-6 py-4 font-semibold text-slate-800">
+                                                {s.name || <span className="text-slate-400 italic font-normal text-xs">Footer Subscriber</span>}
+                                            </td>
                                             <td className="px-6 py-4 font-mono text-xs text-slate-600">{s.email}</td>
                                             <td className="px-6 py-4">
                                                 {s.company ? (

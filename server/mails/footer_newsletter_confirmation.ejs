@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mashar Newsletter Subscription</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #F0F2F5; color: #1A1A2E; padding: 32px 16px; }
+        .email-wrapper { max-width: 600px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #E1E5ED; border-radius: 12px; overflow: hidden; background-color: #FFFFFF; }
+        .top-accent { height: 5px; background: linear-gradient(90deg, #F39300 0%, #F7B733 100%); }
+        .email-header { background: linear-gradient(135deg, #0F1C80 0%, #15237F 100%); padding: 32px 36px 28px; text-align: center; }
+        .brand-logo { font-size: 12px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #F39300; margin-bottom: 10px; }
+        .header-title { font-size: 24px; font-weight: 700; color: #FFFFFF; line-height: 1.3; margin-bottom: 8px; }
+        .header-subtitle { font-size: 14px; color: #C7D0F4; }
+        .email-body { background-color: #FFFFFF; padding: 36px 36px 32px; }
+        .greeting { font-size: 16px; color: #1F2937; margin-bottom: 16px; }
+        .greeting strong { color: #0F1C80; font-weight: 600; }
+        .body-text { font-size: 15px; line-height: 1.75; color: #4B5563; margin-bottom: 18px; }
+        .cta-wrap { text-align: center; margin: 28px 0 24px; }
+        .cta-btn { display: inline-block; background-color: #0F1C80; color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 600; padding: 13px 34px; border-radius: 50px; letter-spacing: 0.02em; }
+        .contact-info { padding-top: 18px; border-top: 1px solid #EAECF5; margin-top: 18px; font-size: 13.5px; line-height: 1.65; color: #6B7280; }
+        .signature { padding-top: 20px; border-top: 1px solid #EAECF5; margin-top: 20px; }
+        .sig-warm { font-size: 13.5px; color: #888; margin-bottom: 4px; }
+        .sig-name { font-size: 16px; font-weight: 700; color: #0F1C80; }
+        .sig-role { font-size: 11.5px; color: #9CA3AF; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 3px; }
+        .email-footer { background-color: #0F1C80; padding: 22px 36px; text-align: center; }
+        .footer-note { font-size: 11.5px; color: #C7D0F4; line-height: 1.7; }
+        .footer-note a { color: #F39300; text-decoration: none; }
+        @media (max-width: 480px) {
+            .email-header, .email-body { padding: 24px 20px; }
+            .header-title { font-size: 20px; }
+            .email-footer { padding: 18px 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="email-wrapper">
+    <div class="top-accent"></div>
+    <div class="email-header">
+        <div class="brand-logo">Mashar &middot; Newsletter</div>
+        <h1 class="header-title">Thank You for Subscribing!</h1>
+        <p class="header-subtitle">Leadership Development &bull; Coaching &bull; Mentoring</p>
+    </div>
+    <div class="email-body">
+        <p class="greeting">Hi <strong><%= name || 'there' %></strong>,</p>
+        <p class="body-text">
+            Thank you for subscribing to the <strong>Mashar</strong> newsletter. You are now confirmed to receive our latest leadership insights, articles, program announcements, and regional coaching updates.
+        </p>
+        <p class="body-text">
+            We look forward to sharing meaningful perspectives that support leaders, teams, and organizations across the region.
+        </p>
+
+        <div class="cta-wrap">
+            <a href="<%= websiteUrl %>" class="cta-btn" style="color: #FFFFFF;">Explore Mashar</a>
+        </div>
+
+        <div class="contact-info">
+            <p>Have a question or want to connect? Reach us anytime at <a href="mailto:info@mashar.org" style="color: #0F1C80; text-decoration: none; font-weight: 600;">info@mashar.org</a>.</p>
+        </div>
+
+        <div class="signature">
+            <p class="sig-warm">Warm regards,</p>
+            <div class="sig-name">Mashar Coaching &amp; Training Academy</div>
+            <div class="sig-role">Lead with purpose. Be Future Ready.</div>
+        </div>
+    </div>
+    <div class="email-footer">
+        <p class="footer-note">
+            Kuwait City, Kuwait &middot; <a href="mailto:info@mashar.org">info@mashar.org</a> &middot; Tel: +965 9903 4310<br>
+            &copy; <%= new Date().getFullYear() %> Mashar. All rights reserved.<br>
+            <a href="https://mashar.org/">mashar.org</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>
+

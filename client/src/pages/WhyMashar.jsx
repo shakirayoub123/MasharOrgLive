@@ -124,7 +124,7 @@ const WhyMashar = () => {
 
                 {/* Content */}
                 <div className="relative z-10 tracking-wider text-center px-4">
-                    <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-semibold tracking-[0.5px] font-spartan mb-3">
+                    <h1 className="text-4xl sm:text-5xl lg:text-[68px] font-semibold tracking-[0.5px] font-spartan mb-3">
                         WHY MASHAR
                     </h1>
                 </div>

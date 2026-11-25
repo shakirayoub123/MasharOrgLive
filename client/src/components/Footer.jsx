@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { FaInstagram, FaFacebookF, FaLinkedin, FaPhoneAlt } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { MdEmail, MdLocationOn } from "react-icons/md";
@@ -7,7 +8,41 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
     const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [statusMessage, setStatusMessage] = useState("");
+    const [error, setError] = useState("");
+
+    const handleSubscribe = async (e) => {
+        if (e) e.preventDefault();
+        const trimmedEmail = email.trim();
+        if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+            setError("Please enter a valid email address.");
+            return;
+        }
+
+        setLoading(true);
+        setError("");
+        setSubmitted(false);
+
+        try {
+            const { data } = await axios.post("/api/subscribers/subscribe", {
+                email: trimmedEmail,
+                source: "Footer Newsletter",
+            });
+            setSubmitted(true);
+            setStatusMessage(data?.message || "Subscribed successfully! Please check your email.");
+            setEmail("");
+            setTimeout(() => {
+                setSubmitted(false);
+                setStatusMessage("");
+            }, 5000);
+        } catch (err) {
+            setError(err?.response?.data?.message || "Subscription failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <footer className="bg-primary text-white">
@@ -117,15 +152,19 @@ const Footer = () => {
                             Subscribe To Our Newsletter
                         </h3>
 
-                        {/* Email Input — outlined style like screenshot */}
-                        <input
-                            type="email"
-                            placeholder="Email"
-
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            disabled={submitted}
-                            className="
+                        <form onSubmit={handleSubscribe}>
+                            {/* Email Input — outlined style like screenshot */}
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    if (error) setError("");
+                                }}
+                                disabled={loading}
+                                required
+                                className="
     w-full
     bg-transparent
     border border-white/30
@@ -141,18 +180,13 @@ const Footer = () => {
     transition duration-300
     disabled:opacity-60
   "
-                        />
+                            />
 
-                        {/* Subscribe Button — outlined style like screenshot */}
-                        <button
-                            onClick={() => {
-                                if (!email) return;
-                                setSubmitted(true);
-                                setTimeout(() => setSubmitted(false), 3000);
-                            }}
-
-                            disabled={submitted}
-                            className="
+                            {/* Subscribe Button — outlined style like screenshot */}
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="
     w-full
     mt-3
     border border-white/30
@@ -169,18 +203,22 @@ const Footer = () => {
     disabled:cursor-not-allowed
     disabled:opacity-60
   "
-                        >
-                            Subscribe Now
-                        </button>
+                            >
+                                {loading ? "Subscribing..." : "Subscribe Now"}
+                            </button>
+                        </form>
 
-
-                        {submitted && (
-                            <div className="mt-2 text-[13px] text-[#f39300] font-medium flex items-center gap-1 whitespace-nowrap">
-                                ✓ Successfully submitted. Thank you!
+                        {error && (
+                            <div className="mt-2 text-[12px] text-red-300 font-medium">
+                                {error}
                             </div>
                         )}
 
-
+                        {submitted && (
+                            <div className="mt-2 text-[13px] text-[#f39300] font-medium flex items-center gap-1">
+                                ✓ {statusMessage}
+                            </div>
+                        )}
                     </div>
 
                 </div>

@@ -58,7 +58,7 @@ export default function OurSignature() {
                     <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-black/30" />
                 </div>
                 <div className="relative z-10 tracking-wider text-center px-4">
-                    <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-semibold tracking-[0.5px] font-spartan mb-4">
+                    <h1 className="text-4xl sm:text-5xl lg:text-[68px] font-semibold tracking-[0.5px] font-spartan mb-4">
                         OUR SIGNATURE
                     </h1>
                 </div>
